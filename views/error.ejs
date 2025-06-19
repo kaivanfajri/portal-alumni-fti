@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title><%= title || 'Error' %> - Portal Alumni</title>
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.2/dist/full.css" rel="stylesheet" type="text/css" />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+        </style>
+        <script>
+            function toggleDetails() {
+                const details = document.getElementById('errorDetails');
+                const toggle = document.getElementById('toggleText');
+                if (details.style.display === 'none') {
+                    details.style.display = 'block';
+                    toggle.textContent = 'Sembunyikan Detail Error';
+                } else {
+                    details.style.display = 'none';
+                    toggle.textContent = 'Tampilkan Detail Error';
+                }
+            }
+        </script>
+    </head>
+    <body class="min-h-screen flex items-center justify-center bg-[#F0F8F0] text-[#2E7D32]">
+        <div class="text-center max-w-2xl p-8">
+            <div class="text-5xl mb-4 opacity-70"><% if (typeof status !== 'undefined' && status == 404) { %> 🔍 <% } else { %> ⚠️ <% } %></div>
+
+            <h1 class="text-8xl font-bold text-[#2E7D32] drop-shadow-lg mb-4"><%= typeof status !== 'undefined' ? status : 500 %></h1>
+
+            <p class="text-2xl font-semibold mb-2">
+                <% if (typeof status !== 'undefined' && status == 404) { %> Halaman Tidak Ditemukan <% } else { %> <%= typeof message !== 'undefined' ? message : 'Terjadi Kesalahan Internal Server' %> <% } %>
+            </p>
+
+            <p class="text-base mb-6 text-[#2E7D32]/80 leading-relaxed">
+                <% if (typeof status !== 'undefined' && status == 404) { %> Maaf, halaman yang Anda cari tidak dapat ditemukan di Portal Alumni. Halaman mungkin telah dipindahkan, dihapus, atau URL yang Anda masukkan salah. <% } else { %>
+                Maaf, terjadi kesalahan pada server Portal Alumni. Tim teknis kami akan segera memperbaikinya. Silakan coba lagi nanti. <% } %>
+            </p>
+
+            <% if ((typeof error !== 'undefined' && error && error.stack) || (typeof stack !== 'undefined' && stack)) { %>
+            <div class="cursor-pointer underline text-[#2E7D32]/70 mb-4 hover:text-[#2E7D32] transition-colors" id="toggleText" onclick="toggleDetails()">Tampilkan Detail Error</div>
+            <div class="bg-[#E9E7E7] text-[#2E7D32] p-4 rounded-lg mb-6 text-left font-mono text-sm break-all hidden" id="errorDetails" style="display: none">
+                <strong>Error Details:</strong><br />
+                <pre class="whitespace-pre-wrap mt-2 overflow-x-auto"><%= typeof error !== 'undefined' && error && error.stack ? error.stack : (typeof stack !== 'undefined' ? stack : '') %></pre>
+            </div>
+            <% } %>
+
+            <div class="space-y-3 sm:space-y-0 sm:space-x-3 sm:flex sm:justify-center">
+                <a href="javascript:history.back()" class="btn btn-sm btn-outline sm:w-auto w-full border-[#2E7D32] text-[#2E7D32] hover:bg-[#2E7D32] hover:text-white transition-all duration-200 hover:shadow-md">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Halaman Sebelumnya
+                </a>
+                <a href="/" class="btn btn-sm btn-outline sm:w-auto w-full border-[#2E7D32] text-[#2E7D32] hover:bg-[#2E7D32] hover:text-white transition-all duration-200 hover:shadow-md">
+                    <i class="fas fa-home mr-2"></i>
+                    Kembali ke Beranda
+                </a>
+            </div>
+        </div>
+    </body>
+</html>

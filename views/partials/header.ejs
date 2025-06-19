@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Portal Alumni FTI</title>
+
+        <!-- Tailwind CSS + DaisyUI -->
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.24/dist/full.min.css" rel="stylesheet" type="text/css" />
+        <script src="https://cdn.tailwindcss.com"></script>
+
+        <!-- Font Awesome untuk icons -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+        <style>
+            /* Custom font family */
+            * {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+
+            /* Custom color variables */
+            :root {
+                --color-light-gray: #e9e7e7;
+                --color-light-green: #f0f8f0;
+                --color-gold: #ffd700;
+                --color-dark-green: #2e7d32;
+            }
+
+            /* Custom gradient background */
+            .hero-gradient {
+                background: linear-gradient(135deg, var(--color-light-green) 0%, var(--color-light-gray) 50%, #ffffff 100%);
+            }
+
+            /* Custom card hover effects */
+            .feature-card {
+                transition: all 0.3s ease;
+                background-color: white;
+                border: 2px solid var(--color-light-gray);
+            }
+
+            .feature-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 20px 25px -5px rgba(46, 125, 50, 0.15), 0 10px 10px -5px rgba(46, 125, 50, 0.1);
+                border-color: var(--color-dark-green);
+            }
+
+            /* Navbar transparency effect */
+            .navbar-transparent {
+                backdrop-filter: blur(10px);
+                background-color: rgba(240, 248, 240, 0.95);
+                border-bottom: 1px solid var(--color-light-gray);
+            }
+
+            /* Custom button styles */
+            .btn-custom-primary {
+                background-color: var(--color-dark-green);
+                border-color: var(--color-dark-green);
+                color: white;
+            }
+
+            .btn-custom-primary:hover {
+                background-color: #1b5e20;
+                border-color: #1b5e20;
+            }
+
+            .btn-custom-secondary {
+                background-color: var(--color-gold);
+                border-color: var(--color-gold);
+                color: #000;
+                font-weight: 600;
+            }
+
+            .btn-custom-secondary:hover {
+                background-color: #ffc107;
+                border-color: #ffc107;
+            }
+
+            /* Statistics section custom style */
+            .stats-gradient {
+                background: linear-gradient(135deg, var(--color-dark-green) 0%, #388e3c 100%);
+            }
+        </style>
+
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            'custom-light-gray': '#E9E7E7',
+                            'custom-light-green': '#F0F8F0',
+                            'custom-gold': '#FFD700',
+                            'custom-dark-green': '#2E7D32',
+                        },
+                    },
+                },
+            };
+        </script>
+    </head>
+    <body class="min-h-screen" style="background-color: #f0f8f0"></body>
+</html>
