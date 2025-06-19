@@ -1,0 +1,57 @@
+<nav class="navbar relative z-[40] shadow-lg px-6 py-4 bg-[#F0F8F0]/95 backdrop-blur-sm">
+    <div class="navbar-start">
+        <div class="dropdown">
+            <div tabindex="0" role="button" class="btn btn-ghost lg:hidden">
+                <i class="fas fa-bars text-xl text-[#2E7D32]"></i>
+            </div>
+            <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow rounded-box w-52 bg-white">
+                <li>
+                    <a href="/admin/" class="text-[#2E7D32]"><i class="fas fa-tachometer-alt mr-2"></i>Dashboard</a>
+                </li>
+                <li>
+                    <a href="/admin/kelola-data-alumni" class="text-[#2E7D32]"><i class="fas fa-users mr-2"></i>Alumni</a>
+                </li>
+                <li>
+                    <a href="/admin/kelola-postingan" class="text-[#2E7D32]"><i class="fas fa-newspaper mr-2"></i>Konten</a>
+                </li>
+            </ul>
+        </div>
+        <a href="javascript:history.back()" class="btn btn-ghost text-xl font-bold text-[#2E7D32]">
+            <i class="fas fa-graduation-cap mr-2 text-[#FFD700]"></i>
+            <i class="fas fa-arrow-left mr-2"></i>
+            Halaman Sebelumnya
+        </a>
+    </div>
+
+    <div class="navbar-center hidden lg:flex">
+        <ul class="menu menu-horizontal px-1">
+            <li>
+                <a href="/admin/" class="font-medium text-[#2E7D32]"><i class="fas fa-tachometer-alt mr-2"></i>Dashboard</a>
+            </li>
+            <li>
+                <a href="/admin/kelola-data-alumni" class="font-medium text-[#2E7D32]"><i class="fas fa-users mr-2"></i>Alumni</a>
+            </li>
+            <li>
+                <a href="/admin/kelola-postingan" class="font-medium text-[#2E7D32]"><i class="fas fa-newspaper mr-2"></i>Konten</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="navbar-end">
+        <div class="dropdown dropdown-end relative z-[50]">
+            <div tabindex="0" role="button" class="btn btn-ghost btn-circle avatar">
+                <div class="w-10 rounded-full bg-gradient-to-br from-[#2E7D32] to-green-500">
+                    <i class="fas fa-user-shield text-white text-lg flex items-center justify-center h-full"></i>
+                </div>
+            </div>
+            <ul tabindex="0" class="dropdown-content z-[50] absolute mt-3 p-2 shadow menu menu-sm rounded-box w-52 bg-white">
+                <li>
+                    <a class="text-[#2E7D32]"><i class="fas fa-user mr-2"></i>Profile</a>
+                </li>
+                <li>
+                    <a class="text-[#2E7D32]"><i class="fas fa-sign-out-alt mr-2"></i>Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>

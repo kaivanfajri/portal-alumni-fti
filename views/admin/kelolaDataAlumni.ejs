@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title><%= title %> | Portal Alumni</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.2/dist/full.css" rel="stylesheet" type="text/css" />
+    </head>
+    <body class="bg-gradient-to-br from-green-50 to-green-100 min-h-screen">
+        <%- include('admin-partials/navbar') %>
+
+        <div class="container mx-auto px-4 py-8">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold text-gray-800"><i class="fas fa-users mr-2"></i> <%= title %></h1>
+                <div>
+                    <a href="/admin/tambah-alumni" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"> <i class="fas fa-plus mr-2"></i>Tambah Alumni </a>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="p-4 border-b flex justify-between items-center">
+                    <div class="flex space-x-4">
+                        <input type="text" id="searchInput" placeholder="Cari alumni..." class="px-4 py-2 border rounded-lg w-64" />
+                        <select id="statusFilter" class="px-4 py-2 border rounded-lg">
+                            <option value="">Semua Status</option>
+                            <option value="aktif">Aktif</option>
+                            <option value="nonaktif">Nonaktif</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button id="exportBtn" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"><i class="fas fa-file-export mr-2"></i>Ekspor Data</button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">NIM</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Lengkap</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Program Studi</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tahun Lulus</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pekerjaan</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <% alumniProfiles.forEach(profile => { %>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm font-medium text-gray-900"><%= profile.alumni.nim %></div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <% if (profile.foto_profil) { %>
+                                        <img class="h-10 w-10 rounded-full object-cover mr-3" src="/uploads/profiles/<%= profile.foto_profil %>" alt="<%= profile.nama_lengkap %>" />
+                                        <% } else { %>
+                                        <div class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center mr-3">
+                                            <i class="fas fa-user text-gray-500"></i>
+                                        </div>
+                                        <% } %>
+                                        <div>
+                                            <div class="text-sm font-medium text-gray-900"><%= profile.nama_lengkap %></div>
+                                            <div class="text-sm text-gray-500"><%= profile.alumni.email %></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900"><%= profile.program_studi %></div>
+                                    <div class="text-sm text-gray-500"><%= profile.tahun_masuk %></div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900"><%= profile.tahun_lulus %></div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900"><%= profile.pekerjaan_sekarang || '-' %></div>
+                                    <div class="text-sm text-gray-500"><%= profile.nama_perusahaan || '' %></div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full <%= profile.alumni.status === 'aktif' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' %>">
+                                        <%= profile.alumni.status === 'aktif' ? 'Aktif' : 'Nonaktif' %>
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <a href="/admin/edit-alumni/<%= profile.alumni.id %>" class="text-blue-600 hover:text-blue-900 mr-3">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a href="#" class="text-red-600 hover:text-red-900 delete-btn" data-id="<%= profile.alumni.id %>">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
+                    <div class="flex-1 flex justify-between sm:hidden">
+                        <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"> Previous </a>
+                        <a href="#" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50"> Next </a>
+                    </div>
+                    <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                        <div>
+                            <p class="text-sm text-gray-700">Menampilkan <span class="font-medium">1</span> sampai <span class="font-medium">10</span> dari <span class="font-medium"><%= alumniProfiles.length %></span> hasil</p>
+                        </div>
+                        <div>
+                            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                                <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                    <span class="sr-only">Previous</span>
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                                <a href="#" aria-current="page" class="z-10 bg-green-50 border-green-500 text-green-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium"> 1 </a>
+                                <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium"> 2 </a>
+                                <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                    <span class="sr-only">Next</span>
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <%- include('admin-partials/footer') %>
+
+        <script>
+            // Search functionality
+            document.getElementById('searchInput').addEventListener('input', function (e) {
+                const searchValue = e.target.value.toLowerCase();
+                const rows = document.querySelectorAll('tbody tr');
+
+                rows.forEach((row) => {
+                    const name = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                    const nim = row.querySelector('td:first-child').textContent.toLowerCase();
+                    if (name.includes(searchValue) || nim.includes(searchValue)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+
+            // Status filter
+            document.getElementById('statusFilter').addEventListener('change', function (e) {
+                const statusValue = e.target.value;
+                const rows = document.querySelectorAll('tbody tr');
+
+                rows.forEach((row) => {
+                    const status = row.querySelector('td:nth-child(6) span').textContent.trim().toLowerCase();
+                    if (!statusValue || status === statusValue) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
+            });
+
+            // Delete confirmation
+            document.querySelectorAll('.delete-btn').forEach((btn) => {
+                btn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const alumniId = this.getAttribute('data-id');
+
+                    if (confirm('Apakah Anda yakin ingin menghapus alumni ini?')) {
+                        fetch(`/admin/delete-alumni/${alumniId}`, {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                        })
+                            .then((response) => response.json())
+                            .then((data) => {
+                                if (data.success) {
+                                    window.location.reload();
+                                } else {
+                                    alert('Gagal menghapus alumni');
+                                }
+                            })
+                            .catch((error) => {
+                                console.error('Error:', error);
+                                alert('Terjadi kesalahan saat menghapus alumni');
+                            });
+                    }
+                });
+            });
+        </script>
+    </body>
+</html>

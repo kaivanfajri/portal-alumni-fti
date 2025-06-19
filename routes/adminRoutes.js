@@ -11,6 +11,9 @@ router.post('/login', adminController.login);
 // Halaman dashboard admin (setelah login)
 router.get('/dashboard', adminController.ensureAdmin, adminController.dashboard);
 
+//Halaman kelola-data-alumni
+router.get('/kelolaDataAlumni', adminController.showKelolaDataAlumni);
+
 // Logout admin
 router.get('/logout', adminController.logout);
 

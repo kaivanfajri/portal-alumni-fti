@@ -61,6 +61,52 @@ exports.dashboard = (req, res) => {
     res.render('admin/dashboard', { admin: req.session.admin });
 };
 
+// Menampilkan halaman kelola data alumni
+exports.showKelolaDataAlumni = (req, res) => {
+    const query = `
+        SELECT 
+            alumni.id AS alumni_id,
+            alumni.nim,
+            alumni.email,
+            alumni.status,
+            alumni_profiles.*
+        FROM alumni
+        INNER JOIN alumni_profiles ON alumni_profiles.alumni_id = alumni.id
+    `;
+
+    db.query(query, (err, results) => {
+        if (err) {
+            console.error('Gagal mengambil data alumni:', err);
+            return res.render('admin/kelolaDataAlumni', {
+                title: 'Kelola Data Alumni',
+                alumniProfiles: [],
+                error: 'Gagal mengambil data alumni',
+            });
+        }
+
+        const alumniProfiles = results.map((row) => ({
+            alumni: {
+                id: row.alumni_id,
+                nim: row.nim,
+                email: row.email,
+                status: row.status,
+            },
+            nama_lengkap: row.nama_lengkap,
+            program_studi: row.program_studi,
+            tahun_masuk: row.tahun_masuk,
+            tahun_lulus: row.tahun_lulus,
+            pekerjaan_sekarang: row.pekerjaan_sekarang,
+            nama_perusahaan: row.nama_perusahaan,
+            foto_profil: row.foto_profil,
+        }));
+
+        res.render('admin/kelolaDataAlumni', {
+            title: 'Kelola Data Alumni',
+            alumniProfiles,
+        });
+    });
+};
+
 // Logout
 exports.logout = (req, res) => {
     req.session.destroy(() => {
