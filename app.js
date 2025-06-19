@@ -2,6 +2,7 @@
 require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
+const flash = require('connect-flash');
 const helmet = require('helmet');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
@@ -47,6 +48,15 @@ app.use(
     })
 );
 
+app.use(flash());
+
+// Middleware untuk membuat flash messages tersedia di semua view
+app.use((req, res, next) => {
+    res.locals.success_msg = req.flash('success');
+    res.locals.error_msg = req.flash('error');
+    next();
+});
+
 // ==== Rate Limiter (optional) ====
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 menit
@@ -71,6 +81,7 @@ const adminRoutes = require('./routes/adminRoutes');
 app.use('/', alumniRoutes);
 app.use('/alumni', alumniRoutes);
 app.use('/admin', adminRoutes);
+
 // app.use('/berita', beritaRoutes); dst
 
 // ==== Halaman default ====
