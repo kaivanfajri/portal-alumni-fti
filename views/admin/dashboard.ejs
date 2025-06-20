@@ -1,15 +1,205 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
     <head>
         <title>Dashboard Admin</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
         <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.2/dist/full.css" rel="stylesheet" type="text/css" />
     </head>
-    <body>
+    <body class="min-h-screen bg-[#F0F8F0]">
         <%- include('admin-partials/navbar') %>
-        <h1>Selamat datang, <%= admin.nama %>!</h1>
-        <p>Role: <%= admin.role %></p>
+                <!-- Main Content -->
+                <div class="container mx-auto px-6 py-8">
+                    <div class="mb-8">
+                        <h1 class="text-4xl font-bold mb-2 text-[#2E7D32]">Dashboard Administrator</h1>
+                        <h5 class="text-xl font-bold mb-2 text-[#2E7D32]"> Admin: "<%= admin.nama %>" - <%= admin.role %></h5>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="mb-8">
+                        <h2 class="text-2xl font-bold mb-6 text-[#2E7D32]">Aksi Cepat</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <button onclick="window.location.href='/admin/upload-berita-agenda'" class="btn btn-lg shadow-lg text-white bg-[#FFD700] border-none hover:bg-[#FFD700]/90 hover:scale-105 transition-all duration-300">
+                                <i class="fas fa-plus mr-2"></i>Tambah Berita
+                            </button>
+                            <button onclick="window.location.href='/admin/kelola-acara'" class="btn btn-lg shadow-lg text-white bg-[#FFD700] border-none hover:bg-[#FFD700]/90 hover:scale-105 transition-all duration-300">
+                                <i class="fas fa-calendar-plus mr-2"></i>Buat Acara
+                            </button>
+                            <button onclick="window.location.href='/admin/kirim-notifikasi'" class="btn btn-lg shadow-lg text-white bg-[#FFD700] border-none hover:bg-[#FFD700]/90 hover:scale-105 transition-all duration-300">
+                                <i class="fas fa-bell mr-2"></i>Kirim Notifikasi
+                            </button>
+                            <button onclick="window.location.href='/admin/ekspor-tracer'" class="btn btn-lg shadow-lg text-white bg-[#FFD700] border-none hover:bg-[#FFD700]/90 hover:scale-105 transition-all duration-300">
+                                <i class="fas fa-download mr-2"></i>Export Data
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Admin Functions Grid -->
+                    <div class="mb-8">
+                        <h2 class="text-2xl font-bold mb-6 text-[#2E7D32]">Fungsi Administrator</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <!-- Manajemen Konten -->
+                            <div class="card shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 bg-white border-2 border-[#E9E7E7]">
+                                <div class="card-body">
+                                    <div class="flex items-center mb-4">
+                                        <div class="w-12 h-12 rounded-full flex items-center justify-center mr-4 bg-[#FFD700]">
+                                            <i class="fas fa-edit text-white text-xl"></i>
+                                        </div>
+                                        <h3 class="card-title text-[#2E7D32]">Manajemen Konten</h3>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <button onclick="window.location.href='/admin/upload-berita-agenda'" class="btn btn-sm btn-outline w-full border-[#2E7D32] text-[#2E7D32] hover:bg-[#2E7D32] hover:text-white">
+                                            <i class="fas fa-newspaper mr-2"></i>Berita & Agenda
+                                        </button>
+                                        <button onclick="window.location.href='/admin/kelola-galeri'" class="btn btn-sm btn-outline w-full border-[#2E7D32] text-[#2E7D32] hover:bg-[#2E7D32] hover:text-white">
+                                            <i class="fas fa-images mr-2"></i>Kelola Galeri
+                                        </button>
+                                        <button onclick="window.location.href='/admin/moderasi-artikel'" class="btn btn-sm btn-outline w-full border-[#2E7D32] text-[#2E7D32] hover:bg-[#2E7D32] hover:text-white">
+                                            <i class="fas fa-check-circle mr-2"></i>Moderasi Artikel
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Manajemen Alumni -->
+                            <div class="card shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 bg-white border-2 border-[#E9E7E7]">
+                                <div class="card-body">
+                                    <div class="flex items-center mb-4">
+                                        <div class="w-12 h-12 rounded-full flex items-center justify-center mr-4 bg-[#FFD700]">
+                                            <i class="fas fa-users text-white text-xl"></i>
+                                        </div>
+                                        <h3 class="card-title text-[#2E7D32]">Manajemen Alumni</h3>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <button onclick="window.location.href='/admin/kelola-data-alumni'" class="btn btn-sm btn-outline w-full border-[#2E7D32] text-[#2E7D32] hover:bg-[#2E7D32] hover:text-white">
+                                            <i class="fas fa-user-plus mr-2"></i>Kelola Data Alumni
+                                        </button>
+                                        <button onclick="window.location.href='/admin/statistik-alumni'" class="btn btn-sm btn-outline w-full border-[#2E7D32] text-[#2E7D32] hover:bg-[#2E7D32] hover:text-white">
+                                            <i class="fas fa-chart-bar mr-2"></i>Statistik Alumni
+                                        </button>
+                                        <button onclick="window.location.href='/admin/kelola-penghargaan'" class="btn btn-sm btn-outline w-full border-[#2E7D32] text-[#2E7D32] hover:bg-[#2E7D32] hover:text-white">
+                                            <i class="fas fa-award mr-2"></i>Kelola Penghargaan
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Moderasi & Verifikasi -->
+                            <div class="card shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 bg-white border-2 border-[#E9E7E7]">
+                                <div class="card-body">
+                                    <div class="flex items-center mb-4">
+                                        <div class="w-12 h-12 rounded-full flex items-center justify-center mr-4 bg-[#FFD700]">
+                                            <i class="fas fa-shield-alt text-white text-xl"></i>
+                                        </div>
+                                        <h3 class="card-title text-[#2E7D32]">Moderasi & Verifikasi</h3>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <button onclick="window.location.href='/admin/moderasi-job-posting'" class="btn btn-sm btn-outline w-full border-[#2E7D32] text-[#2E7D32] hover:bg-[#2E7D32] hover:text-white">
+                                            <i class="fas fa-briefcase mr-2"></i>Moderasi Job Posting
+                                        </button>
+                                        <button onclick="window.location.href='/admin/kelola-forum'" class="btn btn-sm btn-outline w-full border-[#2E7D32] text-[#2E7D32] hover:bg-[#2E7D32] hover:text-white">
+                                            <i class="fas fa-comments mr-2"></i>
+                                            Moderasi Forum
+                                        </button>
+                                        <button onclick="window.location.href='/admin/verifikasi-layanan'" class="btn btn-sm btn-outline w-full border-[#2E7D32] text-[#2E7D32] hover:bg-[#2E7D32] hover:text-white">
+                                            <i class="fas fa-check-double mr-2"></i>Verifikasi Layanan
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Komunikasi & Notifikasi -->
+                            <div class="card shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 bg-white border-2 border-[#E9E7E7]">
+                                <div class="card-body">
+                                    <div class="flex items-center mb-4">
+                                        <div class="w-12 h-12 rounded-full flex items-center justify-center mr-4 bg-[#FFD700]">
+                                            <i class="fas fa-bell text-white text-xl"></i>
+                                        </div>
+                                        <h3 class="card-title text-[#2E7D32]">Komunikasi</h3>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <button onclick="window.location.href='/admin/kirim-notifikasi'" class="btn btn-sm btn-outline w-full border-[#2E7D32] text-[#2E7D32] hover:bg-[#2E7D32] hover:text-white">
+                                            <i class="fas fa-paper-plane mr-2"></i>Kirim Notifikasi
+                                        </button>
+                                        <button onclick="window.location.href='/admin/pesan-alumni'" class="btn btn-sm btn-outline w-full border-[#2E7D32] text-[#2E7D32] hover:bg-[#2E7D32] hover:text-white">
+                                            <i class="fas fa-envelope mr-2"></i>Lihat Pesan Alumni
+                                        </button>
+                                        <button onclick="window.location.href='/admin/kritik-saran'" class="btn btn-sm btn-outline w-full border-[#2E7D32] text-[#2E7D32] hover:bg-[#2E7D32] hover:text-white">
+                                            <i class="fas fa-comment-dots mr-2"></i>Kelola Kritik & Saran
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Acara & Kegiatan -->
+                            <div class="card shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 bg-white border-2 border-[#E9E7E7]">
+                                <div class="card-body">
+                                    <div class="flex items-center mb-4">
+                                        <div class="w-12 h-12 rounded-full flex items-center justify-center mr-4 bg-[#FFD700]">
+                                            <i class="fas fa-calendar-alt text-white text-xl"></i>
+                                        </div>
+                                        <h3 class="card-title text-[#2E7D32]">Acara & Kegiatan</h3>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <button onclick="window.location.href='/admin/kelola-acara'" class="btn btn-sm btn-outline w-full border-[#2E7D32] text-[#2E7D32] hover:bg-[#2E7D32] hover:text-white">
+                                            <i class="fas fa-plus-circle mr-2"></i>Kelola Acara Alumni
+                                        </button>
+                                        <button onclick="window.location.href='/admin/jadwal-kegiatan'" class="btn btn-sm btn-outline w-full border-[#2E7D32] text-[#2E7D32] hover:bg-[#2E7D32] hover:text-white">
+                                            <i class="fas fa-calendar-check mr-2"></i>Jadwal Kegiatan
+                                        </button>
+                                        <button onclick="window.location.href='/admin/pengingat-acara'" class="btn btn-sm btn-outline w-full border-[#2E7D32] text-[#2E7D32] hover:bg-[#2E7D32] hover:text-white">
+                                            <i class="fas fa-bell mr-2"></i>Pengingat Acara
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Data & Laporan -->
+                            <div class="card shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 bg-white border-2 border-[#E9E7E7]">
+                                <div class="card-body">
+                                    <div class="flex items-center mb-4">
+                                        <div class="w-12 h-12 rounded-full flex items-center justify-center mr-4 bg-[#FFD700]">
+                                            <i class="fas fa-chart-line text-white text-xl"></i>
+                                        </div>
+                                        <h3 class="card-title text-[#2E7D32]">Data & Laporan</h3>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <button onclick="window.location.href='/admin/ekspor-tracer'" class="btn btn-sm btn-outline w-full border-[#2E7D32] text-[#2E7D32] hover:bg-[#2E7D32] hover:text-white">
+                                            <i class="fas fa-download mr-2"></i>Export Tracer Study
+                                        </button>
+                                        <button onclick="window.location.href='/admin/riwayat-pengajuan'" class="btn btn-sm btn-outline w-full border-[#2E7D32] text-[#2E7D32] hover:bg-[#2E7D32] hover:text-white">
+                                            <i class="fas fa-history mr-2"></i>Riwayat Pengajuan
+                                        </button>
+                                        <button onclick="window.location.href='/admin/laporan-sistem'" class="btn btn-sm btn-outline w-full border-[#2E7D32] text-[#2E7D32] hover:bg-[#2E7D32] hover:text-white">
+                                            <i class="fas fa-file-alt mr-2"></i>Laporan Sistem
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Include Footer -->
+                <%- include('admin-partials/footer') %>
+
+                <script>
+                    // Simple interactive features
+                    document.addEventListener('DOMContentLoaded', function () {
+                        // Add click animations to buttons
+                        const buttons = document.querySelectorAll('.btn');
+                        buttons.forEach((button) => {
+                            button.addEventListener('click', function () {
+                                this.style.transform = 'scale(0.95)';
+                                setTimeout(() => {
+                                    this.style.transform = 'scale(1)';
+                                }, 150);
+                            });
+                        });
+                    });
+                </script>
+            </body>
+        </html>
 
         <a href="/admin/logout">Logout</a>
     </body>

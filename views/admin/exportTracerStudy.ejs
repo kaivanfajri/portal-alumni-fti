@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Ekspor Data Tracer Study - Admin Panel</title>
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.24/dist/full.min.css" rel="stylesheet" type="text/css" />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    </head>
+    <body class="bg-[#F0F8F0] min-h-screen">
+        <%- include('admin-partials/navbar') %>
+
+        <div class="container mx-auto px-6 py-8">
+            <div class="mb-8">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                    <div>
+                        <h1 class="text-3xl font-bold text-[#2E7D32] mb-2">
+                            <i class="fas fa-download mr-3 text-[#FFD700]"></i>
+                            Ekspor Data Tracer Study
+                        </h1>
+                        <p class="text-gray-600">Unduh data hasil survei tracer study alumni</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Export Configuration -->
+            <div class="card bg-white shadow-lg border border-[#E9E7E7] mb-6">
+                <div class="card-body p-6">
+                    <h2 class="text-xl font-bold text-[#2E7D32] mb-4">
+                        <i class="fas fa-cogs mr-2 text-[#FFD700]"></i>
+                        Konfigurasi Ekspor
+                    </h2>
+
+                    <form id="exportForm" action="/admin/exportTracerStudy/generate" method="POST">
+                        <!-- Date Range -->
+                        <div class="form-control mb-4">
+                            <label class="label">
+                                <span class="label-text text-[#2E7D32] font-medium">Periode Data</span>
+                            </label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input type="date" id="startDate" name="start_date" class="input input-bordered input-sm border-[#E9E7E7] focus:border-[#FFD700]" />
+                                <input type="date" id="endDate" name="end_date" class="input input-bordered input-sm border-[#E9E7E7] focus:border-[#FFD700]" />
+                            </div>
+                        </div>
+
+                        <!-- Export Format -->
+                        <div class="form-control mb-6">
+                            <label class="label">
+                                <span class="label-text text-[#2E7D32] font-semibold">Format File</span>
+                            </label>
+                            <div class="flex flex-wrap gap-2">
+                                <label class="cursor-pointer label">
+                                    <input type="radio" name="format" value="xlsx" checked class="radio radio-sm border-[#2E7D32]" />
+                                    <span class="label-text ml-2">Excel (.xlsx)</span>
+                                </label>
+                                <label class="cursor-pointer label">
+                                    <input type="radio" name="format" value="csv" class="radio radio-sm border-[#2E7D32]" />
+                                    <span class="label-text ml-2">CSV (.csv)</span>
+                                </label>
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" class="btn bg-[#FFD700] hover:bg-yellow-500 text-[#2E7D32] border-none w-full mt-4">
+                                <i class="fas fa-download mr-2"></i>
+                                Generate & Download
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Include Footer -->
+        <%- include('admin-partials/footer') %>
+
+        <script>
+            // Set default dates (last 30 days)
+            document.addEventListener('DOMContentLoaded', function () {
+                const endDate = new Date();
+                const startDate = new Date();
+                startDate.setDate(startDate.getDate() - 30);
+
+                document.getElementById('startDate').valueAsDate = startDate;
+                document.getElementById('endDate').valueAsDate = endDate;
+            });
+        </script>
+    </body>
+</html>

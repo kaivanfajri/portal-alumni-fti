@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/adminController');
+const tracerStudyController = require('../controllers/tracerStudyController');
 
 // Halaman login admin
 router.get('/login', adminController.showLoginForm);
@@ -13,6 +14,10 @@ router.get('/dashboard', adminController.ensureAdmin, adminController.dashboard)
 
 //Halaman kelola-data-alumni
 router.get('/kelolaDataAlumni', adminController.showKelolaDataAlumni);
+
+// Export Tracer Study Data
+router.get('/exportTracerStudy', tracerStudyController.exportTracerStudy);
+router.post('/exportTracerStudy/generate', tracerStudyController.generateExport);
 
 // Logout admin
 router.get('/logout', adminController.logout);
