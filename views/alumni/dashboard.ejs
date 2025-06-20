@@ -1,16 +1,223 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" data-theme="light">
     <head>
         <meta charset="UTF-8" />
-        <title>Dashboard Alumni</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Portal Alumni FTI</title>
+
+        <!-- Tailwind CSS + DaisyUI -->
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.24/dist/full.min.css" rel="stylesheet" type="text/css" />
         <script src="https://cdn.tailwindcss.com"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-        <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.2/dist/full.css" rel="stylesheet" type="text/css" />
+
+        <!-- Font Awesome untuk icons -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+        <style>
+            /* Custom font family */
+            * {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+
+            /* Custom color variables */
+            :root {
+                --color-light-gray: #e9e7e7;
+                --color-light-green: #f0f8f0;
+                --color-gold: #ffd700;
+                --color-dark-green: #2e7d32;
+            }
+
+            /* Custom gradient background */
+            .hero-gradient {
+                background: linear-gradient(135deg, var(--color-light-green) 0%, var(--color-light-gray) 50%, #ffffff 100%);
+            }
+
+            /* Custom card hover effects */
+            .feature-card {
+                transition: all 0.3s ease;
+                background-color: white;
+                border: 2px solid var(--color-light-gray);
+            }
+
+            .feature-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 20px 25px -5px rgba(46, 125, 50, 0.15), 0 10px 10px -5px rgba(46, 125, 50, 0.1);
+                border-color: var(--color-dark-green);
+            }
+
+            /* Navbar transparency effect */
+            .navbar-transparent {
+                backdrop-filter: blur(10px);
+                background-color: rgba(240, 248, 240, 0.95);
+                border-bottom: 1px solid var(--color-light-gray);
+            }
+
+            /* Custom button styles */
+            .btn-custom-primary {
+                background-color: var(--color-dark-green);
+                border-color: var(--color-dark-green);
+                color: white;
+            }
+
+            .btn-custom-primary:hover {
+                background-color: #1b5e20;
+                border-color: #1b5e20;
+            }
+
+            .btn-custom-secondary {
+                background-color: var(--color-gold);
+                border-color: var(--color-gold);
+                color: #000;
+                font-weight: 600;
+            }
+
+            .btn-custom-secondary:hover {
+                background-color: #ffc107;
+                border-color: #ffc107;
+            }
+
+            /* Statistics section custom style */
+            .stats-gradient {
+                background: linear-gradient(135deg, var(--color-dark-green) 0%, #388e3c 100%);
+            }
+        </style>
+
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            'custom-light-gray': '#E9E7E7',
+                            'custom-light-green': '#F0F8F0',
+                            'custom-gold': '#FFD700',
+                            'custom-dark-green': '#2E7D32',
+                        },
+                    },
+                },
+            };
+        </script>
     </head>
-    <body>
-        <%- include('alumni-partials/navbar') %>
-        <h2>Selamat datang, <%= alumni.nim %></h2>
-        <p>Email: <%= alumni.email %></p>
-        <a href="/alumni/logout">Logout</a>
+    <body class="min-h-screen" style="background-color: #f0f8f0">
+        <%- include('alumni-partials/navbar') %>   
+
+        <!-- Hero Section -->
+        <section id="beranda" class="hero min-h-screen hero-gradient">
+            <div class="hero-content text-center max-w-6xl mx-auto px-4">
+                <div class="max-w-4xl">
+                    <h1 class="text-4xl lg:text-6xl font-bold mb-6 leading-tight" style="color: #2e7d32">Selamat Datang di Portal Alumni FTI</h1>
+                    <p class="text-lg lg:text-xl mb-8 max-w-3xl mx-auto" style="color: #555">Jembatan Antara Alumni dan Mahasiswa Aktif | Alumni Bersama FTI</p>
+                    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                        <a href="#profil-alumni" class="btn btn-custom-secondary btn-lg px-8">
+                            <i class="fas fa-users mr-2"></i>
+                            Lihat Profil Alumni
+                        </a>
+                        <a href="/alumni/upload-job" class="btn btn-outline btn-lg px-8" style="border-color: #2e7d32; color: #2e7d32">
+                            <i class="fas fa-user-plus mr-2"></i>
+                            upload lowongan
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Floating decoration -->
+            <div class="absolute top-20 left-10 opacity-20">
+                <i class="fas fa-graduation-cap text-6xl" style="color: #2e7d32"></i>
+            </div>
+            <div class="absolute bottom-20 right-10 opacity-20">
+                <i class="fas fa-briefcase text-5xl" style="color: #ffd700"></i>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section class="py-16 lg:py-24" style="background-color: white">
+            <div class="container mx-auto px-4 max-w-7xl">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Lowongan Pekerjaan Card -->
+                    <div class="card shadow-xl feature-card">
+                        <div class="card-body p-8">
+                            <div class="flex items-center justify-center w-16 h-16 rounded-full mb-6 mx-auto" style="background-color: #f0f8f0">
+                          <i class="fas fa-briefcase text-2xl" style="color: #2e7d32"></i>
+                            </div>
+                            <h2 class="card-title text-2xl font-bold text-center mb-4" style="color: #2e7d32">Lowongan Pekerjaan</h2>
+                            <p class="text-center mb-6 leading-relaxed" style="color: #666">Jelajahi peluang karier dari jejaring alumni dan mitra industri yang terpercaya</p>
+                            <div class="card-actions justify-center">
+                                <a href="#lowongan" class="btn btn-outline" style="border-color: #2e7d32; color: #2e7d32">
+                                    <i class="fas fa-arrow-right mr-2"></i>
+                                    Selengkapnya
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Informasi Beasiswa & Webinar Card -->
+                    <div class="card shadow-xl feature-card">
+                        <div class="card-body p-8">
+                            <div class="flex items-center justify-center w-16 h-16 rounded-full mb-6 mx-auto" style="background-color: #f0f8f0">
+                                <i class="fas fa-book text-2xl" style="color: #2e7d32"></i>
+                            </div>
+                            <h2 class="card-title text-2xl font-bold text-center mb-4" style="color: #2e7d32">Informasi Beasiswa & Webinar</h2>
+                            <p class="text-center mb-6 leading-relaxed" style="color: #666">Perluas wawasan dan kesempatan dengan informasi beasiswa, pelatihan, dan webinar inspiratif.</p>
+                            <div class="card-actions justify-center">
+                                <a href="#informasi" class="btn btn-outline" style="border-color: #2e7d32; color: #2e7d32">
+                                    <i class="fas fa-arrow-right mr-2"></i>
+                                    Selengkapnya
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dana Bantuan Alumni Card -->
+                    <div class="card shadow-xl feature-card">
+                        <div class="card-body p-8">
+                            <div class="flex items-center justify-center w-16 h-16 rounded-full mb-6 mx-auto" style="background-color: #fff8dc">
+                                <i class="fas fa-hand-holding-heart text-2xl" style="color: #ffd700"></i>
+                            </div>
+                            <h2 class="card-title text-2xl font-bold text-center mb-4" style="color: #2e7d32">Dana Bantuan Alumni</h2>
+                            <p class="text-center mb-6 leading-relaxed" style="color: #666">Dari Alumni, untuk Adik-adik FTI</p>
+                            <div class="card-actions justify-center">
+                                <a href="#bantuan" class="btn btn-outline" style="border-color: #ffd700; color: #ffd700">
+                                    <i class="fas fa-arrow-right mr-2"></i>
+                                    Selengkapnya
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Statistics Section -->
+        <section class="py-16 stats-gradient">
+            <div class="container mx-auto px-4 max-w-6xl">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl lg:text-4xl font-bold text-white mb-4">Alumni FTI dalam Angka</h2>
+                    <p class="text-green-100 text-lg">Jejak prestasi dan kontribusi alumni FTI</p>
+                </div>
+
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+                    <div class="text-center">
+                        <div class="text-4xl lg:text-5xl font-bold text-white mb-2" data-count="1250">0</div>
+                        <div class="text-green-100 font-medium">Total Alumni</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl lg:text-5xl font-bold text-white mb-2" data-count="89">0</div>
+                        <div class="text-green-100 font-medium">Lowongan Aktif</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl lg:text-5xl font-bold text-white mb-2" data-count="156">0</div>
+                        <div class="text-green-100 font-medium">Perusahaan Partner</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-4xl lg:text-5xl font-bold text-white mb-2" data-count="47">0</div>
+                        <div class="text-green-100 font-medium">Event Tahun Ini</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    
+                </div>
+            </div>
+        </section>
+
+        <%- include('alumni-partials/footer') %>
     </body>
 </html>

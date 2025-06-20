@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const db = require('../config/db');
+const jobController = require('../controllers/jobController');
 
 // Middleware untuk check session alumni
 const requireAlumniAuth = (req, res, next) => {
@@ -263,6 +264,18 @@ router.put('/tracerStudy', requireAlumniAuth, (req, res) => {
         });
     });
 });
+
+// GET halaman upload job
+router.get('/upload-job', requireAlumniAuth, jobController.showUploadJobForm);
+
+// POST proses upload job (insert ke database)
+router.post('/upload-job', requireAlumniAuth, jobController.submitUploadJob);
+
+// List semua job yang sudah diapprove (untuk alumni)
+router.get('/list-job', requireAlumniAuth, jobController.listJob);
+
+// Detail job
+router.get('/detail-job/:id', requireAlumniAuth, jobController.detailJob);
 
 // Logout
 router.get('/logout', (req, res) => {

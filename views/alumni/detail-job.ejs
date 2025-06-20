@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Detail Lowongan</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.2/dist/full.min.css" rel="stylesheet" type="text/css" />
+    </head>
+    <body class="bg-gradient-to-br from-green-50 to-green-100 min-h-screen p--1">
+        <!-- Include Navbar -->
+        <%- include('alumni-partials/navbar') %>
+
+        <div class="p-10">
+            <!-- Judul Lowongan -->
+            <div class="mb-10">
+                <h1 class="text-3xl font-bold"><%= job.judul_lowongan %></h1>
+                <h2 class="text-2xl font-semibold"><%= job.deskripsi %></h2>
+            </div>
+
+            <div class="flex flex-col lg:flex-row gap-10">
+                <!-- Kiri: Deskripsi -->
+                <div class="flex-1">
+                    <h3 class="font-bold mb-2">Deskripsi :</h3>
+                    <p class="mb-4">
+                        <%= job.deskripsi %>
+                    </p>
+                    <!-- Tombol Simpan -->
+                    <p class="mt-4 font-bold mb-1">Simpan Lowongan :</p>
+                    <div class="mt-4">
+                        <button id="saveButton" class="btn bg-yellow-500 text-black border-yellow-500">Simpan</button>
+                    </div>
+                </div>
+                <!-- Kanan: Informasi Tambahan -->
+                <div class="w-full lg:w-96 bg-base-200 rounded-box shadow-md p-3 h-48">
+                    <p><%= job.keterangan || '' %></p>
+                    <% if (job.gambar) { %>
+                        <img src="/<%= job.gambar %>" alt="gambar" />
+                    <% } %>
+                </div>
+            </div>
+        </div>
+
+        <!-- JavaScript -->
+        <script>
+            // Fungsi untuk menyimpan lowongan ke localStorage
+            function saveJob() {
+                const jobTitle = '<%= job.judul_lowongan %>';
+                const jobDescription = '<%= job.deskripsi %>';
+                const jobData = {
+                    title: jobTitle,
+                    description: jobDescription,
+                    datePosted: new Date().toISOString(),
+                };
+                let savedJobs = JSON.parse(localStorage.getItem('savedJobs')) || [];
+                savedJobs.push(jobData);
+                localStorage.setItem('savedJobs', JSON.stringify(savedJobs));
+                alert('Lowongan berhasil disimpan!');
+            }
+            document.getElementById('saveButton').addEventListener('click', saveJob);
+        </script>
+        <!-- Include Footer -->
+        <%- include('alumni-partials/footer') %>
+    </body>
+</html>

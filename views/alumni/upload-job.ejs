@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Pengajuan Postingan Lowongan</title>
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.2/dist/full.min.css" rel="stylesheet" type="text/css" />
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+    <body class="bg-gradient-to-br from-green-50 to-green-100 min-h-screen p--1">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+        </style>
+
+        <!-- Form Section -->
+        <div class="max-w-xl mx-auto mt-7 mb-4">
+            <div id="successMessage" class="alert alert-success hidden mb-4">
+                <span>Lowongan berhasil diajukan! Data telah tersimpan.</span>
+            </div>
+
+            <div class="bg-white p-8 rounded-2xl shadow-lg border border-gray-200">
+                <h2 class="text-2xl font-bold text-green-800 text-center mb-6 border-b pb-3">Pengajuan Postingan Lowongan</h2>
+                <form id="jobForm" class="space-y-4" enctype="multipart/form-data" method="POST" action="/alumni/upload-job">
+                    <!-- Judul Lowongan -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">Judul Lowongan</span>
+                        </label>
+                        <input type="text" name="jobTitle" id="jobTitle" class="input input-bordered" placeholder="Masukkan judul lowongan" required />
+                    </div>
+
+                    <!-- Deskripsi -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">Deskripsi</span>
+                        </label>
+                        <textarea class="textarea textarea-bordered w-full" rows="2" placeholder="Masukkan informasi kuota..." id="jobDescription" name="jobDescription" required></textarea>
+                    </div>
+
+                    <!-- Kategori -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text">Kategori</span>
+                        </label>
+                        <select class="select select-bordered" name="jobCategory" required>
+                            <option disabled selected value="">Kategori</option>
+                            <!-- Tampilkan kategori dari database -->
+                            <% categories.forEach(function(category) { %>
+                                <option value="<%= category.id %>"><%= category.nama_kategori %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+
+                    <!-- Upload Gambar -->
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Upload Gambar</span>
+                        </label>
+                        <input type="file" class="file-input file-input-bordered file-input-sm w-full" accept="image/*" name="jobImage" required />
+                    </div>
+
+                    <div class="form-control">
+                        <div class="text-end">
+                            <button type="submit" class="btn btn-warning text-white font-semibold px-8">Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
