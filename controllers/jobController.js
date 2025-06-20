@@ -31,9 +31,16 @@ exports.showUploadJobForm = (req, res) => {
 // Proses submit upload job
 exports.submitUploadJob = (req, res) => {
     upload(req, res, (err) => {
+        // Helper untuk render dengan kategori
+        const renderWithCategories = (params) => {
+            db.query('SELECT * FROM kategori_lowongan', (err2, categories) => {
+                res.render('alumni/upload-job', { ...params, categories });
+            });
+        };
+
         if (err) {
             console.error('Error uploading file:', err);
-            return res.render('alumni/upload-job', { error: 'Terjadi kesalahan saat mengupload file.' });
+            return renderWithCategories({ error: 'Terjadi kesalahan saat mengupload file.' });
         }
 
         const { jobTitle, jobDescription, jobCategory } = req.body;
@@ -47,7 +54,7 @@ exports.submitUploadJob = (req, res) => {
 
         // Validasi input
         if (!jobTitle || !jobDescription || !jobCategory) {
-            return res.render('alumni/upload-job', { error: 'Semua field wajib diisi.' });
+            return renderWithCategories({ error: 'Semua field wajib diisi.' });
         }
 
         // Query untuk menyimpan lowongan pekerjaan ke dalam tabel lowongan_kerja
@@ -62,9 +69,9 @@ exports.submitUploadJob = (req, res) => {
         db.query(query, values, (err, result) => {
             if (err) {
                 console.error('Error insert job:', err);
-                return res.render('alumni/upload-job', { error: 'Gagal menyimpan data lowongan.' });
+                return renderWithCategories({ error: 'Gagal menyimpan data lowongan.' });
             }
-            res.render('alumni/upload-job', { success: true });
+            renderWithCategories({ success: true, error: null });
         });
     });
 };
