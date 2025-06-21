@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Portal Alumni FTI - Kelola Postingan Alumni</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-50">
+    <%- include('admin-partials/navbar') %>
+
+    <div class="container mx-auto px-4 py-12">
+      <h1 class="text-2xl font-bold mb-6 text-green-800">Kelola Postingan Alumni</h1>
+
+      <% if (postingan.length === 0) { %>
+        <div class="overflow-x-auto">
+          <table class="table table-zebra w-full bg-white rounded-lg shadow">
+            <thead class="bg-green-100 text-green-900">
+              <tr>
+                <th>Judul</th>
+                <th>Isi</th>
+                <th>Tanggal</th>
+                <th class="text-center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Dummy data tampil hanya jika kosong -->
+              <tr>
+                <td>Contoh Postingan Dummy</td>
+                <td>Ini adalah isi dummy untuk melihat tampilan antarmuka UI persetujuan postingan alumni.</td>
+                <td>2025-06-20</td>
+                <td>
+                  <div class="flex flex-col md:flex-row gap-2 justify-center">
+                    <button class="btn btn-success btn-sm gap-2" disabled>
+                      <i class="fas fa-check-circle"></i> Setujui
+                    </button>
+                    <button class="btn btn-warning btn-sm gap-2" disabled>
+                      <i class="fas fa-times-circle"></i> Tolak
+                    </button>
+                    <button class="btn btn-error btn-sm gap-2" disabled>
+                      <i class="fas fa-trash-alt"></i> Hapus
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      <% } else { %>
+        <div class="overflow-x-auto">
+          <table class="table table-zebra w-full bg-white rounded-lg shadow">
+            <thead class="bg-green-100 text-green-900">
+              <tr>
+                <th>Judul</th>
+                <th>Isi</th>
+                <th>Tanggal</th>
+                <th class="text-center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% postingan.forEach(post => { %>
+                <tr>
+                  <td><%= post.judul %></td>
+                  <td><%= post.isi.length > 100 ? post.isi.substring(0, 100) + '...' : post.isi %></td>
+                  <td><%= post.tanggal_upload.toISOString().split('T')[0] %></td>
+                  <td>
+                    <div class="flex flex-col md:flex-row gap-2 justify-center">
+                      <form action="/admin/kelola-postingan/<%= post.id %>/setujui" method="POST">
+                        <button type="submit" class="btn btn-success btn-sm gap-2">
+                          <i class="fas fa-check-circle"></i> Setujui
+                        </button>
+                      </form>
+                      <form action="/admin/kelola-postingan/<%= post.id %>/tolak" method="POST">
+                        <button type="submit" class="btn btn-warning btn-sm gap-2">
+                          <i class="fas fa-times-circle"></i> Tolak
+                        </button>
+                      </form>
+                      <form action="/admin/kelola-postingan/<%= post.id %>/hapus" method="POST" onsubmit="return confirm('Yakin ingin menghapus?')">
+                        <button type="submit" class="btn btn-error btn-sm gap-2">
+                          <i class="fas fa-trash-alt"></i> Hapus
+                        </button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+      <% } %>
+    </div>
+<!-- Di bagian akhir file sebelum </body> -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Handle semua aksi admin
+  document.querySelectorAll('[data-action]').forEach(button => {
+    button.addEventListener('click', function(e) {
+      e.preventDefault();
+      const action = this.dataset.action;
+      const id = this.dataset.id;
+      const url = `/admin/kelola-postingan/${id}/${action}`;
+      
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          // Refresh data atau update UI
+          const row = document.getElementById(`post-${id}`);
+          if (action === 'hapus') {
+            row.remove();
+          } else {
+            // Update status di UI
+            const statusCell = row.querySelector('.post-status');
+            statusCell.textContent = action === 'setujui' ? 'disetujui' : 'ditolak';
+            statusCell.className = `post-status badge ${action === 'setujui' ? 'bg-success' : 'bg-danger'}`;
+          }
+          
+          // Tampilkan notifikasi
+          showAlert('success', data.message);
+        } else {
+          showAlert('danger', data.message);
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showAlert('danger', 'Terjadi kesalahan');
+      });
+    });
+  });
+
+  function showAlert(type, message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+    alertDiv.style.top = '20px';
+    alertDiv.style.right = '20px';
+    alertDiv.style.zIndex = '1000';
+    alertDiv.innerHTML = `
+      ${message}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    document.body.appendChild(alertDiv);
+    
+    // Hilangkan otomatis setelah 3 detik
+    setTimeout(() => {
+      alertDiv.remove();
+    }, 3000);
+  }
+});
+</script>
+    <%- include('admin-partials/footer') %>
+  </body>
+</html>

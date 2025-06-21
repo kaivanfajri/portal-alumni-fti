@@ -322,6 +322,20 @@ const alumniController = {
         });
     },
 
+    // Upload Postingan
+    showUploadPostinganForm: (req, res) => {
+        res.render('alumni/upload-postingan', { 
+            error: null,
+            alumni: req.session.alumni
+        });
+    },
+
+    submitUploadPostingan: (req, res) => {
+        // Proses simpan postingan di sini
+        // Untuk sementara redirect ke dashboard
+        res.redirect('/alumni/dashboard');
+    },
+
     // Logout
     logoutAlumni: (req, res) => {
         req.session.destroy(() => {
