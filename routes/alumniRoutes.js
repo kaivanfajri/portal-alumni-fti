@@ -70,9 +70,9 @@ router.get('/dashboard', requireAlumniAuth, (req, res) => {
 
         // Get alumni profile data
         const profileQuery = `
-            SELECT ap.*, a.nim, a.email 
-            FROM alumni_profiles ap 
-            JOIN alumni a ON ap.alumni_id = a.id 
+            SELECT ap.*, a.nim, a.email
+            FROM alumni_profiles ap
+            JOIN alumni a ON ap.alumni_id = a.id
             WHERE a.id = ?
         `;
 
@@ -273,6 +273,9 @@ router.post('/upload-job', requireAlumniAuth, jobController.submitUploadJob);
 
 // List semua job yang sudah diapprove (untuk alumni)
 router.get('/list-job', requireAlumniAuth, jobController.listJob);
+
+// Route untuk menampilkan daftar lowongan kerja yang disetujui
+router.get('/list-jobDisetujui', jobController.listJobDisetujui);
 
 // Detail job
 router.get('/detail-job/:id', requireAlumniAuth, jobController.detailJob);

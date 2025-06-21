@@ -1,335 +1,65 @@
 <!DOCTYPE html>
 <html lang="id">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Moderasi Job Posting - Portal Alumni</title>
-        <script src="https://cdn.tailwindcss.com"></script>
-        <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.2/dist/full.min.css" rel="stylesheet" type="text/css" />
-        <!-- Font Awesome untuk icon -->
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
-        <style>
-            body {
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            }
-        </style>
-    </head>
-    <body class="bg-gradient-to-br from-green-50 to-green-100 min-h-screen">
-        <!-- Navbar -->
-        <%- include('admin-partials/navbar') %>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Moderasi Job Posting</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.2/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+</head>
+<body class="bg-gradient-to-br from-green-50 to-green-100 min-h-screen">
+    <%- include('admin-partials/navbar') %>
 
-        <div class="container mx-auto px-6 py-8">
-            <!-- Header Section -->
-            <div class="text-center mb-10">
-                <div class="flex items-center justify-center mb-4">
-                    <div class="w-16 h-16 rounded-full bg-green-600 flex items-center justify-center mr-4">
-                        <i class="fas fa-briefcase text-white text-2xl"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-4xl font-bold text-green-700">Moderasi Job Posting</h1>
-                        <p class="text-lg text-green-600 mt-2">Kelola dan review lowongan kerja yang diajukan</p>
-                    </div>
-                </div>
-            </div>
+    <div class="container mx-auto px-6 py-8">
+        <h1 class="text-4xl font-bold text-center mb-8">Moderasi Job Posting</h1>
 
-            <!-- Filter and Search -->
-            <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
-                <div class="flex flex-wrap gap-4 items-center">
-                    <div class="flex-1 min-w-64">
-                        <div class="relative">
-                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                            <input type="text" placeholder="Cari lowongan..." class="input input-bordered w-full pl-10" />
-                        </div>
-                    </div>
-                    <select class="select select-bordered">
-                        <option disabled selected>Filter Status</option>
-                        <option>Semua</option>
-                        <option>Pending</option>
-                        <option>Disetujui</option>
-                        <option>Ditolak</option>
-                    </select>
-                    <select class="select select-bordered">
-                        <option disabled selected>Kategori</option>
-                        <option>IT & Software</option>
-                        <option>Marketing</option>
-                        <option>Finance</option>
-                        <option>Engineering</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Job Cards Grid -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-                <!-- Job Card 1 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <% jobs.forEach(job => { %>
                 <div class="card bg-white shadow-xl hover:shadow-2xl transition-all duration-300 border">
                     <div class="card-body">
-                        <div class="flex items-start justify-between mb-4">
-                            <div class="badge badge-warning badge-sm">Pending</div>
-                            <div class="dropdown dropdown-end">
-                                <div tabindex="0" role="button" class="btn btn-ghost btn-sm">
-                                    <i class="fas fa-ellipsis-v"></i>
-                                </div>
-                                <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                                    <li>
-                                        <a><i class="fas fa-eye mr-2"></i>Lihat Detail</a>
-                                    </li>
-                                    <li>
-                                        <a><i class="fas fa-edit mr-2"></i>Edit</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <h3 class="card-title text-lg mb-2">
-    <i class="fas fa-briefcase text-green-600 mr-2"></i>
-    programmer
-</h3>
-
-                        <div class="space-y-2 mb-4">
-                            <div class="text-sm text-gray-700">
-                                <span>System Analyst Jakarta/Malang. System Analyst Jakarta/Malang. PT Adicipta Inovasi Teknologi. Kebon Jeruk Rp 10.000.000 - Rp 15.000.000. Aktif Merekrut.</span>
-                            </div>
-                        </div>
-
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <div class="badge badge-outline badge-sm">Marketing</div>
-                        </div>
-
-                        <div class="card-actions justify-between">
-                            <button class="btn btn-error btn-sm text-white" onclick="rejectJob()">
-                            <i class="fas fa-times mr-1"></i>Tolak
-<                       </button>
-                            <button class="btn btn-success btn-sm text-white" onclick="approveJob(1)"><i class="fas fa-check mr-1"></i>Setujui</button>
+                        <h3 class="card-title text-lg mb-2"><i class="fas fa-briefcase text-green-600 mr-2"></i><%= job.judul_lowongan %></h3>
+                        <p class="text-sm text-gray-700"><%= job.deskripsi %></p>
+                        <div class="card-actions justify-between mt-4">
+                            <button class="btn btn-success btn-sm" onclick="approveJob('<%= job.id %>')">
+                                <i class="fas fa-check mr-1"></i> Setujui
+                            </button>
+                            <button class="btn btn-error btn-sm" onclick="rejectJob('<%= job.id %>')">
+                                <i class="fas fa-times mr-1"></i> Tolak
+                            </button>
                         </div>
                     </div>
                 </div>
-
-                <!-- Job Card 2 -->
-                <div class="card bg-white shadow-xl hover:shadow-2xl transition-all duration-300 border">
-                    <div class="card-body">
-                        <div class="flex items-start justify-between mb-4">
-                            <div class="badge badge-warning badge-sm">Pending</div>
-                            <div class="dropdown dropdown-end">
-                                <div tabindex="0" role="button" class="btn btn-ghost btn-sm">
-                                    <i class="fas fa-ellipsis-v"></i>
-                                </div>
-                                <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                                    <li>
-                                        <a><i class="fas fa-eye mr-2"></i>Lihat Detail</a>
-                                    </li>
-                                    <li>
-                                        <a><i class="fas fa-edit mr-2"></i>Edit</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <h3 class="card-title text-lg mb-2">
-    <i class="fas fa-briefcase text-green-600 mr-2"></i>
-    System Analyst
-</h3>
-
-                        <div class="space-y-2 mb-4">
-                            <div class="text-sm text-gray-700">
-                                <span>Temukan pekerjaan ideal Anda di Jobstreet dengan 330 System Analyst pekerjaan di Indonesia. Lihat semua System Analyst lowongan kami sekarang dengan</span>
-                            </div>
-                        </div>
-
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <div class="badge badge-outline badge-sm">IT & Software</div>
-                        </div>
-
-                        <div class="card-actions justify-between">
-                            <button class="btn btn-error btn-sm text-white" onclick="rejectJob(2)"><i class="fas fa-times mr-1"></i>Tolak</button>
-                            <button class="btn btn-success btn-sm text-white" onclick="approveJob(2)"><i class="fas fa-check mr-1"></i>Setujui</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Job Card 3 -->
-                <div class="card bg-white shadow-xl hover:shadow-2xl transition-all duration-300 border">
-                    <div class="card-body">
-                        <div class="flex items-start justify-between mb-4">
-                            <div class="badge badge-warning badge-sm">Pending</div>
-                            <div class="dropdown dropdown-end">
-                                <div tabindex="0" role="button" class="btn btn-ghost btn-sm">
-                                    <i class="fas fa-ellipsis-v"></i>
-                                </div>
-                                <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                                    <li>
-                                        <a><i class="fas fa-eye mr-2"></i>Lihat Detail</a>
-                                    </li>
-                                    <li>
-                                        <a><i class="fas fa-edit mr-2"></i>Edit</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-
-                        <h3 class="card-title text-lg mb-2">
-    <i class="fas fa-briefcase text-green-600 mr-2"></i>
-    Software Engineer
-</h3>
-
-                        <div class="space-y-2 mb-4">
-                            <div class="text-sm text-gray-700">
-                                <span>Gaji bulanan rata-rata untuk pekerjaan Software Engineer di Indonesia berkisar dari Rp 7.000.000 hingga Rp 10.000.000.</span>
-                            </div>
-                        </div>
-
-                        <div class="flex flex-wrap gap-2 mb-4">
-                            <div class="badge badge-outline badge-sm">IT & Software</div>
-                        </div>
-
-                        <div class="card-actions justify-between">
-                            <button class="btn btn-error btn-sm text-white" onclick="rejectJob(3)"><i class="fas fa-times mr-1"></i>Tolak</button>
-                            <button class="btn btn-success btn-sm text-white" onclick="approveJob(3)"><i class="fas fa-check mr-1"></i>Setujui</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Pagination -->
-            <div class="flex justify-center">
-                <div class="join">
-                    <button class="join-item btn">«</button>
-                    <button class="join-item btn btn-active">1</button>
-                    <button class="join-item btn">2</button>
-                    <button class="join-item btn">3</button>
-                    <button class="join-item btn">»</button>
-                </div>
-            </div>
+            <% }) %>
         </div>
+    </div>
 
-        <!-- Modals -->
-        <!-- Success Modal -->
-        <dialog id="success_modal" class="modal">
-            <div class="modal-box">
-                <div class="flex items-center mb-4">
-                    <i class="fas fa-check-circle text-green-500 text-3xl mr-3"></i>
-                    <h3 class="font-bold text-lg">Berhasil!</h3>
-                </div>
-                <p class="py-4">Lowongan kerja telah berhasil disetujui dan akan dipublikasikan.</p>
-                <div class="modal-action">
-                    <form method="dialog">
-                        <button class="btn btn-success">OK</button>
-                    </form>
-                </div>
-            </div>
-        </dialog>
+    <script>
+        function approveJob(jobId) {
+            fetch(`/admin/approve-job/${jobId}`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Lowongan berhasil disetujui');
+                        location.reload();
+                    } else {
+                        alert('Gagal menyetujui lowongan');
+                    }
+                });
+        }
 
-        <!-- Reject Modal -->
-        <dialog id="reject_modal" class="modal">
-            <div class="modal-box">
-                <div class="flex items-center mb-4">
-                    <i class="fas fa-times-circle text-red-500 text-3xl mr-3"></i>
-                    <h3 class="font-bold text-lg">Tolak Lowongan</h3>
-                </div>
-                <p class="py-2">Berikan alasan penolakan:</p>
-                <textarea class="textarea textarea-bordered w-full mb-4" placeholder="Masukkan alasan penolakan..."></textarea>
-                <div class="modal-action">
-                    <form method="dialog">
-                        <button class="btn">Batal</button>
-                        <button class="btn btn-error ml-2" onclick="confirmReject()">Tolak</button>
-                    </form>
-                </div>
-            </div>
-        </dialog>
-
-        <!-- Footer -->
-        <%- include('admin/admin-partials/footer') %>
-
-        <!-- JavaScript -->
-        <script>
-            // Dummy data jobs
-const jobs = [
-    { id: 1, title: 'Programmer', desc: 'System Analyst Jakarta/Malang. PT Adicipta Inovasi Teknologi. Kebon Jeruk Rp 10.000.000 - Rp 15.000.000. Aktif Merekrut.', category: 'Marketing', status: 'Pending' },
-    { id: 2, title: 'System Analyst', desc: 'Temukan pekerjaan ideal Anda di Jobstreet dengan 330 System Analyst pekerjaan di Indonesia.', category: 'IT & Software', status: 'Pending' },
-    { id: 3, title: 'Software Engineer', desc: 'Gaji bulanan rata-rata untuk pekerjaan Software Engineer di Indonesia berkisar dari Rp 7.000.000 hingga Rp 10.000.000.', category: 'IT & Software', status: 'Pending' }
-];
-
-function renderJobs(filteredJobs = jobs) {
-    const grid = document.querySelector('.grid');
-    grid.innerHTML = '';
-    if (filteredJobs.length === 0) {
-        const notFound = document.createElement('div');
-        notFound.className = 'col-span-3 text-center text-red-500 font-semibold py-10';
-        notFound.innerText = 'Lowongan tidak ditemukan';
-        grid.appendChild(notFound);
-        return;
-    }
-    filteredJobs.forEach(job => {
-        const card = document.createElement('div');
-        card.className = 'card bg-white shadow-xl hover:shadow-2xl transition-all duration-300 border';
-        card.innerHTML = `
-        <div class="card-body">
-            <div class="flex items-start justify-between mb-4">
-                <div class="badge badge-warning badge-sm">${job.status}</div>
-                <div class="dropdown dropdown-end">
-                    <div tabindex="0" role="button" class="btn btn-ghost btn-sm">
-                        <i class="fas fa-ellipsis-v"></i>
-                    </div>
-                    <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
-                        <li><a><i class="fas fa-eye mr-2"></i>Lihat Detail</a></li>
-                        <li><a><i class="fas fa-edit mr-2"></i>Edit</a></li>
-                    </ul>
-                </div>
-            </div>
-            <h3 class="card-title text-lg mb-2"><i class="fas fa-briefcase text-green-600 mr-2"></i>${job.title}</h3>
-            <div class="space-y-2 mb-4"><div class="text-sm text-gray-700"><span>${job.desc}</span></div></div>
-            <div class="flex flex-wrap gap-2 mb-4"><div class="badge badge-outline badge-sm">${job.category}</div></div>
-            <div class="card-actions justify-between">
-                <button class="btn btn-error btn-sm text-white" onclick="rejectJob(${job.id}, this)"><i class="fas fa-times mr-1"></i>Tolak</button>
-                <button class="btn btn-success btn-sm text-white" onclick="approveJob(${job.id})"><i class="fas fa-check mr-1"></i>Setujui</button>
-            </div>
-        </div>`;
-        grid.appendChild(card);
-    });
-}
-
-function rejectJob(jobId, btn) {
-    if (!confirm('Yakin ingin menolak dan menghapus lowongan ini?')) return;
-    // Hapus dari array dummy
-    const idx = jobs.findIndex(j => j.id === jobId);
-    if (idx !== -1) {
-        jobs.splice(idx, 1);
-        renderJobs();
-    }
-}
-
-function approveJob(jobId) {
-    // Ubah status pada data dummy
-    const idx = jobs.findIndex(j => j.id === jobId);
-    if (idx !== -1) {
-        jobs[idx].status = 'Disetujui';
-        renderJobs();
-    }
-    // alert('Lowongan ' + jobId + ' disetujui (dummy)');
-}
-
-function filterJobs() {
-    const searchInput = document.querySelector('input[placeholder="Cari lowongan..."]').value.toLowerCase();
-    const statusFilter = document.querySelector('select:nth-of-type(1)').value;
-    const categoryFilter = document.querySelector('select:nth-of-type(2)').value;
-    let filtered = jobs.filter(job => {
-        const matchTitle = job.title.toLowerCase().includes(searchInput);
-        const matchStatus = statusFilter === 'Filter Status' || statusFilter === 'Semua' || job.status === statusFilter;
-        const matchCategory = categoryFilter === 'Kategori' || job.category === categoryFilter;
-        return matchTitle && matchStatus && matchCategory;
-    });
-    renderJobs(filtered);
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-    renderJobs();
-    const searchInput = document.querySelector('input[placeholder="Cari lowongan..."]');
-    const statusFilter = document.querySelector('select:nth-of-type(1)');
-    const categoryFilter = document.querySelector('select:nth-of-type(2)');
-
-    searchInput?.addEventListener('input', filterJobs);
-    statusFilter?.addEventListener('change', filterJobs);
-    categoryFilter?.addEventListener('change', filterJobs);
-});
-        </script>
-    </body>
+        function rejectJob(jobId) {
+            fetch(`/admin/reject-job/${jobId}`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('Lowongan berhasil ditolak');
+                        location.reload();
+                    } else {
+                        alert('Gagal menolak lowongan');
+                    }
+                });
+        }
+    </script>
+</body>
 </html>

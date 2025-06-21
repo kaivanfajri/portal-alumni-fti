@@ -15,7 +15,7 @@
             <div class="flex justify-between items-center mb-6">
                 <h1 class="text-2xl font-bold text-gray-800"><i class="fas fa-users mr-2"></i> <%= title %></h1>
                 <div>
-                    <a href="/admin/tambah-alumni" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg"> <i class="fas fa-plus mr-2"></i>Tambah Alumni </a>
+                
                 </div>
             </div>
 
@@ -56,7 +56,7 @@
                                 <td class="px-6 py-4 whitespace-nowrap">
                                     <div class="flex items-center">
                                         <% if (profile.foto_profil) { %>
-                                        <img class="h-10 w-10 rounded-full object-cover mr-3" src="/uploads/profiles/<%= profile.foto_profil %>" alt="<%= profile.nama_lengkap %>" />
+                                        <img class="h-
                                         <% } else { %>
                                         <div class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center mr-3">
                                             <i class="fas fa-user text-gray-500"></i>
@@ -105,7 +105,7 @@
                     </div>
                     <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
                         <div>
-                            <p class="text-sm text-gray-700">Menampilkan <span class="font-medium">1</span> sampai <span class="font-medium">10</span> dari <span class="font-medium"><%= alumniProfiles.length %></span> hasil</p>
+                            <p id="resultInfo" class="text-sm text-gray-700">Menampilkan <span class="font-medium" id="fromNum">1</span> sampai <span class="font-medium" id="toNum"><%= alumniProfiles.length %></span> dari <span class="font-medium" id="totalNum"><%= alumniProfiles.length %></span> hasil</p>
                         </div>
                         <div>
                             <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
@@ -129,36 +129,29 @@
         <%- include('admin-partials/footer') %>
 
         <script>
-            // Search functionality
-            document.getElementById('searchInput').addEventListener('input', function (e) {
-                const searchValue = e.target.value.toLowerCase();
+            // Gabungkan filter pencarian dan status
+            function filterRows() {
+                const searchValue = document.getElementById('searchInput').value.toLowerCase();
+                const statusValue = document.getElementById('statusFilter').value;
                 const rows = document.querySelectorAll('tbody tr');
 
                 rows.forEach((row) => {
                     const name = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
                     const nim = row.querySelector('td:first-child').textContent.toLowerCase();
-                    if (name.includes(searchValue) || nim.includes(searchValue)) {
-                        row.style.display = '';
-                    } else {
-                        row.style.display = 'none';
-                    }
-                });
-            });
-
-            // Status filter
-            document.getElementById('statusFilter').addEventListener('change', function (e) {
-                const statusValue = e.target.value;
-                const rows = document.querySelectorAll('tbody tr');
-
-                rows.forEach((row) => {
                     const status = row.querySelector('td:nth-child(6) span').textContent.trim().toLowerCase();
-                    if (!statusValue || status === statusValue) {
+                    const matchSearch = name.includes(searchValue) || nim.includes(searchValue);
+                    const matchStatus = !statusValue || status === statusValue;
+                    if (matchSearch && matchStatus) {
                         row.style.display = '';
                     } else {
                         row.style.display = 'none';
                     }
                 });
-            });
+                updateResultInfo();
+            }
+
+            document.getElementById('searchInput').addEventListener('input', filterRows);
+            document.getElementById('statusFilter').addEventListener('change', filterRows);
 
             // Delete confirmation
             document.querySelectorAll('.delete-btn').forEach((btn) => {
@@ -188,6 +181,22 @@
                     }
                 });
             });
+
+            function updateResultInfo() {
+                const rows = document.querySelectorAll('tbody tr');
+                let visibleRows = 0;
+                rows.forEach(row => {
+                    if (row.style.display !== 'none') visibleRows++;
+                });
+                const fromNum = visibleRows === 0 ? 0 : 1;
+                const toNum = visibleRows;
+                document.getElementById('fromNum').textContent = fromNum;
+                document.getElementById('toNum').textContent = toNum;
+                document.getElementById('totalNum').textContent = visibleRows;
+            }
+
+            // Panggil saat awal
+            filterRows();
         </script>
     </body>
 </html>

@@ -22,9 +22,9 @@ exports.showUploadJobForm = (req, res) => {
     db.query(query, (err, categories) => {
         if (err) {
             console.error('Error fetching categories:', err);
-            return res.render('alumni/upload-job', { error: 'Gagal mengambil data kategori.' });
+            return res.render('alumni/upload-job', { error: 'Gagal mengambil data kategori.', alumni: req.session.alumni });
         }
-        res.render('alumni/upload-job', { categories, error: null });
+        res.render('alumni/upload-job', { categories, error: null, alumni: req.session.alumni });
     });
 };
 
@@ -34,7 +34,7 @@ exports.submitUploadJob = (req, res) => {
         // Helper untuk render dengan kategori
         const renderWithCategories = (params) => {
             db.query('SELECT * FROM kategori_lowongan', (err2, categories) => {
-                res.render('alumni/upload-job', { ...params, categories });
+                res.render('alumni/upload-job', { ...params, categories, alumni: req.session.alumni });
             });
         };
 
@@ -78,13 +78,17 @@ exports.submitUploadJob = (req, res) => {
 
 // List semua job yang sudah diapprove (untuk alumni)
 exports.listJob = (req, res) => {
-    const query = 'SELECT * FROM lowongan_kerja WHERE status_moderasi = "disetujui" ORDER BY created_at DESC';
-    db.query(query, (err, lowongan_kerja) => {
+    const alumniId = req.session.alumni ? req.session.alumni.id : null;
+    if (!alumniId) {
+        return res.redirect('/alumni/login');
+    }
+    const query = `SELECT l.*, k.nama_kategori FROM lowongan_kerja l LEFT JOIN kategori_lowongan k ON l.kategori_id = k.id WHERE l.alumni_id = ? ORDER BY l.created_at DESC`;
+    db.query(query, [alumniId], (err, jobs) => {
         if (err) {
             console.error('Error fetch jobs:', err);
             return res.render('error', { message: 'Gagal mengambil data lowongan.' });
         }
-        res.render('alumni/list-job', { lowongan_kerja });
+        res.render('alumni/list-job', { jobs, alumni: req.session.alumni });
     });
 };
 
@@ -98,16 +102,16 @@ exports.detailJob = (req, res) => {
             return res.render('error', { message: 'Lowongan tidak ditemukan.' });
         }
         const job = results[0];
-        res.render('alumni/detail-job', { job });
+        res.render('alumni/detail-job', { job, alumni: req.session.alumni });
     });
 };
 
 // Tampilkan semua job untuk moderasi admin
 exports.showModerasiJobPosting = (req, res) => {
-    const query = 'SELECT * FROM lowongan_kerja WHERE status_moderasi = "pending" ORDER BY created_at DESC';
+    const query = 'SELECT lowongan_kerja.*, kategori_lowongan.nama_kategori FROM lowongan_kerja INNER JOIN kategori_lowongan ON lowongan_kerja.kategori_id = kategori_lowongan.id WHERE lowongan_kerja.status_moderasi = "pending" ORDER BY lowongan_kerja.created_at DESC';
     db.query(query, (err, jobs) => {
         if (err) {
-            console.error('Error fetch jobs:', err);
+            console.error('Error fetching jobs:', err);
             return res.render('error', { message: 'Gagal mengambil data lowongan.' });
         }
         res.render('admin/moderasi-job-posting', { jobs });
@@ -117,25 +121,79 @@ exports.showModerasiJobPosting = (req, res) => {
 // Approve job posting
 exports.approveJob = (req, res) => {
     const jobId = req.params.id;
-    const query = 'UPDATE lowongan_kerja SET status_moderasi = "disetujui" WHERE id = ?';
-    db.query(query, [jobId], (err) => {
+    const query = 'UPDATE lowongan_kerja SET status_moderasi = "disetujui", tanggal_review = NOW(), reviewed_by = ? WHERE id = ?';
+    db.query(query, [req.session.admin.id, jobId], (err) => {
         if (err) {
-            console.error('Error approve job:', err);
+            console.error('Error approving job:', err);
             return res.status(500).json({ success: false });
         }
         res.json({ success: true });
     });
 };
 
+
 // Reject job posting dan hapus dari database
 exports.rejectJob = (req, res) => {
     const jobId = req.params.id;
-    const query = 'DELETE FROM lowongan_kerja WHERE id = ?';
-    db.query(query, [jobId], (err) => {
+    const query = 'UPDATE lowongan_kerja SET status_moderasi = "ditolak", tanggal_review = NOW(), reviewed_by = ? WHERE id = ?';
+    db.query(query, [req.session.admin.id, jobId], (err) => {
         if (err) {
-            console.error('Error reject (delete) job:', err);
+            console.error('Error rejecting job:', err);
             return res.status(500).json({ success: false });
         }
         res.json({ success: true });
+    });
+};
+
+// Menampilkan daftar job yang disetujui oleh admin (untuk publik)
+exports.listApprovedJobs = (req, res) => {
+    const query = `
+        SELECT lowongan_kerja.*, kategori_lowongan.nama_kategori
+        FROM lowongan_kerja
+        INNER JOIN kategori_lowongan ON lowongan_kerja.kategori_id = kategori_lowongan.id
+        WHERE lowongan_kerja.status_moderasi = "disetujui"
+        ORDER BY lowongan_kerja.created_at DESC
+    `;
+    db.query(query, (err, jobs) => {
+        if (err) {
+            console.error('Error fetching approved jobs:', err);
+            return res.render('error', { message: 'Gagal mengambil data lowongan.' });
+        }
+        res.render('public/list-approved-jobs', { jobs });
+    });
+};
+
+// List lowongan kerja yang disetujui
+exports.listJobDisetujui = (req, res) => {
+    const query = 'SELECT l.*, k.nama_kategori FROM lowongan_kerja l LEFT JOIN kategori_lowongan k ON l.kategori_id = k.id WHERE l.status_moderasi = "disetujui" ORDER BY l.created_at DESC';
+    db.query(query, (err, jobs) => {
+        if (err) {
+            console.error('Error fetch jobs:', err);
+            return res.render('error', { message: 'Gagal mengambil data lowongan.' });
+        }
+        res.render('alumni/list-jobDisetujui', { jobs });
+    });
+};
+
+// Menampilkan daftar job yang di-upload oleh alumni yang sedang login
+exports.listUploadedJobs = (req, res) => {
+    const alumniId = req.session.alumni ? req.session.alumni.id : null;
+    if (!alumniId) {
+        return res.redirect('/alumni/login');
+    }
+
+    const query = `
+        SELECT lowongan_kerja.*, kategori_lowongan.nama_kategori 
+        FROM lowongan_kerja
+        INNER JOIN kategori_lowongan ON lowongan_kerja.kategori_id = kategori_lowongan.id 
+        WHERE lowongan_kerja.alumni_id = ? 
+        ORDER BY lowongan_kerja.created_at DESC
+    `;
+    db.query(query, [alumniId], (err, jobs) => {
+        if (err) {
+            console.error('Error fetching uploaded jobs:', err);
+            return res.render('error', { message: 'Gagal mengambil data lowongan.' });
+        }
+        res.render('alumni/list-uploaded-jobs', { jobs });
     });
 };

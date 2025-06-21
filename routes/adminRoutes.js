@@ -28,6 +28,9 @@ router.post('/approve-job/:id', adminController.ensureAdmin, jobController.appro
 // Reject job posting
 router.post('/reject-job/:id', adminController.ensureAdmin, jobController.rejectJob);
 
+// Daftar job yang sudah disetujui oleh admin (untuk publik)
+router.get('/list-approved-jobs', jobController.listApprovedJobs);
+
 // Logout admin
 router.get('/logout', adminController.logout);
 

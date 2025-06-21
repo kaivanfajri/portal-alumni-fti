@@ -1,65 +1,73 @@
 <!DOCTYPE html>
 <html lang="id">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Detail Lowongan</title>
-        <script src="https://cdn.tailwindcss.com"></script>
-        <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.2/dist/full.min.css" rel="stylesheet" type="text/css" />
-    </head>
-    <body class="bg-gradient-to-br from-green-50 to-green-100 min-h-screen p--1">
-        <!-- Include Navbar -->
-        <%- include('alumni-partials/navbar') %>
-
-        <div class="p-10">
-            <!-- Judul Lowongan -->
-            <div class="mb-10">
-                <h1 class="text-3xl font-bold"><%= job.judul_lowongan %></h1>
-                <h2 class="text-2xl font-semibold"><%= job.deskripsi %></h2>
-            </div>
-
-            <div class="flex flex-col lg:flex-row gap-10">
-                <!-- Kiri: Deskripsi -->
-                <div class="flex-1">
-                    <h3 class="font-bold mb-2">Deskripsi :</h3>
-                    <p class="mb-4">
-                        <%= job.deskripsi %>
-                    </p>
-                    <!-- Tombol Simpan -->
-                    <p class="mt-4 font-bold mb-1">Simpan Lowongan :</p>
-                    <div class="mt-4">
-                        <button id="saveButton" class="btn bg-yellow-500 text-black border-yellow-500">Simpan</button>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detail Lowongan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.2/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://kit.fontawesome.com/4e5b6b6e8b.js" crossorigin="anonymous"></script>
+</head>
+<body class="bg-gradient-to-br from-green-50 to-green-100 min-h-screen">
+<%- include('alumni-partials/navbar') %>
+    <div class="container mx-auto px-4 py-10">
+        <div class="max-w-3xl mx-auto">
+            <div class="card bg-white border-2 border-green-200 shadow-lg rounded-xl overflow-hidden">
+                <% if (job.gambar) { %>
+                    <img src="/uploads/<%= job.gambar %>" alt="Logo" class="w-full h-48 object-contain bg-green-50 p-4 border-b">
+                <% } else { %>
+                    <div class="w-full h-48 flex items-center justify-center bg-green-50 border-b">
+                        <i class="fas fa-building text-5xl text-green-300"></i>
                     </div>
-                </div>
-                <!-- Kanan: Informasi Tambahan -->
-                <div class="w-full lg:w-96 bg-base-200 rounded-box shadow-md p-3 h-48">
-                    <p><%= job.keterangan || '' %></p>
-                    <% if (job.gambar) { %>
-                        <img src="/<%= job.gambar %>" alt="gambar" />
+                <% } %>
+                <div class="card-body p-8">
+                    <h1 class="card-title text-2xl font-bold mb-2 text-green-800"><%= job.judul_lowongan %></h1>
+                    <div class="flex flex-wrap gap-2 mb-4">
+                        <% if (job.nama_kategori) { %>
+                            <span class="badge bg-green-100 text-green-800 border-green-400 font-semibold px-3 py-1"><%= job.nama_kategori %></span>
+                        <% } %>
+                        <% if (job.status_moderasi === 'pending') { %>
+                            <span class="badge bg-yellow-100 text-yellow-800 border-yellow-400 font-semibold px-3 py-1">Pending</span>
+                        <% } else if (job.status_moderasi === 'disetujui') { %>
+                            <span class="badge bg-green-200 text-green-900 border-green-400 font-semibold px-3 py-1">Disetujui</span>
+                        <% } else if (job.status_moderasi === 'ditolak') { %>
+                            <span class="badge bg-red-100 text-red-800 border-red-400 font-semibold px-3 py-1">Ditolak</span>
+                        <% } %>
+                    </div>
+                    <div class="mb-4">
+                        <span class="text-sm text-gray-500"><i class="fas fa-calendar-alt mr-1"></i> <%= job.created_at ? job.created_at.toLocaleDateString ? job.created_at.toLocaleDateString() : job.created_at.substring(0,10) : '' %></span>
+                    </div>
+                    <h3 class="font-bold mb-2 text-green-700">Deskripsi Pekerjaan:</h3>
+                    <p class="text-gray-700 mb-6"><%= job.deskripsi %></p>
+                    <% if (job.keterangan) { %>
+                        <h4 class="font-bold mb-2 text-green-700">Keterangan Tambahan:</h4>
+                        <p class="text-gray-700 mb-6"><%= job.keterangan %></p>
                     <% } %>
+                    <div class="flex gap-4 mt-6">
+                        <button id="saveButton" class="btn bg-yellow-500 text-black border-yellow-500 font-bold">Simpan Lowongan</button>
+                        <a href="/alumni/list-job" class="btn btn-outline border-green-600 text-green-700 font-bold">Kembali ke Daftar</a>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <!-- JavaScript -->
-        <script>
-            // Fungsi untuk menyimpan lowongan ke localStorage
-            function saveJob() {
-                const jobTitle = '<%= job.judul_lowongan %>';
-                const jobDescription = '<%= job.deskripsi %>';
-                const jobData = {
-                    title: jobTitle,
-                    description: jobDescription,
-                    datePosted: new Date().toISOString(),
-                };
-                let savedJobs = JSON.parse(localStorage.getItem('savedJobs')) || [];
-                savedJobs.push(jobData);
-                localStorage.setItem('savedJobs', JSON.stringify(savedJobs));
-                alert('Lowongan berhasil disimpan!');
-            }
-            document.getElementById('saveButton').addEventListener('click', saveJob);
-        </script>
-        <!-- Include Footer -->
-        <%- include('alumni-partials/footer') %>
-    </body>
+    </div>
+    <script>
+        // Fungsi untuk menyimpan lowongan ke localStorage
+        function saveJob() {
+            const jobTitle = '<%= job.judul_lowongan %>';
+            const jobDescription = '<%= job.deskripsi %>';
+            const jobData = {
+                title: jobTitle,
+                description: jobDescription,
+                datePosted: new Date().toISOString(),
+            };
+            let savedJobs = JSON.parse(localStorage.getItem('savedJobs')) || [];
+            savedJobs.push(jobData);
+            localStorage.setItem('savedJobs', JSON.stringify(savedJobs));
+            alert('Lowongan berhasil disimpan!');
+        }
+        document.getElementById('saveButton').addEventListener('click', saveJob);
+    </script>
+    <%- include('alumni-partials/footer') %>
+</body>
 </html>
