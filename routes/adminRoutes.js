@@ -5,6 +5,7 @@ const adminController = require('../controllers/adminController');
 const tracerStudyController = require('../controllers/tracerStudyController');
 const jobController = require('../controllers/jobController');
 const beritaAgendaController = require('../controllers/beritaAgendaController');
+const artikelController = require('../controllers/artikelController');
 
 // Halaman login admin
 router.get('/login', adminController.showLoginForm);
@@ -45,6 +46,15 @@ router.get('/kelolaBeritaAgenda/edit/:id', adminController.ensureAdmin, beritaAg
 router.post('/kelolaBeritaAgenda/edit/:id', adminController.ensureAdmin, upload.single('cover_gambar'), beritaAgendaController.editData);
 
 router.post('/kelolaBeritaAgenda/hapus/:id', adminController.ensureAdmin, beritaAgendaController.hapusData);
+
+// Halaman kelola postingan
+router.get('/kelola-postingan', adminController.ensureAdmin, artikelController.showKelolaPostingan);
+
+
+// Kelola Posting
+    router.get('/kelola-postingan/:id/setujui', adminController.ensureAdmin, artikelController.setujuiPostingan);
+    router.get('/kelola-postingan/:id/tolak', adminController.ensureAdmin, artikelController.tolakPostingan);
+    router.get('/kelola-postingan/:id/hapus', adminController.ensureAdmin, artikelController.hapusPostingan);
 
 // Logout admin
 router.get('/logout', adminController.logout);
