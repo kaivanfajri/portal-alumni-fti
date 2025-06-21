@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@3.8.0/dist/full.css" rel="stylesheet" />
+        <title>Kelola Berita/Agenda - Admin</title>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            greenSoft: '#F0F8F0',
+                            greenFTI: '#166534',
+                        },
+                    },
+                },
+                daisyui: {
+                    themes: ['light'],
+                },
+            };
+        </script>
+    </head>
+    <body class="bg-greenSoft min-h-screen">
+        <%- include('admin-partials/navbar') %>
+
+        <section class="py-16 px-8 max-w-6xl mx-auto">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold text-greenFTI">Kelola Berita & Agenda</h2>
+                <a href="/admin/kelolaBeritaAgenda/tambah" class="btn bg-greenFTI text-white hover:bg-green-800"> <i class="fas fa-plus mr-2"></i>Tambah Baru </a>
+            </div>
+
+            <% if (messages.success) { %>
+            <div class="alert alert-success mb-6">
+                <div class="flex-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6 mx-2 stroke-current">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <label><%= messages.success %></label>
+                </div>
+            </div>
+            <% } %> <% if (messages.error) { %>
+            <div class="alert alert-error mb-6">
+                <div class="flex-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6 mx-2 stroke-current">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                    <label><%= messages.error %></label>
+                </div>
+            </div>
+            <% } %>
+
+            <div class="bg-white shadow-md rounded-md overflow-hidden">
+                <table class="table w-full">
+                    <thead>
+                        <tr>
+                            <th class="bg-greenFTI text-white">Judul</th>
+                            <th class="bg-greenFTI text-white">Jenis</th>
+                            <th class="bg-greenFTI text-white">Tanggal</th>
+                            <th class="bg-greenFTI text-white">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% if (beritaAgenda.length === 0) { %>
+                        <tr>
+                            <td colspan="4" class="text-center py-4">Tidak ada data</td>
+                        </tr>
+                        <% } %> <% beritaAgenda.forEach(item => { %>
+                        <tr>
+                            <td><%= item.judul %></td>
+                            <td>
+                                <span class="badge <%= item.jenis === 'berita' ? 'badge-info' : item.jenis === 'agenda' ? 'badge-success' : item.jenis === 'seminar' ? 'badge-warning' : 'badge-secondary' %>"> <%= item.jenis %> </span>
+                            </td>
+                            <td><%= new Date(item.tanggal_acara).toLocaleDateString('id-ID') %></td>
+                            <td>
+                                <div class="flex space-x-2">
+                                    <a href="/admin/kelolaBeritaAgenda/edit/<%= item.id %>" class="btn btn-sm btn-info text-white">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form method="POST" action="/admin/kelolaBeritaAgenda/hapus/<%= item.id %>" onsubmit="return confirm('Apakah Anda yakin ingin menghapus?')">
+                                        <button type="submit" class="btn btn-sm btn-error text-white">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <%- include('admin-partials/footer') %>
+    </body>
+</html>

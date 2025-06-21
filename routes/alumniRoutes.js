@@ -109,7 +109,7 @@ router.get('/tracerStudy', requireAlumniAuth, (req, res) => {
         }
 
         if (results.length > 0) {
-            // Jika sudah mengisi, redirect ke dashboard atau halaman edit
+            // Jika sudah mengisi, redirect ke dashboard
             return res.redirect('/alumni/dashboard?message=tracer_already_filled');
         }
 

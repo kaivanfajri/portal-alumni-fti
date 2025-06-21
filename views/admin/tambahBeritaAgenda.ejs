@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@3.8.0/dist/full.css" rel="stylesheet" />
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            greenSoft: '#F0F8F0',
+                            greenFTI: '#166534',
+                        },
+                    },
+                },
+                daisyui: {
+                    themes: ['light'],
+                },
+            };
+        </script>
+        <title>Tambah Berita/Agenda - Admin</title>
+    </head>
+    <body class="bg-greenSoft min-h-screen">
+        <%- include('admin-partials/navbar') %>
+
+        <section class="py-16 px-8 max-w-4xl mx-auto">
+            <div class="flex items-center mb-6">
+                <a href="/admin/kelolaBeritaAgenda" class="btn btn-ghost mr-4">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <h2 class="text-3xl font-bold text-greenFTI">Tambah Berita/Agenda</h2>
+            </div>
+
+            <% if (messages.error) { %>
+            <div class="alert alert-error mb-6">
+                <div class="flex-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="w-6 h-6 mx-2 stroke-current">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                    </svg>
+                    <label><%= messages.error %></label>
+                </div>
+            </div>
+            <% } %>
+
+            <form class="bg-white shadow-md rounded-md p-8 space-y-6" method="POST" action="/admin/kelolaBeritaAgenda/tambah" enctype="multipart/form-data">
+                <!-- Judul -->
+                <div>
+                    <label class="font-semibold block mb-1 text-black">Judul</label>
+                    <input type="text" name="judul" placeholder="Judul postingan" class="input input-bordered w-full bg-gray-100" required />
+                </div>
+
+                <!-- Jenis Postingan -->
+                <div>
+                    <label class="font-semibold block mb-1 text-black">Jenis</label>
+                    <select name="jenis" class="select select-bordered w-full bg-gray-100" required>
+                        <option value="">Pilih jenis</option>
+                        <option value="berita">Berita</option>
+                        <option value="agenda">Agenda</option>
+                        <option value="seminar">Seminar</option>
+                        <option value="pengumuman">Pengumuman</option>
+                    </select>
+                </div>
+
+                <!-- Tanggal Acara -->
+                <div>
+                    <label class="font-semibold block mb-1 text-black">Tanggal Acara</label>
+                    <input type="date" name="tanggal_acara" class="input input-bordered w-full bg-gray-100" required />
+                </div>
+
+                <!-- Lokasi -->
+                <div>
+                    <label class="font-semibold block mb-1 text-black">Lokasi (Opsional)</label>
+                    <input type="text" name="lokasi" placeholder="Lokasi acara" class="input input-bordered w-full bg-gray-100" />
+                </div>
+
+                <!-- Upload Gambar -->
+                <div>
+                    <label class="font-semibold block mb-1 text-black">Cover Gambar (Opsional)</label>
+                    <input type="file" name="cover_gambar" class="file-input file-input-bordered w-full bg-white" accept="image/*" />
+                    <p class="text-sm text-gray-500 mt-1">Format: JPG, PNG. Maksimal 2MB</p>
+                </div>
+
+                <!-- Deskripsi -->
+                <div>
+                    <label class="font-semibold block mb-1 text-black">Isi Konten</label>
+                    <textarea name="isi" rows="6" placeholder="Isi konten postingan..." class="textarea textarea-bordered w-full bg-gray-100" required></textarea>
+                </div>
+
+                <!-- Tombol Submit -->
+                <div class="flex justify-end space-x-4">
+                    <a href="/admin/kelolaBeritaAgenda" class="btn btn-ghost">Batal</a>
+                    <button type="submit" class="btn bg-greenFTI text-white hover:bg-green-800"><i class="fas fa-save mr-2"></i>Simpan</button>
+                </div>
+            </form>
+        </section>
+
+        <%- include('admin-partials/footer') %>
+    </body>
+</html>
