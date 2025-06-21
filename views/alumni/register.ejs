@@ -1,9 +1,10 @@
+<!-- views/registerAlumni.ejs -->
 <!DOCTYPE html>
 <html lang="id">
     <head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Login Alumni - Portal Alumni FTI</title>
+        <title>Daftar Alumni - Portal Alumni FTI</title>
         <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.2/dist/full.css" rel="stylesheet" type="text/css" />
         <script src="https://cdn.tailwindcss.com"></script>
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
@@ -11,17 +12,20 @@
             body {
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             }
+
             .glass-container {
                 background: rgba(255, 255, 255, 0.25);
                 backdrop-filter: blur(10px);
                 -webkit-backdrop-filter: blur(10px);
                 border: 1px solid rgba(255, 255, 255, 0.18);
             }
+
             .glass-input:focus {
                 background: rgba(255, 255, 255, 0.3);
                 border-color: #ffd700;
                 box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
             }
+
             .glass-btn:hover {
                 background: rgba(255, 215, 0, 0.9);
             }
@@ -38,12 +42,12 @@
                     <h1 class="text-3xl font-bold text-white mb-2">PORTAL ALUMNI FTI</h1>
                 </div>
 
-                <!-- Login Form -->
+                <!-- Registration Form -->
                 <div class="glass-container rounded-2xl p-8 shadow-2xl">
-                    <form id="loginForm" action="/alumni/login" method="POST" class="space-y-6">
+                    <form id="registerForm" action="/alumni/register" method="POST" class="space-y-6">
                         <div class="text-center mb-6">
-                            <h2 class="text-2xl font-bold text-white mb-2">Login Alumni</h2>
-                            <p class="text-white/70">Silakan masukkan kredensial Anda</p>
+                            <h2 class="text-2xl font-bold text-white mb-2">Pendaftaran Alumni</h2>
+                            <p class="text-white/70">Silakan isi data Anda</p>
                         </div>
 
                         <!-- NIM Input -->
@@ -60,7 +64,26 @@
                                     name="nim"
                                     placeholder="Masukkan NIM"
                                     class="input w-full pl-10 glass-input bg-white/20 border-white/30 text-white placeholder-white/60"
-                                    value="<%= formAlumni ? formAlumni.nim : '' %>"
+                                    value="<%= formData ? formData.nim : '' %>"
+                                    required />
+                            </div>
+                        </div>
+
+                        <!-- Email Input -->
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text text-white font-medium">Email</span>
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-envelope text-white/60"></i>
+                                </div>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    placeholder="Masukkan Email"
+                                    class="input w-full pl-10 glass-input bg-white/20 border-white/30 text-white placeholder-white/60"
+                                    value="<%= formData ? formData.email : '' %>"
                                     required />
                             </div>
                         </div>
@@ -83,15 +106,34 @@
                             </div>
                         </div>
 
-                        <!-- Remember Me & Forgot Password -->
-                        <div class="flex items-center justify-between">
-                            <a href="/alumni/forgot-password" class="text-sm text-white/80 hover:text-white">Lupa password?</a>
+                        <!-- Confirm Password Input -->
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text text-white font-medium">Konfirmasi Password</span>
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <i class="fas fa-lock text-white/60"></i>
+                                </div>
+                                <input
+                                    type="password"
+                                    name="confirmPassword"
+                                    id="confirmPassword"
+                                    placeholder="Konfirmasi Password"
+                                    class="input w-full pl-10 pr-10 glass-input bg-white/20 border-white/30 text-white placeholder-white/60"
+                                    required />
+                                <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                    <button type="button" id="toggleConfirmPassword" class="text-white/60 hover:text-white">
+                                        <i class="fas fa-eye" id="eyeConfirmIcon"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
 
-                        <!-- Login Button -->
+                        <!-- Register Button -->
                         <button type="submit" class="btn w-full glass-btn bg-[#FFD700] hover:bg-[#FFD700]/90 text-white border-none font-semibold text-lg py-3">
-                            <i class="fas fa-sign-in-alt mr-2"></i>
-                            Login
+                            <i class="fas fa-user-plus mr-2"></i>
+                            Daftar
                         </button>
 
                         <!-- Error Message -->
@@ -106,7 +148,7 @@
 
                 <!-- Footer -->
                 <div class="text-center mt-6">
-                    <p class="text-white/60 text-sm">Belum punya akun? <a href="/alumni/register" class="text-white hover:underline">Daftar disini</a></p>
+                    <p class="text-white/60 text-sm">Sudah punya akun? <a href="/auth/alumni/login" class="text-white hover:underline">Login disini</a></p>
                     <p class="text-white/60 text-sm mt-2">© 2025 Portal Alumni FTI</p>
                 </div>
             </div>
@@ -127,13 +169,28 @@
                 }
             });
 
-            // Form validation
-            document.getElementById('loginForm').addEventListener('submit', function (e) {
-                const password = document.getElementById('password').value;
+            // Toggle Confirm Password Visibility
+            document.getElementById('toggleConfirmPassword').addEventListener('click', function () {
+                const confirmPasswordInput = document.getElementById('confirmPassword');
+                const eyeConfirmIcon = document.getElementById('eyeConfirmIcon');
 
-                if (password.length < 3) {
+                if (confirmPasswordInput.type === 'password') {
+                    confirmPasswordInput.type = 'text';
+                    eyeConfirmIcon.classList.replace('fa-eye', 'fa-eye-slash');
+                } else {
+                    confirmPasswordInput.type = 'password';
+                    eyeConfirmIcon.classList.replace('fa-eye-slash', 'fa-eye');
+                }
+            });
+
+            // Form validation
+            document.getElementById('registerForm').addEventListener('submit', function (e) {
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+
+                if (password !== confirmPassword) {
                     e.preventDefault();
-                    alert('Password harus minimal 3 karakter!');
+                    alert('Password dan Konfirmasi Password tidak sama!');
                 }
             });
         </script>
