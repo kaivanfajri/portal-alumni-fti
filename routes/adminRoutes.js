@@ -5,6 +5,7 @@ const adminController = require('../controllers/adminController');
 const tracerStudyController = require('../controllers/tracerStudyController');
 const jobController = require('../controllers/jobController');
 const beritaAgendaController = require('../controllers/beritaAgendaController');
+const dataalumniController = require('../controllers/dataalumniController');
 
 // Halaman login admin
 router.get('/login', adminController.showLoginForm);
@@ -15,8 +16,20 @@ router.post('/login', adminController.login);
 // Halaman dashboard admin (setelah login)
 router.get('/dashboard', adminController.ensureAdmin, adminController.dashboard);
 
-// Halaman kelola-data-alumni
-router.get('/kelolaDataAlumni', adminController.ensureAdmin, adminController.showKelolaDataAlumni);
+// Rute untuk kelola data alumni
+router.get('/kelolaDataAlumni', adminController.ensureAdmin, dataalumniController.showKelolaDataAlumni);
+
+// Route untuk ekspor data alumni
+router.get('/kelolaDataAlumni/export', adminController.ensureAdmin, dataalumniController.exportAlumni);
+
+// Menampilkan form edit alumni
+router.get('/kelolaDataAlumni/edit/:id', adminController.ensureAdmin, dataalumniController.editAlumni);
+
+// Proses edit alumni
+router.post('/kelolaDataAlumni/edit/:id', adminController.ensureAdmin, dataalumniController.updateAlumni);
+
+// Hapus alumni
+router.post('/kelolaDataAlumni/hapus/:id', adminController.ensureAdmin, dataalumniController.deleteAlumni);
 
 // Export Tracer Study Data
 router.get('/exportTracerStudy', adminController.ensureAdmin, tracerStudyController.exportTracerStudy);
@@ -33,6 +46,7 @@ router.post('/reject-job/:id', adminController.ensureAdmin, jobController.reject
 
 // Daftar job yang sudah disetujui oleh admin (untuk publik)
 router.get('/list-approved-jobs', jobController.listApprovedJobs);
+
 // Routes untuk mengelola berita/agenda
 router.get('/kelolaBeritaAgenda', adminController.ensureAdmin, beritaAgendaController.tampilkanDaftar);
 router.get('/kelolaBeritaAgenda/tambah', adminController.ensureAdmin, beritaAgendaController.tampilkanFormTambah);

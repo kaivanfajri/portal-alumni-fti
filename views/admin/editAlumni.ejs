@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %> | Portal Alumni</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.2/dist/full.css" rel="stylesheet" type="text/css" />
+</head>
+<body class="bg-gradient-to-br from-green-50 to-green-100 min-h-screen">
+    <%- include('admin-partials/navbar') %>
+
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-6">
+            <h1 class="text-2xl font-bold text-gray-800"><i class="fas fa-edit mr-2"></i> <%= title %></h1>
+            <a href="/admin/kelolaDataAlumni" class="text-blue-600 hover:text-blue-800">
+                <i class="fas fa-arrow-left mr-1"></i> Kembali
+            </a>
+        </div>
+
+        <div class="bg-white rounded-lg shadow-md overflow-hidden p-6">
+            <form method="POST" action="/admin/kelolaDataAlumni/edit/<%= alumniData.alumni_id %>">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="nim" class="block text-sm font-medium text-gray-700">NIM</label>
+                        <input type="text" id="nim" name="nim" value="<%= alumniData.nim %>" 
+                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" readonly>
+                    </div>
+                    <div>
+                        <label for="nama_lengkap" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
+                        <input type="text" id="nama_lengkap" name="nama_lengkap" value="<%= alumniData.nama_lengkap %>" 
+                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                    </div>
+                    <div>
+                        <label for="jenis_kelamin" class="block text-sm font-medium text-gray-700">Jenis Kelamin</label>
+                        <select id="jenis_kelamin" name="jenis_kelamin" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                            <option value="Laki-laki" <%= alumniData.jenis_kelamin === 'Laki-laki' ? 'selected' : '' %>>Laki-laki</option>
+                            <option value="Perempuan" <%= alumniData.jenis_kelamin === 'Perempuan' ? 'selected' : '' %>>Perempuan</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="program_studi" class="block text-sm font-medium text-gray-700">Program Studi</label>
+                        <input type="text" id="program_studi" name="program_studi" value="<%= alumniData.program_studi %>" 
+                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                    </div>
+                    <div>
+                        <label for="tahun_masuk" class="block text-sm font-medium text-gray-700">Tahun Masuk</label>
+                        <input type="number" id="tahun_masuk" name="tahun_masuk" value="<%= alumniData.tahun_masuk %>" 
+                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                    </div>
+                    <div>
+                        <label for="tahun_lulus" class="block text-sm font-medium text-gray-700">Tahun Lulus</label>
+                        <input type="number" id="tahun_lulus" name="tahun_lulus" value="<%= alumniData.tahun_lulus %>" 
+                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="alamat" class="block text-sm font-medium text-gray-700">Alamat</label>
+                        <textarea id="alamat" name="alamat" rows="3" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required><%= alumniData.alamat %></textarea>
+                    </div>
+                    <div>
+                        <label for="kota" class="block text-sm font-medium text-gray-700">Kota</label>
+                        <input type="text" id="kota" name="kota" value="<%= alumniData.kota %>" 
+                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                    </div>
+                    <div>
+                        <label for="pekerjaan_sekarang" class="block text-sm font-medium text-gray-700">Pekerjaan Sekarang</label>
+                        <input type="text" id="pekerjaan_sekarang" name="pekerjaan_sekarang" value="<%= alumniData.pekerjaan_sekarang || '' %>" 
+                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="nama_perusahaan" class="block text-sm font-medium text-gray-700">Nama Perusahaan</label>
+                        <input type="text" id="nama_perusahaan" name="nama_perusahaan" value="<%= alumniData.nama_perusahaan || '' %>" 
+                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="bidang_industri" class="block text-sm font-medium text-gray-700">Bidang Industri</label>
+                        <input type="text" id="bidang_industri" name="bidang_industri" value="<%= alumniData.bidang_industri || '' %>" 
+                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="instagram" class="block text-sm font-medium text-gray-700">Instagram</label>
+                        <input type="text" id="instagram" name="instagram" value="<%= alumniData.instagram || '' %>" 
+                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="linkedin" class="block text-sm font-medium text-gray-700">LinkedIn</label>
+                        <input type="text" id="linkedin" name="linkedin" value="<%= alumniData.linkedin || '' %>" 
+                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    </div>
+                    <div>
+                        <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
+                        <input type="email" id="email" name="email" value="<%= alumniData.email %>" 
+                            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" readonly>
+                    </div>
+                    <div>
+                        <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
+                        <select id="status" name="status" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                            <option value="aktif" <%= alumniData.status === 'aktif' ? 'selected' : '' %>>Aktif</option>
+                            <option value="nonaktif" <%= alumniData.status === 'nonaktif' ? 'selected' : '' %>>Nonaktif</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mt-6">
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg">
+                        <i class="fas fa-save mr-2"></i> Simpan Perubahan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <%- include('admin-partials/footer') %>
+</body>
+</html>
