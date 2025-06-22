@@ -205,3 +205,76 @@ exports.logout = (req, res) => {
         res.redirect('/admin/login');
     });
 };
+
+// ==== Kelola Postingan ====
+exports.showKelolaPostingan = (req, res) => {
+  const query = 'SELECT * FROM artikel WHERE status = ? ORDER BY tanggal_upload DESC';
+  db.query(query, [STATUS.PENDING], (err, results) => {
+    if (err) {
+      console.error('Error fetching artikel:', err);
+      return res.status(500).render('error', { message: 'Gagal mengambil data artikel', error: err });
+    }
+    res.render('admin/kelola-postingan', { postingan: results });
+  });
+};
+
+exports.setujuiPostingan = (req, res) => {
+  const { id } = req.params;
+  const reviewer = req.session.admin?.id || null;
+
+  const STATUS = {
+  APPROVED: 'disetuji', // Perhatikan ini harus 'disetuji' bukan 'disetujui'
+  REJECTED: 'ditolak',
+  PENDING: 'pending'
+};
+
+db.query(
+  'UPDATE artikel SET status = ?, reviewed_by = ?, updated_at = NOW() WHERE id = ?',
+  [STATUS.APPROVED, reviewer, id],
+  (err) => {
+    if (err) {
+      console.error(err);
+      return res.redirect('/admin/kelola-postingan?error=true');
+    }
+    res.redirect('/admin/kelola-postingan?success=Postingan+berhasil+disetujui');
+  }
+);
+};
+
+exports.tolakPostingan = (req, res) => {
+  const { id } = req.params;
+  const reviewer = req.session.admin?.id || null;
+
+  db.query(
+    'UPDATE artikel SET status = ?, reviewed_by = ?, updated_at = NOW() WHERE id = ?',
+    [STATUS.DITOLAK, reviewer, id],
+    (err) => {
+      if (err) {
+        console.error(err);
+        return res.redirect('/admin/kelola-postingan?error=true');
+      }
+      res.redirect('/admin/kelola-postingan');
+    }
+  );
+};
+
+exports.hapusPostingan = (req, res) => {
+  const { id } = req.params;
+  db.query('DELETE FROM artikel WHERE id = ?', [id], (err) => {
+    if (err) {
+      console.error(err);
+    }
+    res.redirect('/admin/kelola-postingan');
+  });
+};
+
+// ==== Logout ====
+exports.logout = (req, res) => {
+  req.session.destroy(() => {
+    res.redirect('/admin/login');
+  });
+}
+
+exports.riwayatPengajuan = (req, res) => {
+  res.render('admin/riwayat-pengajuan');
+}

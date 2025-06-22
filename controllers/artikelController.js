@@ -70,29 +70,33 @@ exports.daftarArtikel = (req, res) => {
 };
 
 // Detail Artikel
-exports.detailArtikel = (req, res) => {
-  const { id } = req.params;
-  db.query(
-    `SELECT a.*, al.nama as alumni_nama 
-     FROM artikel a
-     JOIN alumni al ON a.alumni_id = al.id
-     WHERE a.id = ?`, 
-    [id], 
-    (err, rows) => {
-      if (err || rows.length === 0) {
-        return res.status(404).render('alumni/detail-artikel', {
-          artikel: null,
-          error: 'Artikel tidak ditemukan',
-          alumni: req.session.alumni
-        });
-      }
-      res.render('alumni/detail-artikel', {
-        artikel: rows[0],
-        error: null,
-        alumni: req.session.alumni
-      });
+exports.detailKonten = (req, res) => {
+  const artikelId = req.params.id;
+  const sql = 'SELECT * FROM artikel WHERE id = ? AND status = "disetujui"';
+
+  db.query(sql, [artikelId], (err, results) => {
+    if (err) {
+      return res.status(500).send('Terjadi kesalahan server');
     }
-  );
+
+    if (results.length === 0) {
+      return res.status(404).send('Artikel tidak ditemukan atau belum disetujui');
+    }
+
+    const konten = results[0];
+    const tanggal = new Date(konten.tanggal_upload).toLocaleDateString('id-ID', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric'
+    });
+
+    // ✅ Tambahkan alumni ke dalam res.render
+    res.render('alumni/detail-konten', {
+      konten,
+      tanggal,
+      alumni: req.session.alumni  // ← ini kunci agar navbar tidak error
+    });
+  });
 };
 
 exports.showKelolaPostingan = (req, res) => {
@@ -123,6 +127,7 @@ exports.showKelolaPostingan = (req, res) => {
   });
 };
 
+// Setujui Postingan
 exports.setujuiPostingan = (req, res) => {
   console.log('Session admin saat setujui:', req.session.admin); // Log session admin
   const { id } = req.params;
@@ -138,7 +143,7 @@ exports.setujuiPostingan = (req, res) => {
         console.error(err);
         return res.redirect('/admin/kelola-postingan?error=true');
       }
-      res.redirect('/admin/kelola-postingan');
+      res.redirect('/admin/kelola-postingan?success=Postingan+berhasil+disetujui');
     }
   );
 };
@@ -177,10 +182,12 @@ exports.daftarArtikel = (req, res) => {
   db.query(
     'SELECT * FROM artikel WHERE status = "disetujui" ORDER BY id DESC',
     (err, rows) => {
-      res.render('alumni/daftar-artikel', {
-        artikel: rows || [],
-        error: err ? 'Gagal mengambil data.' : null
-      });
+     res.render('alumni/list-postingan', {
+  artikel: rows || [],
+  error: err ? 'Gagal mengambil data.' : null,
+  alumni: req.session.alumni
+});
     }
   );
 };
+

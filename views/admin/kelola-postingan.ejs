@@ -92,45 +92,36 @@
     </div>
 <!-- Di bagian akhir file sebelum </body> -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  // Handle semua aksi admin
+document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('[data-action]').forEach(button => {
-    button.addEventListener('click', function(e) {
+    button.addEventListener('click', function (e) {
       e.preventDefault();
       const action = this.dataset.action;
       const id = this.dataset.id;
       const url = `/admin/kelola-postingan/${id}/${action}`;
-      
+
+      if (action === 'hapus' && !confirm('Yakin ingin menghapus?')) return;
+
       fetch(url, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         }
       })
-      .then(response => response.json())
-      .then(data => {
-        if (data.success) {
-          // Refresh data atau update UI
-          const row = document.getElementById(`post-${id}`);
-          if (action === 'hapus') {
-            row.remove();
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            const row = document.getElementById(`post-${id}`);
+            if (row) row.remove();  // Hilangkan baris dari tabel
+            showAlert('success', data.message);
           } else {
-            // Update status di UI
-            const statusCell = row.querySelector('.post-status');
-            statusCell.textContent = action === 'setujui' ? 'disetujui' : 'ditolak';
-            statusCell.className = `post-status badge ${action === 'setujui' ? 'bg-success' : 'bg-danger'}`;
+            showAlert('danger', data.message);
           }
-          
-          // Tampilkan notifikasi
-          showAlert('success', data.message);
-        } else {
-          showAlert('danger', data.message);
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        showAlert('danger', 'Terjadi kesalahan');
-      });
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          showAlert('danger', 'Terjadi kesalahan');
+        });
     });
   });
 
@@ -144,15 +135,11 @@ document.addEventListener('DOMContentLoaded', function() {
       ${message}
       <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     `;
-    
     document.body.appendChild(alertDiv);
-    
-    // Hilangkan otomatis setelah 3 detik
-    setTimeout(() => {
-      alertDiv.remove();
-    }, 3000);
+    setTimeout(() => alertDiv.remove(), 3000);
   }
 });
+
 </script>
     <%- include('admin-partials/footer') %>
   </body>

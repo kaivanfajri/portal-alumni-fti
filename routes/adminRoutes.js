@@ -64,10 +64,6 @@ router.post('/kelolaBeritaAgenda/hapus/:id', adminController.ensureAdmin, berita
 // Halaman kelola postingan
 router.get('/kelola-postingan', adminController.ensureAdmin, artikelController.showKelolaPostingan);
 
-// Kelola Posting
-router.get('/kelola-postingan/:id/setujui', adminController.ensureAdmin, artikelController.setujuiPostingan);
-router.get('/kelola-postingan/:id/tolak', adminController.ensureAdmin, artikelController.tolakPostingan);
-router.get('/kelola-postingan/:id/hapus', adminController.ensureAdmin, artikelController.hapusPostingan);
 
 // Daftar pesan
 router.get('/inbox', adminController.ensureAdmin, adminController.showInbox);
@@ -75,6 +71,12 @@ router.get('/inbox', adminController.ensureAdmin, adminController.showInbox);
 // Detail pesan + balas
 router.get('/pesan/:id', adminController.ensureAdmin, adminController.showMessageDetail);
 router.post('/pesan/:id/balas', adminController.ensureAdmin, adminController.replyMessage);
+
+// Kelola Posting
+router.post('/kelola-postingan/:id/setujui', adminController.ensureAdmin, artikelController.setujuiPostingan);
+router.post('/kelola-postingan/:id/tolak', adminController.ensureAdmin, artikelController.tolakPostingan);
+router.post('/kelola-postingan/:id/hapus', adminController.ensureAdmin, artikelController.hapusPostingan);
+
 
 // Logout admin
 router.get('/logout', adminController.logout);

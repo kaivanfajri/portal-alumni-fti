@@ -55,9 +55,13 @@ router.get('/alumni/upload-postingan', requireAlumniAuth, alumniController.showU
 router.post('/alumni/upload-postingan', requireAlumniAuth, upload.single('gambar'), artikelController.uploadPostingan);
 
 //detail artikel
-router.get('/alumni/detail-artikel/:id', requireAlumniAuth, artikelController.detailArtikel);
+router.get('/detail-konten/:id', requireAlumniAuth, artikelController.detailKonten);
+
+
+
 
 // Logout
 router.get('/alumni/logout', alumniController.logoutAlumni);
+
 
 module.exports = router;
