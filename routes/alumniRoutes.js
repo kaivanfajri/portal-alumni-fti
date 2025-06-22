@@ -5,7 +5,9 @@ const db = require('../config/db');
 const jobController = require('../controllers/jobController');
 const alumniController = require('../controllers/alumniController');
 const artikelController = require('../controllers/artikelController');
+const beritaAgendaController = require('../controllers/beritaAgendaController');
 const upload = require('../config/multerConfig');
+const galleryController = require('../controllers/galleryController');
 
 // Registration routes
 router.get('/alumni/register', alumniController.showRegisterForm);
@@ -66,6 +68,18 @@ router.get('/detail-konten/:id', requireAlumniAuth, artikelController.detailKont
 
 // Logout
 router.get('/alumni/logout', alumniController.logoutAlumni);
+
+// berita agenda
+router.get('/berita-agenda', beritaAgendaController.tampilkanBeritaPublic);
+router.get('/berita-agenda/:id', beritaAgendaController.tampilkanDetailBeritaPublic);
+router.get('/faq', (req, res) => {
+    res.render('faq', { title: 'faq' });
+});
+
+//Alumni galeri
+router.get('/alumni/gallery', requireAlumniAuth, galleryController.alumniGallery);
+router.get('/alumni/gallery/:id', requireAlumniAuth, galleryController.detailAlumniGallery);
+
 
 
 module.exports = router;

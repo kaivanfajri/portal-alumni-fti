@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Portal Alumni FTI</title>
+    <title><%= agenda.judul %> - Portal Alumni FTI</title>
 
     <!-- Tailwind CSS + DaisyUI -->
    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.24/dist/full.min.css" rel="stylesheet" type="text/css" />
@@ -101,59 +101,38 @@
 <body class="min-h-screen" style="background-color: #f0f8f0">
     <%- include('partials/navbar') %>
 
-        <!-- Single Section for Hero and Berita Agenda -->
-        <section class="py-16 lg:py-24">
-            <div class="container mx-auto px-4 max-w-7xl">
-                <!-- Hero Section -->
-                <div class="text-center mb-16">
-                    <h1 class="text-4xl lg:text-6xl font-bold mb-6" style="color: #2e7d32">Berita & Agenda Alumni FTI
-                    </h1>
-                    <p class="text-lg lg:text-xl mb-8" style="color: #555">Informasi terbaru dan agenda kegiatan alumni
-                        FTI yang akan datang.</p>
-                </div>
-
-                <!-- Berita & Agenda List Section -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <% beritaAgenda.forEach((agenda)=> { %>
-                        <div class="card shadow-xl feature-card">
-                            <div class="card-body p-6">
-                                <div class="relative">
-                                    <img src="/uploads/<%= agenda.cover_gambar %>" alt="Cover Image"
-                                        class="w-full h-48 object-cover rounded-t-lg mb-4">
-                                    <div class="relative flex items-center justify-between">
-
-                                        <div>
-                                            <h2 class="text-xl font-semibold" style="color: #2e7d32">
-                                                <%= agenda.judul %>
-                                            </h2>
-                                        </div>
-                                        <!-- Location Information -->
-                                        <div class="flex items-center ml-auto">
-                                            <i class="fas fa-map-marker-alt mr-2"></i>
-                                            <p class="text-sm text-gray-600">
-                                                <%= agenda.lokasi %>
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <p class="text-sm text-gray-600 mb-4"><i class="fas fa-calendar-alt mr-2"></i>
-                                        <%= new Date(agenda.tanggal_dibuat).toLocaleDateString('id-ID') %>
-                                    </p>
-                                </div>
-                                <p class="text-gray-700 mb-4 line-clamp-3">
-                                    <%= agenda.isi %>
-                                </p>
-                                <a href="/berita-agenda/<%= agenda.id %>" class="btn btn-outline hover:bg-[#2e7d32] hover:text-white">
-                                    <i class="fas fa-arrow-right mr-2"></i>Selengkapnya
-                                </a>
-
-                            </div>
-                        </div>
-                        <% }) %>
-                </div>
+    <!-- Detail Berita Section -->
+    <section class="py-16 lg:py-24">
+        <div class="container mx-auto px-4 max-w-7xl">
+            <!-- Hero Section -->
+            <div class="text-center mb-8">
+                <h1 class="text-4xl lg:text-6xl font-bold mb-6" style="color: #2e7d32"><%= agenda.judul %></h1>
+                <p class="text-lg lg:text-xl mb-8" style="color: #555">
+                    <i class="fas fa-calendar-alt mr-2"></i>
+                    <%= new Date(agenda.tanggal_dibuat).toLocaleDateString('id-ID') %> |
+                    <i class="fas fa-map-marker-alt mr-2"></i>
+                    <%= agenda.lokasi %>
+                </p>
             </div>
-        </section>
 
-        <%- include('partials/footer') %>
+            <!-- Berita Detail Content -->
+            <div class="flex flex-col items-center">
+                <div class="w-full max-w-4xl mb-8">
+                    <img src="/uploads/<%= agenda.cover_gambar %>" alt="Cover Image" class="w-full h-72 object-cover rounded-lg mb-4">
+                    <p class="text-gray-700 text-base mb-8 line-clamp-none">
+                        <%= agenda.isi %>
+                    </p>
+                </div>
+
+                <!-- Back Button -->
+                <a href="/berita-agenda" class="btn btn-outline hover:bg-[#2e7d32]" style="border-color: #2e7d32; color: #2e7d32;">
+                    <i class="fas fa-arrow-left mr-2"></i>Kembali ke Daftar Berita & Agenda
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <%- include('partials/footer') %>
 </body>
 
 </html>

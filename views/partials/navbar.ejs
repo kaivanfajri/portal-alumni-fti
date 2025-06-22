@@ -9,7 +9,13 @@
                 <li><a href="/" style="color: #2e7d32">Beranda</a></li>
                 <li><a href="#profil-alumni" style="color: #2e7d32">Profil Alumni</a></li>
                 <li><a href="/alumni/list-jobDisetujui" style="color: #2e7d32">Lowongan Pekerjaan</a></li>
-                <li><a href="#informasi" style="color: #2e7d32">Informasi</a></li>
+                <li class="dropdown">
+                    <a href="#" style="color: #2e7d32">Informasi <i class="fas fa-chevron-down ml-2"></i></a>
+                    <ul class="dropdown-content mt-2 p-2 shadow bg-white rounded-box w-52" style="border: 1px solid #e9e7e7">
+                        <li><a href="/berita-agenda" style="color: #2e7d32">Agenda</a></li>
+                        <li><a href="/berita-pengumuman" style="color: #2e7d32">Pengumuman</a></li>
+                    </ul>
+                </li>
             </ul>
         </div>
         <a class="btn btn-ghost text-xl font-bold" style="color: #2e7d32">
@@ -23,7 +29,13 @@
             <li><a href="/" class="btn btn-ghost hover:bg-custom-light-gray" style="color: #2e7d32">Beranda</a></li>
             <li><a href="#profil-alumni" class="btn btn-ghost hover:bg-custom-light-gray" style="color: #2e7d32">Profil Alumni</a></li>
             <li><a href="/alumni/list-jobDisetujui" class="btn btn-ghost hover:bg-custom-light-gray" style="color: #2e7d32">Lowongan Pekerjaan</a></li>
-            <li><a href="#informasi" class="btn btn-ghost hover:bg-custom-light-gray" style="color: #2e7d32">Informasi</a></li>
+            <li class="dropdown" id="informasi-dropdown">
+                <a href="#" class="btn btn-ghost hover:bg-custom-light-gray" style="color: #2e7d32">Informasi <i class="fas fa-chevron-down ml-2" id="dropdown-arrow"></i></a>
+                <ul class="dropdown-content mt-2 p-2 shadow bg-white rounded-box w-52" style="border: 1px solid #e9e7e7">
+                    <li><a href="/berita-agenda" style="color: #2e7d32">Agenda</a></li>
+                    <li><a href="/berita-pengumuman" style="color: #2e7d32">Artikel</a></li>
+                </ul>
+            </li>
         </ul>
     </div>
 
@@ -34,3 +46,38 @@
         </a>
     </div>
 </div>
+
+<!-- JavaScript to toggle dropdown visibility -->
+<script>
+    document.getElementById('informasi-dropdown').addEventListener('click', function (e) {
+        // Preventing the event from bubbling up to the parent
+        e.stopPropagation();
+
+        const dropdownMenu = this.querySelector('ul');
+        const arrowIcon = document.getElementById('dropdown-arrow');
+
+        // Toggle visibility of dropdown menu
+        dropdownMenu.classList.toggle('hidden');
+
+        // Toggle the arrow icon direction
+        if (dropdownMenu.classList.contains('hidden')) {
+            arrowIcon.classList.remove('fa-chevron-up');
+            arrowIcon.classList.add('fa-chevron-down');
+        } else {
+            arrowIcon.classList.remove('fa-chevron-down');
+            arrowIcon.classList.add('fa-chevron-up');
+        }
+    });
+
+    // Close the dropdown if user clicks anywhere outside of the dropdown
+    window.addEventListener('click', function (e) {
+        const dropdownMenu = document.querySelector('.dropdown-content');
+        const arrowIcon = document.getElementById('dropdown-arrow');
+
+        if (dropdownMenu && !dropdownMenu.contains(e.target) && !e.target.closest('.dropdown')) {
+            dropdownMenu.classList.add('hidden');
+            arrowIcon.classList.remove('fa-chevron-up');
+            arrowIcon.classList.add('fa-chevron-down');
+        }
+    });
+</script>

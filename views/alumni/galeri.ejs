@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Galeri Alumni</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.2/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-green-50 to-green-100 min-h-screen">
+    <!-- Navbar -->
+    <%- include('alumni-partials/navbar') %>
+
+    <div class="container mx-auto px-6 py-8">
+        <!-- Header Section -->
+        <div class="text-center mb-10">
+            <div class="flex items-center justify-center mb-4">
+                <div class="w-16 h-16 rounded-full bg-green-600 flex items-center justify-center mr-4">
+                    <i class="fas fa-images text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-4xl font-bold text-green-700">Galeri Alumni</h1>
+                    <p class="text-lg text-green-600 mt-2">Kumpulan dokumentasi kegiatan alumni FTI</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Album Cards Grid -->
+        <div id="albumsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+            <% if (albums && albums.length > 0) { %>
+                <% albums.forEach(album => { %>
+                    <div class="card bg-white shadow-xl hover:shadow-2xl transition-all duration-300 border album-card"
+                        data-title="<%= album.judul.toLowerCase() %>"
+                        data-date="<%= album.tanggal_dibuat %>"
+                        data-photos="<%= album.jumlah_foto %>">
+                        <div class="card-body">
+                            <div class="flex items-center justify-between mb-4">
+                                <div class="badge badge-success badge-sm">
+                                    Aktif
+                                </div>
+                                <div class="text-xs text-gray-500">
+                                    <i class="fas fa-user mr-1"></i>
+                                    <%= album.dibuat_oleh_nama %>
+                                </div>
+                            </div>
+                            <h3 class="card-title text-lg mb-2">
+                                <i class="fas fa-folder text-blue-600 mr-2"></i>
+                                <%= album.judul %>
+                            </h3>
+                            <div class="space-y-2 mb-4">
+                                <% if (album.deskripsi) { %>
+                                    <div class="text-sm text-gray-700">
+                                        <span><%= album.deskripsi.length > 100 ? album.deskripsi.substring(0, 100) + '...' : album.deskripsi %></span>
+                                    </div>
+                                <% } %>
+                                <div class="text-xs text-gray-500 space-y-1">
+                                    <div>
+                                        <i class="fas fa-calendar mr-1"></i>
+                                        <%= new Date(album.tanggal_dibuat).toLocaleDateString('id-ID', {
+                                            year: 'numeric',
+                                            month: 'long',
+                                            day: 'numeric'
+                                        }) %>
+                                    </div>
+                                    <% if (album.tanggal_kegiatan) { %>
+                                        <div>
+                                            <i class="fas fa-calendar-check mr-1"></i>Kegiatan:
+                                            <%= new Date(album.tanggal_kegiatan).toLocaleDateString('id-ID', {
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric'
+                                            }) %>
+                                        </div>
+                                    <% } %>
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap gap-2 mb-4">
+                                <div class="badge badge-outline badge-sm">
+                                    <i class="fas fa-camera mr-1"></i>
+                                    <%= album.jumlah_foto %> Foto
+                                </div>
+                            </div>
+                            <div class="card-actions justify-end">
+                                <a href="/alumni/gallery/<%= album.id %>" class="btn btn-info btn-sm text-white">
+                                    <i class="fas fa-eye mr-1"></i>Lihat Album
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <div class="col-span-3 text-center py-12">
+                    <div class="text-gray-400 mb-4">
+                        <i class="fas fa-folder-open text-6xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-600 mb-2">Belum Ada Album</h3>
+                    <p class="text-gray-500 mb-4">Galeri alumni akan tampil di sini setelah ada album yang dibuat.</p>
+                </div>
+            <% } %>
+        </div>
+    </div>
+
+    <%- include('alumni-partials/footer') %>
+</body>
+</html>

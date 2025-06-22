@@ -19,6 +19,49 @@ const beritaAgendaController = {
         });
     },
 
+    tampilkanBeritaPublic: (req, res) => {
+        const query = 'SELECT * FROM berita_agenda WHERE status = "publish" ORDER BY tanggal_dibuat DESC';
+        db.query(query, (err, results) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).send('Terjadi kesalahan server');
+            }
+
+            res.render('beritaAgenda', {
+                beritaAgenda: results,
+                admin: req.session.admin,
+                messages: req.flash(),
+            });
+        });
+    },
+
+    tampilkanDetailBeritaPublic: (req, res) => {
+    // Ambil ID berita dari parameter URL
+    const agendaId = req.params.id;
+
+    // Query untuk mengambil data berita berdasarkan ID
+    const query = 'SELECT * FROM berita_agenda WHERE id = ? AND status = "publish"';
+
+    db.query(query, [agendaId], (err, results) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send('Terjadi kesalahan server');
+        }
+
+        if (results.length === 0) {
+            return res.status(404).send('Berita tidak ditemukan');
+        }
+
+        // Jika data ditemukan, tampilkan detail berita
+        res.render('detailBerita', {
+            agenda: results[0],  // Ambil data berita pertama (karena ID unik)
+            admin: req.session.admin,
+            messages: req.flash(),
+        });
+    });
+},
+
+
     tampilkanFormTambah: (req, res) => {
         res.render('admin/tambahBeritaAgenda', {
             admin: req.session.admin,
