@@ -39,6 +39,10 @@ router.put('/alumni/tracerStudy', requireAlumniAuth, alumniController.updateTrac
 router.get('/alumni/hubungiAdmin', requireAlumniAuth, alumniController.showHubungiAdmin);
 router.post('/alumni/hubungiAdmin', requireAlumniAuth, alumniController.sendMessageToAdmin);
 
+//Riwayat Hubungi Admin
+router.get('/riwayatHubungiAdmin', requireAlumniAuth, alumniController.showRiwayatHubungiAdmin);
+router.get('/riwayatHubungiAdmin/:id', requireAlumniAuth, alumniController.showDetailRiwayat);
+
 // Job routes
 router.get('/alumni/upload-job', requireAlumniAuth, jobController.showUploadJobForm);
 router.post('/alumni/upload-job', requireAlumniAuth, jobController.submitUploadJob);

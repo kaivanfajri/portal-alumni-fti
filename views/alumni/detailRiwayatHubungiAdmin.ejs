@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@3.8.0/dist/full.css" rel="stylesheet" />
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            greenSoft: '#F0F8F0',
+                            greenFTI: '#166534',
+                        },
+                    },
+                },
+                daisyui: {
+                    themes: ['light'],
+                },
+            };
+        </script>
+        <title>Detail Pesan - Alumni</title>
+    </head>
+    <body class="bg-greenSoft min-h-screen">
+        <%- include('alumni-partials/navbar') %>
+
+        <section class="py-16 px-8 max-w-4xl mx-auto">
+            <div class="flex items-center mb-6">
+                <a href="/alumni/riwayat-hubungi-admin" class="btn btn-ghost mr-4">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <h2 class="text-3xl font-bold text-greenFTI">Detail Pesan</h2>
+            </div>
+
+            <% if (success && success.length) { %>
+            <div class="alert alert-success mb-6">
+                <div class="flex-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span><%= success %></span>
+                </div>
+            </div>
+            <% } %> <% if (error && error.length) { %>
+            <div class="alert alert-error mb-6">
+                <div class="flex-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    <span><%= error %></span>
+                </div>
+            </div>
+            <% } %>
+
+            <div class="bg-white shadow-md rounded-md p-8 space-y-6">
+                <!-- Status Pesan -->
+                <div class="flex justify-between items-center pb-4 border-b border-gray-100">
+                    <div>
+                        <span class="font-semibold <%= message.status === 'dibalas' ? 'text-greenFTI' : 'text-yellow-600' %>">
+                            <% if (message.status === 'dibalas') { %>
+                            <i class="fas fa-check-circle mr-2"></i> Sudah Dibalas <% } else { %> <i class="fas fa-clock mr-2"></i> Menunggu Balasan <% } %>
+                        </span>
+                    </div>
+                    <span class="text-sm text-gray-500">
+                        <i class="far fa-calendar-alt mr-1"></i>
+                        <%= new Date(message.tanggal_kirim).toLocaleString() %>
+                    </span>
+                </div>
+
+                <!-- Isi Pesan Alumni -->
+                <div>
+                    <h3 class="font-bold text-gray-700 mb-2">Pesan Anda:</h3>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <p class="whitespace-pre-line"><%= message.pesan %></p>
+                    </div>
+                </div>
+
+                <!-- Balasan Admin -->
+                <% if (message.status === 'dibalas') { %>
+                <div>
+                    <h3 class="font-bold text-greenFTI mb-2 flex items-center">
+                        <i class="fas fa-reply mr-2"></i>
+                        Balasan dari <%= message.dibalas_oleh || 'Admin' %>
+                    </h3>
+                    <div class="bg-greenSoft p-4 rounded-lg">
+                        <p class="whitespace-pre-line"><%= message.balasan %></p>
+                    </div>
+                    <p class="text-sm text-gray-500 mt-2">
+                        <i class="far fa-clock mr-1"></i>
+                        Dibalas pada <%= new Date(message.tanggal_dibalas).toLocaleString() %>
+                    </p>
+                </div>
+                <% } else { %>
+                <div class="bg-yellow-50 p-4 rounded-lg text-center">
+                    <i class="fas fa-clock text-yellow-500 text-2xl mb-2"></i>
+                    <p class="text-yellow-700">Pesan Anda sedang dalam proses peninjauan oleh admin</p>
+                </div>
+                <% } %>
+            </div>
+        </section>
+
+        <%- include('alumni-partials/footer') %>
+    </body>
+</html>
