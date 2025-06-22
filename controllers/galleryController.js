@@ -447,3 +447,53 @@ exports.publicAlbumDetail = (req, res) => {
         });
     });
 };
+
+exports.alumniGallery = (req, res) => {
+    const query = `
+        SELECT ga.*,
+        (SELECT COUNT(*) FROM galeri_foto gf WHERE gf.album_id = ga.id) as jumlah_foto,
+        (SELECT gf.file_path FROM galeri_foto gf WHERE gf.album_id = ga.id ORDER BY gf.tanggal_dibuat ASC LIMIT 1) as cover_foto
+        FROM galeri_album ga
+        WHERE ga.status = 'aktif'
+        ORDER BY ga.tanggal_dibuat DESC
+    `;
+    
+    db.query(query, (err, albums) => {
+        if (err) {
+            console.error('Error fetch public albums:', err);
+            return res.render('error', { message: 'Gagal mengambil data galeri.' });
+        }
+        // Ambil data alumni dari session dan kirim ke view
+        res.render('alumni/galeri', { 
+            albums,
+            alumni: req.session.alumni // pastikan session alumni sudah tersedia
+        });
+    });
+};
+
+exports.detailAlumniGallery = (req, res) => {
+    const albumId = req.params.id;
+    
+    // Get album info (hanya yang aktif)
+    const albumQuery = 'SELECT * FROM galeri_album WHERE id = ? AND status = "aktif"';
+    // Get photos in album
+    const photosQuery = 'SELECT * FROM galeri_foto WHERE album_id = ? ORDER BY tanggal_dibuat DESC';
+    
+    db.query(albumQuery, [albumId], (err, albumResults) => {
+        if (err || albumResults.length === 0) {
+            console.error('Error fetch public album:', err);
+            return res.render('error', { message: 'Album tidak ditemukan.' });
+        }
+        
+        const album = albumResults[0];
+        
+        db.query(photosQuery, [albumId], (err, photos) => {
+            if (err) {
+                console.error('Error fetch photos:', err);
+                return res.render('error', { message: 'Gagal mengambil data foto.' });
+            }
+            
+            res.render('alumni/galeriDetail', { album, photos, alumni: req.session.alumni }); // pastikan session alumni sudah tersedia
+        });
+    });
+};
