@@ -108,7 +108,7 @@ exports.deleteAlumni = (req, res) => {
 // Ekspor data alumni ke Excel
 exports.exportAlumni = (req, res) => {
     const query = `
-        SELECT 
+        SELECT
             alumni.nim,
             alumni_profiles.nama_lengkap,
             alumni_profiles.jenis_kelamin,

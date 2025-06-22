@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Alumni | Portal Alumni</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+   <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.2/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://kit.fontawesome.com/4e5b6b6e8b.js" crossorigin="anonymous"></script>
+</head>
+<body class="bg-gradient-to-br from-green-50 to-green-100 min-h-screen">
+<%- include('alumni-partials/navbar') %>
+    <div class="container mx-auto px-4 py-10">
+        <h1 class="text-4xl font-bold text-center mb-10 text-green-800">Daftar lowongan yang saya upload</h1>
+ 
+    <style>
+        .form-container {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .form-header {
+            background-color: #047857;
+            color: white;
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+        .form-input {
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            padding: 10px 15px;
+            width: 100%;
+            transition: border-color 0.3s;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #047857;
+            box-shadow: 0 0 0 3px rgba(4, 120, 87, 0.1);
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #374151;
+        }
+        .btn-submit {
+            background-color: #047857;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        .btn-submit:hover {
+            background-color: #065f46;
+        }
+    </style>
+    
+</head>
+
+
+
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto form-container">
+            <div class="form-header py-4 px-6">
+                <h1 class="text-2xl font-bold"><i class="fas fa-user-plus mr-2"></i> Lengkapi Profil Alumni</h1>
+                <p class="mt-1">Silakan lengkapi data diri Anda sebagai alumni</p>
+            </div>
+            
+            <div class="p-6">
+                <% if (error) { %>
+                    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+                        <%= error %>
+                    </div>
+                <% } %>
+                
+                <form method="POST" action="/alumni/profil" enctype="multipart/form-data">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Kolom Kiri -->
+                        <div>
+                            <div class="mb-5">
+                                <label class="form-label" for="nim">NIM</label>
+                                <input class="form-input" id="nim" type="text" value="<%= alumni.nim %>" readonly>
+                            </div>
+                            
+                            <div class="mb-5">
+                                <label class="form-label" for="nama_lengkap">Nama Lengkap <span class="text-red-600">*</span></label>
+                                <input class="form-input" id="nama_lengkap" name="nama_lengkap" type="text" placeholder="Masukkan nama lengkap" required>
+                            </div>
+                            
+                            <div class="mb-5">
+                                <label class="form-label" for="jenis_kelamin">Jenis Kelamin <span class="text-red-600">*</span></label>
+                                <select class="form-input" id="jenis_kelamin" name="jenis_kelamin" required>
+                                    <option value="" disabled selected>Pilih Jenis Kelamin</option>
+                                    <option value="Laki-laki">Laki-laki</option>
+                                    <option value="Perempuan">Perempuan</option>
+                                </select>
+                            </div>
+                            
+                            <div class="mb-5">
+                                <label class="form-label" for="program_studi">Program Studi <span class="text-red-600">*</span></label>
+                                <input class="form-input" id="program_studi" name="program_studi" type="text" placeholder="Contoh: Informatika" required>
+                            </div>
+                            
+                            <div class="mb-5">
+                                <label class="form-label" for="tahun_masuk">Tahun Masuk <span class="text-red-600">*</span></label>
+                                <input class="form-input" id="tahun_masuk" name="tahun_masuk" type="number" min="1900" max="2099" step="1" placeholder="Contoh: 2020" required>
+                            </div>
+                            
+                            <div class="mb-5">
+                                <label class="form-label" for="tahun_lulus">Tahun Lulus <span class="text-red-600">*</span></label>
+                                <input class="form-input" id="tahun_lulus" name="tahun_lulus" type="number" min="1900" max="2099" step="1" placeholder="Contoh: 2024" required>
+                            </div>
+                        </div>
+                        
+                        <!-- Kolom Kanan -->
+                        <div>
+                            <div class="mb-5">
+                                <label class="form-label" for="alamat">Alamat Lengkap <span class="text-red-600">*</span></label>
+                                <textarea class="form-input" id="alamat" name="alamat" rows="3" placeholder="Masukkan alamat lengkap" required></textarea>
+                            </div>
+                            
+                            <div class="mb-5">
+                                <label class="form-label" for="kota">Kota <span class="text-red-600">*</span></label>
+                                <input class="form-input" id="kota" name="kota" type="text" placeholder="Contoh: Padang" required>
+                            </div>
+                            
+                            <div class="mb-5">
+                                <label class="form-label" for="pekerjaan_sekarang">Pekerjaan Sekarang</label>
+                                <input class="form-input" id="pekerjaan_sekarang" name="pekerjaan_sekarang" type="text" placeholder="Contoh: Software Engineer">
+                            </div>
+                            
+                            <div class="mb-5">
+                                <label class="form-label" for="nama_perusahaan">Nama Perusahaan</label>
+                                <input class="form-input" id="nama_perusahaan" name="nama_perusahaan" type="text" placeholder="Contoh: PT. Contoh Teknologi">
+                            </div>
+                            
+                            <div class="mb-5">
+                                <label class="form-label" for="bidang_industri">Bidang Industri</label>
+                                <input class="form-input" id="bidang_industri" name="bidang_industri" type="text" placeholder="Contoh: Teknologi Informasi">
+                            </div>
+                            
+                            <div class="mb-5">
+                                <label class="form-label" for="instagram">Instagram</label>
+                                <input class="form-input" id="instagram" name="instagram" type="text" placeholder="Contoh: @username">
+                            </div>
+                            
+                            <div class="mb-5">
+                                <label class="form-label" for="linkedin">LinkedIn</label>
+                                <input class="form-input" id="linkedin" name="linkedin" type="text" placeholder="Contoh: linkedin.com/in/username">
+                            </div>
+                            
+                            <div class="mb-5">
+                                <label class="form-label" for="foto_profil">Foto Profil</label>
+                                <input class="form-input" id="foto_profil" name="foto_profil" type="file" accept="image/*">
+                                <p class="text-sm text-gray-500 mt-1">Format: JPG/PNG, maksimal 2MB</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-8 flex justify-end">
+                        <button class="btn-submit" type="submit">
+                            <i class="fas fa-save mr-2"></i> Simpan Profil
+                        </button>
+                    </div>
+                    
+                    <div class="mt-4 text-sm text-gray-600">
+                        <p><span class="text-red-600">*</span> Menandakan field wajib diisi</p>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <%- include('alumni-partials/footer') %>
+</body>
+</html>

@@ -61,7 +61,7 @@ app.use((req, res, next) => {
 // ==== Rate Limiter (optional) ====
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 menit
-    max: 100, // maksimal 100 request per IP
+    max: 1000, // maksimal 100 request per IP
 });
 app.use(limiter);
 

@@ -19,7 +19,7 @@
             <div class="bg-white rounded-lg shadow-md overflow-hidden">
                 <div class="p-4 border-b flex justify-between items-center">
                     <div class="flex space-x-4">
-                        <input type="text" id="searchInput" placeholder="Cari alumni..." class="px-4 py-2 border rounded-lg w-64" />
+                        <input type="text" id="searchInput" placeholder="Cari alumni berdasarkan nama/nim" class="px-4 py-2 border rounded-lg w-64" />
                         <select id="statusFilter" class="px-4 py-2 border rounded-lg">
                             <option value="">Semua Status</option>
                             <option value="aktif">Aktif</option>
@@ -83,10 +83,10 @@
 
                 <div class="bg-white px-4 py-3 flex items-center justify-between border-t border-gray-200 sm:px-6">
                     <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-                        <div>
-                            <p class="text-sm text-gray-700">Menampilkan 
-                                <span class="font-medium" id="fromNum">0</span> sampai 
-                                <span class="font-medium" id="toNum">0</span> dari 
+                        <div id="resultInfo" style="display:none">
+                            <p class="text-sm text-gray-700">Menampilkan
+                                <span class="font-medium" id="fromNum">0</span> sampai
+                                <span class="font-medium" id="toNum">0</span> dari
                                 <span class="font-medium" id="totalNum">0</span> hasil
                             </p>
                         </div>
@@ -125,22 +125,23 @@
                 });
             });
 
-            // Fungsi untuk memfilter baris berdasarkan pencarian
-            function filterRows() {
+            // Fungsi untuk memfilter dan memperbarui tabel
+            function updateTable() {
                 const searchValue = document.getElementById('searchInput').value.toLowerCase().trim();
                 const statusValue = document.getElementById('statusFilter').value.toLowerCase().trim();
                 const rows = document.querySelectorAll('tbody tr.data-row');
-                
                 let visibleCount = 0;
-                
                 rows.forEach((row) => {
-                    const cells = row.querySelectorAll('td');
-                    const nim = cells[0].textContent.toLowerCase().trim();
-                    const name = cells[1].textContent.toLowerCase().trim();
-                    
-                    // Ambil teks status dari span dalam sel status
+                    const nimCell = row.querySelector('td:nth-child(1)');
+                    const nameCell = row.querySelector('td:nth-child(2)');
                     const statusCell = row.querySelector('.status-cell');
-                    const status = statusCell ? statusCell.textContent.toLowerCase().trim() : '';
+                    
+                    // Pastikan semua elemen ada
+                    if (!nimCell || !nameCell || !statusCell) return;
+                    
+                    const nim = nimCell.textContent.toLowerCase().trim();
+                    const name = nameCell.textContent.toLowerCase().trim();
+                    const status = statusCell.textContent.toLowerCase().trim();
                     
                     const matchSearch = name.includes(searchValue) || nim.includes(searchValue);
                     const matchStatus = !statusValue || status === statusValue;
@@ -159,29 +160,33 @@
                     noDataRow.style.display = visibleCount === 0 ? '' : 'none';
                 }
                 
-                updateResultInfo();
+                // Perbarui info hasil
+                document.getElementById('fromNum').textContent = visibleCount > 0 ? 1 : 0;
+                document.getElementById('toNum').textContent = visibleCount;
+                document.getElementById('totalNum').textContent = visibleCount;
+                // Tampilkan/hide info hasil
+                const resultInfo = document.getElementById('resultInfo');
+                if (searchValue !== "" || statusValue !== "") {
+                    resultInfo.style.display = "";
+                } else {
+                    resultInfo.style.display = "none";
+                }
             }
 
             // Event listener untuk input pencarian dan filter
-            document.getElementById('searchInput').addEventListener('input', filterRows);
-            document.getElementById('statusFilter').addEventListener('change', filterRows);
-
-            // Fungsi untuk memperbarui informasi hasil
-            function updateResultInfo() {
-                const visibleRows = document.querySelectorAll('tbody tr.data-row[style=""]');
-                const visibleCount = visibleRows.length;
-                
-                const fromNum = visibleCount > 0 ? 1 : 0;
-                const toNum = visibleCount;
-                
-                document.getElementById('fromNum').textContent = fromNum;
-                document.getElementById('toNum').textContent = toNum;
-                document.getElementById('totalNum').textContent = visibleCount;
-            }
+            document.getElementById('searchInput').addEventListener('input', updateTable);
+            document.getElementById('statusFilter').addEventListener('change', updateTable);
 
             // Inisialisasi saat halaman dimuat
             document.addEventListener('DOMContentLoaded', function() {
-                filterRows();
+                // Sembunyikan baris "tidak ada data" jika ada data
+                const noDataRow = document.querySelector('tr.no-data-row');
+                if (noDataRow) {
+                    noDataRow.style.display = '<%= alumniProfiles.length > 0 ? "none" : "" %>';
+                }
+                
+                // Jalankan update untuk pertama kali
+                updateTable();
             });
         </script>
     </body>

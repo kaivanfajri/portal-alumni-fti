@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <title>Profil Alumni</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.2/dist/full.css" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+</head>
+<body class="bg-green-50 min-h-screen">
+    <%- include('alumni-partials/navbar') %>
+    <div class="container mx-auto py-10">
+        <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-lg p-8">
+            <div class="flex flex-col items-center">
+                <% if (profile.foto_profil) { %>
+                  <img src="/uploads/<%= profile.foto_profil %>" alt="Foto Profil" class="w-32 h-32 rounded-full object-cover mb-4 border-4 border-green-200">
+                <% } else { %>
+                  <div class="w-32 h-32 rounded-full mb-4 border-4 border-green-200 flex items-center justify-center bg-green-50 text-green-700 font-semibold text-center">
+                    Foto Profil
+                  </div>
+                <% } %>
+                <h2 class="text-2xl font-bold mb-2"><%= profile.nama_lengkap %></h2>
+                <p class="text-gray-600 mb-2"><%= profile.program_studi %> | <%= profile.tahun_masuk %> - <%= profile.tahun_lulus %></p>
+                <p class="text-gray-600 mb-2"><%= profile.jenis_kelamin %></p>
+                <p class="text-gray-600 mb-2"><%= profile.alamat %>, <%= profile.kota %></p>
+                <p class="text-gray-600 mb-2">Pekerjaan: <%= profile.pekerjaan_sekarang %> di <%= profile.nama_perusahaan %></p>
+                <p class="text-gray-600 mb-2">Industri: <%= profile.bidang_industri %></p>
+                <div class="flex gap-4 mt-2">
+                    <% if (profile.instagram) { %>
+                        <a href="https://instagram.com/<%= profile.instagram %>" target="_blank" class="text-pink-500"><i class="fab fa-instagram"></i></a>
+                    <% } %>
+                    <% if (profile.linkedin) { %>
+                        <a href="<%= profile.linkedin %>" target="_blank" class="text-blue-700"><i class="fab fa-linkedin"></i></a>
+                    <% } %>
+                </div>
+                <div class="mt-6 text-xs text-gray-400">Terdaftar: <%= profile.created_at ? profile.created_at.toLocaleDateString ? profile.created_at.toLocaleDateString() : profile.created_at.toString().substring(0,10) : '' %></div>
+            </div>
+        </div>
+    </div>
+    <%- include('alumni-partials/footer') %>
+</body>
+</html>

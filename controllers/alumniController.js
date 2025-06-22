@@ -433,6 +433,197 @@ const alumniController = {
         res.redirect('/alumni/dashboard');
     },
 
+    getProfilAlumni: (req, res) => {
+        try {
+            // Ambil alumni_id dari session/login, atau dari req.session.alumni.id
+            const alumni_id = req.session.alumni && req.session.alumni.id;
+            if (!alumni_id) return res.redirect('/alumni/login');
+
+            db.query('SELECT * FROM alumni_profiles WHERE alumni_id = ?', [alumni_id], (err, rows) => {
+                if (err) {
+                    console.error(err);
+                    return res.status(500).send('Terjadi kesalahan pada server');
+                }
+                if (rows.length === 0) return res.render('alumni/profilAlumni', { profile: {} });
+                res.render('alumni/profilAlumni', { profile: rows[0], alumni: req.session.alumni });
+            });
+        } catch (err) {
+            console.error(err);
+            res.status(500).send('Terjadi kesalahan pada server');
+        }
+    },
+
+    // Menampilkan form input profil alumni
+    showInputProfileForm: (req, res) => {
+        const alumniId = req.session.alumni.id;
+        
+        // Cek apakah profil sudah ada
+        const query = `
+            SELECT ap.*, a.nim, a.email, a.status
+            FROM alumni_profiles ap
+            RIGHT JOIN alumni a ON ap.alumni_id = a.id
+            WHERE a.id = ?
+        `;
+        
+        db.query(query, [alumniId], (err, results) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).send('Terjadi kesalahan sistem');
+            }
+            
+            const profile = results[0] || {};
+            
+            res.render('alumni/inputProfileAlumni', {
+                alumni: req.session.alumni,
+                profile: profile,
+                error: null
+            });
+        });
+    },
+
+    // Menyimpan profil alumni
+    saveProfile: (req, res) => {
+        const alumniId = req.session.alumni.id;
+        const {
+            nama_lengkap,
+            jenis_kelamin,
+            program_studi,
+            tahun_masuk,
+            tahun_lulus,
+            alamat,
+            kota,
+            pekerjaan_sekarang,
+            nama_perusahaan,
+            bidang_industri,
+            instagram,
+            linkedin
+        } = req.body;
+        
+        const foto_profil = req.file ? req.file.filename : null;
+
+        // Cek apakah profil sudah ada
+        const checkQuery = 'SELECT * FROM alumni_profiles WHERE alumni_id = ?';
+        db.query(checkQuery, [alumniId], (err, results) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).render('alumni/inputProfileAlumni', {
+                    alumni: req.session.alumni,
+                    profile: req.body,
+                    error: 'Terjadi kesalahan sistem'
+                });
+            }
+            
+            const currentDate = new Date();
+            
+            if (results.length > 0) {
+                // Update data
+                const updateQuery = `
+                    UPDATE alumni_profiles SET
+                        nama_lengkap = ?,
+                        jenis_kelamin = ?,
+                        program_studi = ?,
+                        tahun_masuk = ?,
+                        tahun_lulus = ?,
+                        alamat = ?,
+                        kota = ?,
+                        pekerjaan_sekarang = ?,
+                        nama_perusahaan = ?,
+                        bidang_industri = ?,
+                        instagram = ?,
+                        linkedin = ?,
+                        foto_profil = COALESCE(?, foto_profil),
+                        updated_at = ?
+                    WHERE alumni_id = ?
+                `;
+                
+                const updateValues = [
+                    nama_lengkap,
+                    jenis_kelamin,
+                    program_studi,
+                    tahun_masuk,
+                    tahun_lulus,
+                    alamat,
+                    kota,
+                    pekerjaan_sekarang,
+                    nama_perusahaan,
+                    bidang_industri,
+                    instagram,
+                    linkedin,
+                    foto_profil,
+                    currentDate,
+                    alumniId
+                ];
+                
+                db.query(updateQuery, updateValues, (err, result) => {
+                    if (err) {
+                        console.error(err);
+                        return res.status(500).render('alumni/inputProfileAlumni', {
+                            alumni: req.session.alumni,
+                            profile: req.body,
+                            error: 'Gagal memperbarui profil'
+                        });
+                    }
+                    
+                    res.redirect('/alumni/dashboard');
+                });
+            } else {
+                // Insert data baru
+                const insertQuery = `
+                    INSERT INTO alumni_profiles (
+                        alumni_id,
+                        nama_lengkap,
+                        jenis_kelamin,
+                        program_studi,
+                        tahun_masuk,
+                        tahun_lulus,
+                        alamat,
+                        kota,
+                        pekerjaan_sekarang,
+                        nama_perusahaan,
+                        bidang_industri,
+                        instagram,
+                        linkedin,
+                        foto_profil,
+                        created_at,
+                        updated_at
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                `;
+                
+                const insertValues = [
+                    alumniId,
+                    nama_lengkap,
+                    jenis_kelamin,
+                    program_studi,
+                    tahun_masuk,
+                    tahun_lulus,
+                    alamat,
+                    kota,
+                    pekerjaan_sekarang,
+                    nama_perusahaan,
+                    bidang_industri,
+                    instagram,
+                    linkedin,
+                    foto_profil,
+                    currentDate,
+                    currentDate
+                ];
+                
+                db.query(insertQuery, insertValues, (err, result) => {
+                    if (err) {
+                        console.error(err);
+                        return res.status(500).render('alumni/inputProfileAlumni', {
+                            alumni: req.session.alumni,
+                            profile: req.body,
+                            error: 'Gagal menyimpan profil'
+                        });
+                    }
+                    
+                    res.redirect('/alumni/dashboard');
+                });
+            }
+        });
+    },
+
     // Logout
     logoutAlumni: (req, res) => {
         req.session.destroy(() => {
