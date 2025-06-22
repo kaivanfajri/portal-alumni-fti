@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Tambah Album - Portal Alumni</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.2/dist/full.min.css" rel="stylesheet" type="text/css" />
+        <!-- Font Awesome untuk icon -->
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+        </style>
+    </head>
+    <body class="bg-gradient-to-br from-green-50 to-green-100 min-h-screen">
+        <!-- Navbar -->
+        <%- include('admin-partials/navbar') %>
+
+        <div class="container mx-auto px-6 py-8">
+            <!-- Header Section -->
+            <div class="text-center mb-10">
+                <div class="flex items-center justify-center mb-4">
+                    <div class="w-16 h-16 rounded-full bg-green-600 flex items-center justify-center mr-4">
+                        <i class="fas fa-images text-white text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-4xl font-bold text-green-700">Tambah Album</h1>
+                        <p class="text-lg text-green-600 mt-2">Tambahkan album baru untuk galeri kegiatan alumni</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form for adding album -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                <form action="/admin/gallery/albums/add" method="POST">
+                    <!-- Album Title -->
+                    <div class="mb-4">
+                        <label for="judul" class="block text-sm font-semibold text-gray-700">Judul Album</label>
+                        <input type="text" id="judul" name="judul" class="input input-bordered w-full" required />
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mb-4">
+                        <label for="deskripsi" class="block text-sm font-semibold text-gray-700">Deskripsi</label>
+                        <textarea id="deskripsi" name="deskripsi" class="textarea textarea-bordered w-full" rows="4"></textarea>
+                    </div>
+
+                    <!-- Status -->
+                    <div class="mb-4">
+                        <label for="status" class="block text-sm font-semibold text-gray-700">Status</label>
+                        <select id="status" name="status" class="select select-bordered w-full" required>
+                            <option value="aktif">Aktif</option>
+                            <option value="nonaktif">Nonaktif</option>
+                        </select>
+                    </div>
+
+                    <!-- Event Date -->
+                    <div class="mb-4">
+                        <label for="tanggal_kegiatan" class="block text-sm font-semibold text-gray-700">Tanggal Kegiatan</label>
+                        <input type="date" id="tanggal_kegiatan" name="tanggal_kegiatan" class="input input-bordered w-full" />
+                    </div>
+
+                    <!-- Submit Button -->
+                    <div class="mt-6">
+                        <button type="submit" class="btn btn-lg shadow-lg text-white bg-[#FFD700] border-white">
+                            <i class="fas fa-save mr-2"></i>Simpan Album
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <%- include('admin-partials/footer') %>
+
+        <!-- JavaScript -->
+        <script>
+            // Add any custom JS functionality if needed here
+        </script>
+    </body>
+</html>

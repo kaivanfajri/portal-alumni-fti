@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Detail Notifikasi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.2/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+</head>
+<body class="bg-gradient-to-br from-green-50 to-green-100 min-h-screen">
+<%- include('admin-partials/navbar') %>
+
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-6xl mx-auto">
+        <div class="flex items-center mb-8">
+            <a href="/admin/notifikasi" class="btn btn-ghost btn-sm mr-4">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <h1 class="text-3xl font-bold text-gray-800">Detail Notifikasi</h1>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Detail Notifikasi -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-semibold text-gray-800"><%= notification.judul %></h2>
+                            <button class="btn btn-sm btn-error" onclick="deleteNotification()">
+                                <i class="fa fa-trash"></i> Hapus
+                            </button>
+                        </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Isi Notifikasi</label>
+                            <p class="mt-1 text-gray-900 bg-gray-50 p-3 rounded"><%= notification.isi %></p>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Dikirim Oleh</label>
+                                <p class="mt-1 text-gray-900"><%= notification.admin_pengirim || 'Admin' %></p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Waktu Kirim</label>
+                                <p class="mt-1 text-gray-900"><%= formatTime(notification.waktu_kirim) %></p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Tujuan Pengiriman</label>
+                                <div class="mt-1">
+                                    <% if (notification.ditujukan_ke === 'semua') { %>
+                                        <span class="badge badge-info">Semua Alumni</span>
+                                        <p class="text-sm text-gray-600 mt-1">Notifikasi dikirim ke semua alumni yang aktif</p>
+                                    <% } else if (notification.ditujukan_ke === 'tahun_lulus') { %>
+                                        <span class="badge badge-warning">Alumni Tahun <%= notification.tahun_lulus %></span>
+                                        <p class="text-sm text-gray-600 mt-1">Notifikasi dikirim khusus untuk alumni lulusan tahun <%= notification.tahun_lulus %></p>
+                                    <% } else if (notification.ditujukan_ke === 'spesifik' && notification.penerima_id) { %>
+                                        <span class="badge badge-primary">Alumni Tertentu</span>
+                                        <p class="text-sm text-gray-600 mt-1">
+                                            <strong><%= recipientInfo.nama_lengkap %></strong> 
+                                            (<%= recipientInfo.nim %>) - 
+                                            Tahun <%= recipientInfo.tahun_lulus %>
+                                        </p>
+                                    <% } else if (notification.ditujukan_ke === 'spesifik') { %>
+                                        <span class="badge badge-primary">Alumni Tertentu</span>
+                                        <p class="text-sm text-gray-600 mt-1">Alumni dengan ID: <%= notification.penerima_id %></p>
+                                    <% } %>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Status Notifikasi</label>
+                                <p class="mt-1">
+                                    <span class="badge <%= notification.status === 'terkirim' ? 'badge-success' : 'badge-warning' %>">
+                                        <%= notification.status === 'terkirim' ? 'Terkirim' : 'Draft' %>
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Daftar Status Pembacaan Alumni -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Status Pembacaan Alumni</h3>
+                    
+                    <% if (!readStatus || readStatus.length === 0) { %>
+                        <div class="p-8 text-center">
+                            <i class="fas fa-users text-4xl text-gray-300 mb-4"></i>
+                            <p class="text-gray-500">Belum ada data pembacaan</p>
+                        </div>
+                    <% } else { 
+                        // Hitung jumlah yang sudah dibaca dan belum
+                        const readCount = readStatus.filter(s => s.status === 'read').length;
+                        const unreadCount = readStatus.length - readCount;
+                    %>
+                        <div class="stats shadow mb-4">
+                            <div class="stat">
+                                <div class="stat-title">Total Penerima</div>
+                                <div class="stat-value"><%= readStatus.length %></div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-title">Sudah Dibaca</div>
+                                <div class="stat-value text-success"><%= readCount %></div>
+                            </div>
+                            <div class="stat">
+                                <div class="stat-title">Belum Dibaca</div>
+                                <div class="stat-value text-warning"><%= unreadCount %></div>
+                            </div>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="table table-zebra w-full">
+                                <thead>
+                                    <tr>
+                                        <th>Nama</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% readStatus.forEach(status => { %>
+                                        <tr>
+                                            <td><%= status.nama_lengkap %></td>
+                                            <td>
+                                                <% if (status.status === 'read') { %>
+                                                    <span class="badge badge-success">Dibaca</span>
+                                                <% } else { %>
+                                                    <span class="badge badge-warning">Belum Dibaca</span>
+                                                <% } %>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('admin-partials/footer') %>
+
+<script>
+function deleteNotification() {
+    if (confirm('Apakah Anda yakin ingin menghapus notifikasi ini?')) {
+        fetch(`/admin/notifikasi/<%= notification.id %>/hapus`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                window.location.href = '/admin/notifikasi';
+            } else {
+                alert('Gagal menghapus notifikasi');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Terjadi kesalahan saat menghapus notifikasi');
+        });
+    }
+}
+</script>
+</body>
+</html>

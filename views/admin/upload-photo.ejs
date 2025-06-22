@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upload Foto - Portal Alumni</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.2/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .preview-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+        .preview-item {
+            position: relative;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+        }
+        .preview-item img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        .remove-btn {
+            position: absolute;
+            top: 0.25rem;
+            right: 0.25rem;
+            background-color: rgba(220, 38, 38, 0.8);
+            color: white;
+            border-radius: 50%;
+            width: 1.5rem;
+            height: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .dropzone {
+            border: 2px dashed #9ca3af;
+            border-radius: 0.5rem;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .dropzone.active {
+            border-color: #3b82f6;
+            background-color: #f0f9ff;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-green-50 to-green-100 min-h-screen">
+    <!-- Navbar -->
+    <%- include('admin-partials/navbar') %>
+
+    <div class="container mx-auto px-6 py-8">
+        <!-- Header Section -->
+        <div class="text-center mb-10">
+            <div class="flex items-center justify-center mb-4">
+                <div class="w-16 h-16 rounded-full bg-green-600 flex items-center justify-center mr-4">
+                    <i class="fas fa-camera text-white text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="text-4xl font-bold text-green-700">Upload Foto</h1>
+                    <p class="text-lg text-green-600 mt-2">Tambahkan foto ke album "<%= album.judul %>"</p>
+                </div>
+            </div>
+            
+            <!-- Back Button -->
+            <div class="mt-6">
+                <a href="/admin/gallery/albums/<%= album.id %>" class="btn btn-ghost">
+                    <i class="fas fa-arrow-left mr-2"></i>Kembali ke Album
+                </a>
+            </div>
+        </div>
+
+        <!-- Upload Form -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <form id="Formupload" action="/admin/gallery/albums/<%= album.id %>/upload" method="POST" enctype="multipart/form-data">
+                <div class="form-control mb-6">
+                    <label class="label">
+                        <span class="label-text">Pilih Foto</span>
+                    </label>
+                    
+                    <div id="dropzone" class="dropzone">
+                        <div class="flex flex-col items-center justify-center">
+                            <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-2"></i>
+                            <p class="mb-2">Seret dan lepas file gambar di sini atau</p>
+                            <label for="photoInput" class="btn btn-primary cursor-pointer">
+                                <i class="fas fa-folder-open mr-2"></i>Pilih File
+                            </label>
+                            <input type="file" id="photoInput" name="photos" multiple accept="image/*" class="hidden" />
+                        </div>
+                    </div>
+                    
+                    <label class="label">
+                        <span class="label-text-alt">Format yang didukung: JPG, JPEG, PNG, GIF (Maks. 10 file)</span>
+                    </label>
+                </div>
+
+                <!-- Preview Container -->
+                <div id="previewContainer" class="preview-container hidden"></div>
+
+                <div class="form-control mb-6">
+                    <label class="label">
+                        <span class="label-text">Keterangan (Opsional)</span>
+                    </label>
+                    <textarea name="keterangan" class="textarea textarea-bordered h-24" placeholder="Tambahkan keterangan untuk semua foto yang diupload"></textarea>
+                </div>
+
+                <div class="flex justify-end">
+                    <button type="submit" class="btn btn-primary shadow-lg">
+                        <i class="fas fa-upload mr-2"></i>Upload Foto
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <% const photoList = typeof photos !== 'undefined' ? photos : [] %>
+        <!-- Current Photos Section -->
+        <div class="bg-white rounded-xl shadow-lg p-6">
+            <h3 class="text-xl font-semibold mb-4">
+                <i class="fas fa-images mr-2"></i>Foto dalam Album Ini (<%= photoList.length %>)
+            </h3>
+            
+            <% if (photoList.length > 0) { %>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+                    <% photoList.forEach(photo => { %>
+                        <div class="relative group">
+                            <img src="<%= photo.file_path %>" alt="Foto Album" class="w-full h-48 object-cover rounded-lg">
+                            <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
+                                <button onclick="deletePhoto('<%= photo.id %>')" class="btn btn-error btn-sm mr-2">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                <a href="<%= photo.file_path %>" target="_blank" class="btn btn-info btn-sm">
+                                    <i class="fas fa-expand"></i>
+                                </a>
+                            </div>
+                            <% if (photo.keterangan) { %>
+                                <div class="absolute bottom-0 left-0 right-0 bg-black bg-opacity-70 text-white p-2 text-sm rounded-b-lg">
+                                    <%= photo.keterangan %>
+                                </div>
+                            <% } %>
+                        </div>
+                    <% }); %>
+                </div>
+            <% } else { %>
+                <div class="text-center py-8">
+                    <div class="text-gray-400 mb-4">
+                        <i class="fas fa-image text-6xl"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-600 mb-2">Belum Ada Foto</h3>
+                    <p class="text-gray-500">Upload foto pertama Anda untuk album ini</p>
+                </div>
+            <% } %>
+        </div>
+
+    <!-- Footer -->
+    <%- include('admin-partials/footer') %>
+
+    <!-- JavaScript -->
+    <script>
+        // Drag and Drop Functionality
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('photoInput');
+        const previewContainer = document.getElementById('previewContainer');
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropzone.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropzone.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight() {
+            dropzone.classList.add('active');
+        }
+
+        function unhighlight() {
+            dropzone.classList.remove('active');
+        }
+
+        dropzone.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            fileInput.files = files;
+            handleFiles(files);
+        }
+
+        fileInput.addEventListener('change', function() {
+            handleFiles(this.files);
+        });
+
+        function handleFiles(files) {
+            previewContainer.innerHTML = '';
+            
+            if (files.length > 0) {
+                previewContainer.classList.remove('hidden');
+                
+                for (let i = 0; i < Math.min(files.length, 10); i++) {
+                    const file = files[i];
+                    if (!file.type.match('image.*')) continue;
+                    
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const previewItem = document.createElement('div');
+                        previewItem.className = 'preview-item';
+                        previewItem.innerHTML = `
+                            <img src="${e.target.result}" alt="Preview">
+                            <div class="remove-btn" onclick="removePreview(this)">
+                                <i class="fas fa-times"></i>
+                            </div>
+                        `;
+                        previewContainer.appendChild(previewItem);
+                    }
+                    reader.readAsDataURL(file);
+                }
+            } else {
+                previewContainer.classList.add('hidden');
+            }
+        }
+
+        function removePreview(element) {
+            element.parentElement.remove();
+            if (previewContainer.children.length === 0) {
+                previewContainer.classList.add('hidden');
+            }
+            // Update file input
+            const dataTransfer = new DataTransfer();
+            const remainingPreviews = document.querySelectorAll('.preview-item');
+            
+            remainingPreviews.forEach(preview => {
+                // Ini hanya contoh, implementasi aktual perlu menyesuaikan
+                // karena kita tidak bisa langsung mengakses File object dari preview
+            });
+            
+            fileInput.files = dataTransfer.files;
+        }
+
+        // Delete Photo Function
+        function deletePhoto(photoId) {
+            if (confirm('Apakah Anda yakin ingin menghapus foto ini?')) {
+                fetch(`/admin/gallery/photos/${photoId}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        location.reload();
+                    } else {
+                        alert('Gagal menghapus foto');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan saat menghapus foto');
+                });
+            }
+        }
+
+        // Form Submission Feedback
+        document.getElementById('uploadForm').addEventListener('submit', function(e) {
+            const submitBtn = this.querySelector('button[type="submit"]');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Mengupload...';
+            submitBtn.disabled = true;
+            
+            // Validasi minimal satu foto
+            if (fileInput.files.length === 0) {
+                e.preventDefault();
+                alert('Pilih minimal satu foto untuk diupload');
+                submitBtn.innerHTML = '<i class="fas fa-upload mr-2"></i>Upload Foto';
+                submitBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
