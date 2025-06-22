@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Kelola Galeri - Portal Alumni</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.2/dist/full.min.css" rel="stylesheet" type="text/css" />
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+        <style>
+            body {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+        </style>
+    </head>
+    <body class="bg-gradient-to-br from-green-50 to-green-100 min-h-screen">
+        <!-- Navbar -->
+        <%- include('admin-partials/navbar') %>
+
+        <div class="container mx-auto px-6 py-8">
+            <!-- Header Section -->
+            <div class="text-center mb-10">
+                <div class="flex items-center justify-center mb-4">
+                    <div class="w-16 h-16 rounded-full bg-green-600 flex items-center justify-center mr-4">
+                        <i class="fas fa-images text-white text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-4xl font-bold text-green-700">Kelola Galeri</h1>
+                        <p class="text-lg text-green-600 mt-2">Kelola album dan foto galeri kegiatan alumni</p>
+                    </div>
+                </div>
+                
+                <!-- Add Album Button -->
+                <div class="mt-6">
+                    <a href="/admin/gallery/albums/add" class="btn btn-primary shadow-lg text-white bg-[#FFD700] border-white">
+                        <i class="fas fa-plus mr-2"></i>Tambah Album Baru
+                    </a>
+                </div>
+            </div>
+
+            <!-- Filter and Search -->
+            <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                <div class="flex flex-wrap gap-4 items-center ">
+                    <div class="flex-1 min-w-64 ">
+                        <div class="relative">
+                            <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-black"></i>
+                            <input type="text" id="searchInput" placeholder="Cari album..." class="input input-bordered w-full pl-10 bg-gray-300" />
+                        </div>
+                    </div>
+                    <select id="statusFilter" class="select select-bordered bg-gray-300 text-black">
+                        <option value="">Filter Status</option>
+                        <option value="aktif">Aktif</option>
+                        <option value="nonaktif">Nonaktif</option>
+                    </select>
+                    <select id="sortFilter" class="select select-bordered bg-gray-300 text-black">
+                        <option value="newest">Terbaru</option>
+                        <option value="oldest">Terlama</option>
+                        <option value="title">Judul A-Z</option>
+                        <option value="photos">Jumlah Foto</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Album Cards Grid -->
+            <div id="albumsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                <% if (albums && albums.length > 0) { %>
+                    <% albums.forEach(album => { %>
+                        <div class="card bg-white shadow-xl hover:shadow-2xl transition-all duration-300 border album-card" 
+                        data-title="<%= album.judul.toLowerCase() %>"
+                        data-status="<%= album.status %>"
+                        data-date="<%= album.tanggal_dibuat %>"
+                        data-photos="<%= album.jumlah_foto %>">
+                        
+                            <div class="card-body">
+                                <div class="flex items-start justify-between mb-4">
+                                    <div class="badge <%= album.status === 'aktif' ? 'badge-success' : 'badge-warning' %> badge-sm">
+                                        <%= album.status === 'aktif' ? 'Aktif' : 'Nonaktif' %>
+                                    </div>
+                                    <div class="dropdown dropdown-end">
+                                        <div tabindex="0" role="button" class="btn btn-ghost btn-sm">
+                                            <i class="fas fa-ellipsis-v"></i>
+                                        </div>
+                                        <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+                                            <li>
+                                                <a href="/admin/gallery/albums/<%= album.id %>">
+                                                    <i class="fas fa-eye mr-2"></i>Lihat Detail
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="/admin/gallery/albums/<%= album.id %>/edit">
+                                                    <i class="fas fa-edit mr-2"></i>Edit Album
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="/admin/gallery/albums/<%= album.id %>/upload">
+                                                    <i class="fas fa-upload mr-2"></i>Upload Foto
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a onclick="deleteAlbum('<%= album.id %>')" class="text-red-600">
+                                                    <i class="fas fa-trash mr-2"></i>Hapus Album
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <h3 class="card-title text-lg mb-2">
+                                    <i class="fas fa-folder text-blue-600 mr-2"></i>
+                                    <%= album.judul %>
+                                </h3>
+
+                                <div class="space-y-2 mb-4">
+                                    <% if (album.deskripsi) { %>
+                                        <div class="text-sm text-gray-700">
+                                            <span><%= album.deskripsi.length > 100 ? album.deskripsi.substring(0, 100) + '...' : album.deskripsi %></span>
+                                        </div>
+                                    <% } %>
+                                    
+                                    <div class="text-xs text-gray-500 space-y-1">
+                                        <div><i class="fas fa-user mr-1"></i>Dibuat oleh: <%= album.dibuat_oleh_nama %></div>
+                                        <div><i class="fas fa-calendar mr-1"></i>
+                                            <%= new Date(album.tanggal_dibuat).toLocaleDateString('id-ID', {
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric'
+                                            }) %>
+                                        </div>
+                                        <% if (album.tanggal_kegiatan) { %>
+                                            <div><i class="fas fa-calendar-check mr-1"></i>Kegiatan: 
+                                                <%= new Date(album.tanggal_kegiatan).toLocaleDateString('id-ID', {
+                                                    year: 'numeric',
+                                                    month: 'long',
+                                                    day: 'numeric'
+                                                }) %>
+                                            </div>
+                                        <% } %>
+                                    </div>
+                                </div>
+
+                                <div class="flex flex-wrap gap-2 mb-4">
+                                    <div class="badge badge-outline badge-sm">
+                                        <i class="fas fa-camera mr-1"></i>
+                                        <%= album.jumlah_foto %> Foto
+                                    </div>
+                                </div>
+
+                                <div class="card-actions justify-between">
+                                    <a href="/admin/gallery/albums/<%= album.id %>" class="btn btn-info btn-sm text-white">
+                                        <i class="fas fa-eye mr-1"></i>Lihat
+                                    </a>
+                                    <a href="/admin/gallery/albums/<%= album.id %>/edit" class="btn btn-warning btn-sm text-white">
+                                        <i class="fas fa-edit mr-1"></i>Edit
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                <% } else { %>
+                    <div class="col-span-3 text-center py-12">
+                        <div class="text-gray-400 mb-4">
+                            <i class="fas fa-folder-open text-6xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-600 mb-2">Belum Ada Album</h3>
+                        <p class="text-gray-500 mb-4">Mulai dengan membuat album galeri pertama Anda</p>
+                        <a href="/admin/gallery/albums/add" class="btn btn-primary shadow-lg text-white bg-[#FFD700] border-white">
+                            <i class="fas fa-plus mr-2"></i>Tambah Album
+                        </a>
+                    </div>
+                <% } %>
+            </div>
+
+            <!-- Statistics -->
+            <% if (albums && albums.length > 0) { %>
+                <div class="bg-white rounded-xl shadow-lg p-6 mb-8">
+                    <h3 class="text-lg font-semibold mb-4"><i class="fas fa-chart-bar mr-2"></i>Statistik Galeri</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                        <div class="stat">
+                            <div class="stat-title">Total Album</div>
+                            <div class="stat-value text-primary"><%= albums.length %></div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-title">Album Aktif</div>
+                            <div class="stat-value text-success">
+                                <%= albums.filter(album => album.status === 'aktif').length %>
+                            </div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-title">Total Foto</div>
+                            <div class="stat-value text-info">
+                                <%= albums.reduce((total, album) => total + parseInt(album.jumlah_foto), 0) %>
+                            </div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-title">Album Kosong</div>
+                            <div class="stat-value text-warning">
+                                <%= albums.filter(album => album.jumlah_foto == 0).length %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+
+        <!-- Footer -->
+        <%- include('admin-partials/footer') %>
+
+        <!-- JavaScript -->
+        <script>
+            let albumToDelete = null;
+
+            // Search and Filter Functions
+            function filterAlbums() {
+                const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+                const statusFilter = document.getElementById('statusFilter').value;
+                const sortFilter = document.getElementById('sortFilter').value;
+                
+                const albumCards = document.querySelectorAll('.album-card');
+                let visibleCards = [];
+
+                albumCards.forEach(card => {
+                    const title = card.dataset.title;
+                    const status = card.dataset.status;
+                    
+                    const matchesSearch = title.includes(searchTerm);
+                    const matchesStatus = !statusFilter || status === statusFilter;
+                    
+                    if (matchesSearch && matchesStatus) {
+                        card.style.display = 'block';
+                        visibleCards.push(card);
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+
+                // Sort visible cards
+                if (visibleCards.length > 0) {
+                    sortAlbums(visibleCards, sortFilter);
+                }
+
+                // Show no results message
+                const grid = document.getElementById('albumsGrid');
+                const noResults = document.getElementById('noResults');
+                
+                if (visibleCards.length === 0 && (searchTerm || statusFilter)) {
+                    if (!noResults) {
+                        const noResultsDiv = document.createElement('div');
+                        noResultsDiv.id = 'noResults';
+                        noResultsDiv.className = 'col-span-3 text-center py-12';
+                        noResultsDiv.innerHTML = `
+                            <div class="text-gray-400 mb-4">
+                                <i class="fas fa-search text-6xl"></i>
+                            </div>
+                            <h3 class="text-xl font-semibold text-gray-600 mb-2">Tidak Ada Hasil</h3>
+                            <p class="text-gray-500">Coba ubah kata kunci pencarian atau filter</p>
+                        `;
+                        grid.appendChild(noResultsDiv);
+                    }
+                } else if (noResults) {
+                    noResults.remove();
+                }
+            }
+
+            function sortAlbums(cards, sortBy) {
+                const grid = document.getElementById('albumsGrid');
+                const sortedCards = Array.from(cards).sort((a, b) => {
+                    switch (sortBy) {
+                        case 'oldest':
+                            return new Date(a.dataset.date) - new Date(b.dataset.date);
+                        case 'title':
+                            return a.dataset.title.localeCompare(b.dataset.title);
+                        case 'photos':
+                            return parseInt(b.dataset.photos) - parseInt(a.dataset.photos);
+                        case 'newest':
+                        default:
+                            return new Date(b.dataset.date) - new Date(a.dataset.date);
+                    }
+                });
+
+                // Re-append sorted cards
+                sortedCards.forEach(card => {
+                    grid.appendChild(card);
+                });
+            }
+
+            // Delete Album Functions
+            function deleteAlbum(albumId, albumTitle) {
+                albumToDelete = albumId;
+                document.getElementById('albumTitle').textContent = albumTitle;
+                document.getElementById('delete_modal').showModal();
+            }
+
+            function confirmDelete() {
+                if (!albumToDelete) return;
+
+                fetch(`/admin/gallery/albums/${albumToDelete}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        showSuccess('Album berhasil dihapus');
+                        setTimeout(() => {
+                            location.reload();
+                        }, 1500);
+                    } else {
+                        alert('Gagal menghapus album');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Terjadi kesalahan saat menghapus album');
+                });
+
+                albumToDelete = null;
+            }
+
+            function showSuccess(message) {
+                document.getElementById('successMessage').textContent = message;
+                document.getElementById('success_modal').showModal();
+            }
+
+            // Event Listeners
+            document.addEventListener('DOMContentLoaded', function() {
+                const searchInput = document.getElementById('searchInput');
+                const statusFilter = document.getElementById('statusFilter');
+                const sortFilter = document.getElementById('sortFilter');
+
+                if (searchInput) searchInput.addEventListener('input', filterAlbums);
+                if (statusFilter) statusFilter.addEventListener('change', filterAlbums);
+                if (sortFilter) sortFilter.addEventListener('change', filterAlbums);
+
+                // Initial sort
+                const albumCards = document.querySelectorAll('.album-card');
+                if (albumCards.length > 0) {
+                    sortAlbums(Array.from(albumCards), 'newest');
+                }
+            });
+
+            // Keyboard shortcuts
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.key === 'f') {
+                    e.preventDefault();
+                    document.getElementById('searchInput').focus();
+                }
+            });
+        </script>
+    </body>
+</html>

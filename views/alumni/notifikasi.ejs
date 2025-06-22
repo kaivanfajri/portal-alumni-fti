@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notifikasi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.2/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <script src="https://kit.fontawesome.com/4e5b6b6e8b.js" crossorigin="anonymous"></script>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-blue-100 min-h-screen">
+<%- include('alumni-partials/navbar') %>
+
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">Notifikasi</h1>
+        <div class="flex space-x-2">
+            <button class="btn btn-sm btn-ghost text-blue-600" onclick="markAllAsRead()">
+                <i class="fas fa-check-circle mr-1"></i> Tandai semua telah dibaca
+            </button>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <% if (notifications.length === 0) { %>
+            <div class="p-8 text-center">
+                <i class="fas fa-bell-slash text-4xl text-gray-300 mb-4"></i>
+                <p class="text-gray-500">Tidak ada notifikasi</p>
+            </div>
+        <% } else { %>
+            <% notifications.forEach(notif => { %>
+                <div class="border-b border-gray-200 last:border-b-0 <%= notif.read_status === 'unread' ? 'bg-blue-50' : '' %> hover:bg-blue-100 transition-colors duration-200">
+                    <div class="p-4 flex items-start">
+                        <div class="flex-shrink-0 pt-1">
+                            <div class="h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center text-white">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                        </div>
+                        <div class="ml-4 flex-1">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900"><%= notif.judul %></p>
+                                    <p class="text-xs text-gray-500 mt-1">
+                                        <i class="fas fa-clock mr-1"></i> <%= formatTime(notif.waktu_kirim) %>
+                                    </p>
+                                </div>
+                                <% if (notif.read_status === 'unread') { %>
+                                    <span class="badge badge-primary">Baru</span>
+                                <% } %>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-1"><%= notif.isi %></p>
+                            <div class="mt-2 flex space-x-2">
+                                <% if (notif.read_status === 'unread') { %>
+                                    <button class="btn btn-xs btn-outline btn-success" onclick="markAsRead('<%= notif.id %>', this)">
+                                        <i class="fas fa-check mr-1"></i> Tandai Dibaca
+                                    </button>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        <% } %>
+    </div>
+
+    <!-- Pagination -->
+    <% if (notifications.length > 0) { %>
+        <div class="flex justify-center mt-8">
+            <div class="btn-group">
+                <% if (currentPage > 1) { %>
+                    <a href="?page=<%= currentPage - 1 %>" class="btn btn-sm btn-ghost">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                <% } else { %>
+                    <button class="btn btn-sm btn-ghost disabled">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                <% } %>
+                
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                    <a href="?page=<%= i %>" class="btn btn-sm <%= currentPage === i ? 'btn-active' : 'btn-ghost' %>"><%= i %></a>
+                <% } %>
+                
+                <% if (currentPage < totalPages) { %>
+                    <a href="?page=<%= currentPage + 1 %>" class="btn btn-sm btn-ghost">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                <% } else { %>
+                    <button class="btn btn-sm btn-ghost disabled">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                <% } %>
+            </div>
+        </div>
+    <% } %>
+</div>
+
+<%- include('alumni-partials/footer') %>
+
+<script>
+    function markAsRead(notificationId, element) {
+        fetch(`/alumni/notifikasi/${notificationId}/baca`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update UI
+                const notificationItem = element.closest('.border-b');
+                notificationItem.classList.remove('bg-blue-50');
+                element.remove();
+                
+                // Remove "Baru" badge
+                const badge = notificationItem.querySelector('.badge');
+                if (badge) {
+                    badge.remove();
+                }
+                
+                // Update notification count in navbar if exists
+                updateNotificationCount();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    function markAllAsRead() {
+        fetch('/alumni/notifikasi/tandai-semua-dibaca', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update all notifications
+                document.querySelectorAll('.bg-blue-50').forEach(item => {
+                    item.classList.remove('bg-blue-50');
+                });
+                
+                // Remove all "Tandai Dibaca" buttons
+                document.querySelectorAll('[onclick^="markAsRead"]').forEach(btn => {
+                    btn.remove();
+                });
+                
+                // Remove all "Baru" badges
+                document.querySelectorAll('.badge').forEach(badge => {
+                    badge.remove();
+                });
+                
+                // Update notification count in navbar
+                updateNotificationCount();
+                
+                alert('Semua notifikasi telah ditandai sebagai dibaca');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    function updateNotificationCount() {
+        fetch('/alumni/notifikasi/unread-count')
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    const badge = document.querySelector('.notification-badge');
+                    if (data.count > 0) {
+                        if (badge) {
+                            badge.textContent = data.count;
+                        } else {
+                            // Create badge if it doesn't exist
+                            const navbar = document.querySelector('.navbar');
+                            if (navbar) {
+                                const notificationLink = navbar.querySelector('a[href="/alumni/notifikasi"]');
+                                if (notificationLink) {
+                                    const newBadge = document.createElement('span');
+                                    newBadge.className = 'badge badge-primary notification-badge';
+                                    newBadge.textContent = data.count;
+                                    notificationLink.appendChild(newBadge);
+                                }
+                            }
+                        }
+                    } else {
+                        if (badge) {
+                            badge.remove();
+                        }
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error updating notification count:', error);
+            });
+    }
+
+    // Update notification count on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        updateNotificationCount();
+    });
+</script>
+</body>
+</html> 

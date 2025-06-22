@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Notifikasi</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.2/dist/full.min.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+</head>
+<body class="bg-gradient-to-br from-green-50 to-green-100 min-h-screen">
+<%- include('admin-partials/navbar') %>
+
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-800">Notifikasi</h1>
+        <div class="flex space-x-2">
+            <a href="/admin/notifikasi/buat" class="btn btn-primary justify-center border-white text-white bg-[#FFD700]">
+                <i class="fas fa-plus mr-2"></i> Buat Notifikasi Baru
+            </a>
+        </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <% if (notifications.length === 0) { %>
+            <div class="p-8 text-center">
+                <i class="fas fa-bell-slash text-4xl text-gray-300 mb-4"></i>
+                <p class="text-gray-500">Tidak ada notifikasi</p>
+                <a href="/admin/notifikasi/buat" class="btn btn-primary justify-center border-white text-white bg-[#FFD700] mt-4">
+                    <i class="fas fa-plus mr-2"></i> Buat Notifikasi Pertama
+                </a>
+            </div>
+        <% } else { %>
+            <% notifications.forEach(notif => { %>
+                <div class="border-b border-gray-200 last:border-b-0 <%= notif.status === 'unread' ? 'bg-green-50' : '' %> hover:bg-green-100 transition-colors duration-200">
+                    <div class="p-4 flex items-start">
+                        <div class="flex-shrink-0 pt-1">
+                        </div>
+                        <div class="ml-4 flex-1">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900"><%= notif.judul %></p>
+                                    <p class="text-xs text-gray-500 mt-1">
+                                        <% if (notif.ditujukan_ke === 'semua') { %>
+                                            <i class="fas fa-users mr-1"></i> Semua Alumni
+                                        <% } else if (notif.ditujukan_ke === 'tahun_lulus') { %>
+                                            <i class="fas fa-calendar mr-1"></i> Alumni Tahun <%= notif.tahun_lulus %>
+                                        <% } else if (notif.ditujukan_ke === 'spesifik') { %>
+                                            <i class="fas fa-user mr-1"></i> Alumni Tertentu
+                                        <% } %>
+                                    </p>
+                                </div>
+                                <span class="text-xs text-gray-500"><%= formatTime(notif.waktu_kirim) %></span>
+                            </div>
+                            <p class="text-sm text-gray-600 mt-1"><%= notif.isi %></p>
+                            <div class="mt-2 flex space-x-2">
+                                <a href="/admin/notifikasi/<%= notif.id %>" class="btn btn-xs btn-outline btn-info">
+                                    <i class="fas fa-eye mr-1"></i> Detail
+                                </a>
+                                <% if (notif.status === 'unread') { %>
+                                    <button class="btn btn-xs btn-outline btn-success" onclick="markAsRead('<%= notif.id %>', this)">
+                                        <i class="fas fa-check mr-1"></i> Tandai Dibaca
+                                    </button>
+                                <% } %>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        <% } %>
+    </div>
+
+    <!-- Pagination -->
+    <% if (notifications.length > 0) { %>
+        <div class="flex justify-center mt-8">
+            <div class="btn-group">
+                <% if (currentPage > 1) { %>
+                    <a href="?page=<%= currentPage - 1 %>" class="btn btn-sm btn-ghost">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                <% } else { %>
+                    <button class="btn btn-sm btn-ghost disabled">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                <% } %>
+                
+                <% for (let i = 1; i <= totalPages; i++) { %>
+                    <a href="?page=<%= i %>" class="btn btn-sm <%= currentPage === i ? 'btn-active' : 'btn-ghost' %>"><%= i %></a>
+                <% } %>
+                
+                <% if (currentPage < totalPages) { %>
+                    <a href="?page=<%= currentPage + 1 %>" class="btn btn-sm btn-ghost">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                <% } else { %>
+                    <button class="btn btn-sm btn-ghost disabled">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                <% } %>
+            </div>
+        </div>
+    <% } %>
+</div>
+
+<%- include('admin-partials/footer') %>
+
+<script>
+    function markAsRead(notificationId, element) {
+        fetch(`/notifikasi/${notificationId}/baca`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update UI
+                const notificationItem = element.closest('.border-b');
+                notificationItem.classList.remove('bg-green-50');
+                element.remove();
+                
+                // Update badge count if exists
+                const badge = document.querySelector('.notification-badge');
+                if (badge) {
+                    const count = parseInt(badge.textContent) - 1;  
+                    if (count > 0) {
+                        badge.textContent = count;
+                    } else {
+                        badge.remove();
+                    }
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    function markAllAsRead() {
+        fetch('/notifikasi/tandai-semua-dibaca', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Update all notifications
+                document.querySelectorAll('.bg-green-50').forEach(item => {
+                    item.classList.remove('bg-green-50');
+                });
+                
+                // Remove all "Tandai Dibaca" buttons
+                document.querySelectorAll('[onclick^="markAsRead"]').forEach(btn => {
+                    btn.remove();
+                });
+                
+                // Remove badge count if exists
+                const badge = document.querySelector('.notification-badge');
+                if (badge) {
+                    badge.remove();
+                }
+                
+                alert('Semua notifikasi telah ditandai sebagai dibaca');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+</script>
+</body>
+</html>
