@@ -7,7 +7,6 @@ const alumniController = require('../controllers/alumniController');
 const artikelController = require('../controllers/artikelController');
 const upload = require('../config/multerConfig');
 
-
 // Registration routes
 router.get('/alumni/register', alumniController.showRegisterForm);
 router.post('/alumni/register', alumniController.registerAlumni);
@@ -36,13 +35,16 @@ router.post('/alumni/tracerStudy', requireAlumniAuth, alumniController.submitTra
 router.get('/alumni/editTracerStudy', requireAlumniAuth, alumniController.showEditTracerStudy);
 router.put('/alumni/tracerStudy', requireAlumniAuth, alumniController.updateTracerStudy);
 
+// Hubungi Admin
+router.get('/alumni/hubungiAdmin', requireAlumniAuth, alumniController.showHubungiAdmin);
+router.post('/alumni/hubungiAdmin', requireAlumniAuth, alumniController.sendMessageToAdmin);
+
 // Job routes
 router.get('/alumni/upload-job', requireAlumniAuth, jobController.showUploadJobForm);
 router.post('/alumni/upload-job', requireAlumniAuth, jobController.submitUploadJob);
 router.get('/alumni/list-job', requireAlumniAuth, jobController.listJob);
 router.get('/alumni/list-jobDisetujui', jobController.listJobDisetujui);
 router.get('/alumni/detail-job/:id', requireAlumniAuth, jobController.detailJob);
-
 
 //Upload Postingan
 router.get('/alumni/upload-postingan', requireAlumniAuth, alumniController.showUploadPostinganForm);

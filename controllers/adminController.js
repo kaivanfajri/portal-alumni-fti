@@ -107,6 +107,98 @@ exports.showKelolaDataAlumni = (req, res) => {
     });
 };
 
+// Tampilkan semua pesan dari alumni
+exports.showInbox = function (req, res) {
+    const query = `
+        SELECT 
+            cm.id,
+            cm.pesan,
+            cm.status,
+            cm.tanggal_kirim,
+            cm.tanggal_dibalas,
+            cm.balasan,
+            cm.dibalas_oleh,
+            ap.nama_lengkap AS alumni_nama,
+            a.email AS alumni_email
+        FROM contact_messages cm
+        JOIN alumni a ON cm.alumni_id = a.id
+        JOIN alumni_profiles ap ON a.id = ap.alumni_id
+        ORDER BY cm.tanggal_kirim DESC
+    `;
+
+    db.query(query, (err, messages) => {
+        if (err) {
+            console.error('Error fetching messages:', err);
+            req.flash('error_msg', 'Gagal memuat pesan');
+            return res.redirect('/admin/dashboard');
+        }
+
+        res.render('admin/inbox', {
+            title: 'Kotak Masuk',
+            messages,
+            admin: req.session.admin,
+        });
+    });
+};
+
+// Tampilkan detail pesan dan form balas
+exports.showMessageDetail = function (req, res) {
+    const messageId = req.params.id;
+
+    const query = `
+        SELECT 
+            cm.*,
+            ap.nama_lengkap AS alumni_nama,
+            a.email AS alumni_email
+        FROM contact_messages cm
+        JOIN alumni a ON cm.alumni_id = a.id
+        JOIN alumni_profiles ap ON a.id = ap.alumni_id
+        WHERE cm.id = ?
+    `;
+
+    db.query(query, [messageId], (err, results) => {
+        if (err || results.length === 0) {
+            console.error('Error fetching message:', err);
+            req.flash('error_msg', 'Pesan tidak ditemukan');
+            return res.redirect('/admin/inbox');
+        }
+
+        res.render('admin/detailPesan', {
+            title: 'Detail Pesan',
+            message: results[0],
+            admin: req.session.admin,
+        });
+    });
+};
+
+// Proses balas pesan
+exports.replyMessage = function (req, res) {
+    const messageId = req.params.id;
+    const { balasan } = req.body;
+    const adminId = req.session.admin.id;
+
+    const updateQuery = `
+        UPDATE contact_messages 
+        SET 
+            balasan = ?,
+            dibalas_oleh = ?,
+            status = 'dibalas',
+            tanggal_dibalas = NOW()
+        WHERE id = ?
+    `;
+
+    db.query(updateQuery, [balasan, adminId, messageId], (err, result) => {
+        if (err) {
+            console.error('Error replying message:', err);
+            req.flash('error_msg', 'Gagal mengirim balasan');
+            return res.redirect(`/admin/pesan/${messageId}`);
+        }
+
+        req.flash('success_msg', 'Balasan berhasil dikirim!');
+        res.redirect(`/admin/pesan/${messageId}`);
+    });
+};
+
 // Logout
 exports.logout = (req, res) => {
     req.session.destroy(() => {

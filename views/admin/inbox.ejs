@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.2/dist/full.css" rel="stylesheet" type="text/css" />
+        <title><%= title %> - Admin</title>
+    </head>
+    <body class="bg-gray-100">
+        <%- include('admin-partials/navbar') %>
+
+        <div class="container mx-auto px-4 py-8">
+            <h1 class="text-2xl font-bold mb-6"><%= title %></h1>
+
+            <% if (success_msg) { %>
+            <div class="alert alert-success mb-4"><%= success_msg %></div>
+            <% } %>
+
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <table class="min-w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left">Pengirim</th>
+                            <th class="px-6 py-3 text-left">Pesan</th>
+                            <th class="px-6 py-3 text-left">Tanggal</th>
+                            <th class="px-6 py-3 text-left">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% messages.forEach(message => { %>
+                        <tr class="border-t hover:bg-gray-50 cursor-pointer" onclick="window.location='/admin/pesan/<%= message.id %>'">
+                            <td class="px-6 py-4">
+                                <div class="font-medium"><%= message.nama_lengkap %></div>
+                            </td>
+                            <td class="px-6 py-4"><%= message.pesan.substring(0, 50) %>...</td>
+                            <td class="px-6 py-4"><%= new Date(message.tanggal_kirim).toLocaleString() %></td>
+                            <td class="px-6 py-4">
+                                <span class="px-2 py-1 rounded-full text-xs <%= message.status === 'dibalas' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' %>"> <%= message.status %> </span>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

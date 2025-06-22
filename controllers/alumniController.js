@@ -322,11 +322,41 @@ const alumniController = {
         });
     },
 
+    // Hubungi Admin
+    showHubungiAdmin: (req, res) => {
+        res.render('alumni/hubungiAdmin', {
+            title: 'Hubungi Admin',
+            alumni: req.session.alumni,
+        });
+    },
+
+    sendMessageToAdmin: (req, res) => {
+        const { pesan } = req.body;
+        const alumniId = req.session.alumni.id;
+
+        db.query(
+            `INSERT INTO contact_messages 
+          (alumni_id, pesan, status, tanggal_kirim) 
+          VALUES (?, ?, 'belum_dibaca', NOW())`,
+            [alumniId, pesan],
+            (err, result) => {
+                if (err) {
+                    console.error('Error sending message:', err);
+                    req.flash('error', 'Gagal mengirim pesan. Silakan coba lagi.');
+                    return res.redirect('/alumni/hubungiAdmin');
+                }
+
+                req.flash('success', 'Pesan berhasil dikirim ke admin!');
+                res.redirect('/alumni/hubungiAdmin');
+            }
+        );
+    },
+
     // Upload Postingan
     showUploadPostinganForm: (req, res) => {
-        res.render('alumni/upload-postingan', { 
+        res.render('alumni/upload-postingan', {
             error: null,
-            alumni: req.session.alumni
+            alumni: req.session.alumni,
         });
     },
 

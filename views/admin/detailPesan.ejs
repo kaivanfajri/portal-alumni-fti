@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.2/dist/full.css" rel="stylesheet" type="text/css" />
+        <title><%= title %> - Admin</title>
+    </head>
+    <body class="bg-gray-100">
+        <%- include('admin-partials/navbar') %>
+
+        <div class="container mx-auto px-4 py-8">
+            <a href="/admin/inbox" class="inline-flex items-center text-blue-600 mb-4"> <i class="fas fa-arrow-left mr-2"></i> Kembali ke Kotak Masuk </a>
+
+            <div class="bg-white rounded-lg shadow p-6 mb-6">
+                <div class="flex justify-between items-start mb-4">
+                    <div>
+                        <h2 class="text-xl font-bold">Dari: <%= message.nama_lengkap %></h2>
+                        <p class="text-gray-600"><%= message.email %></p>
+                    </div>
+                    <span class="px-3 py-1 rounded-full text-sm <%= message.status === 'dibalas' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800' %>"> <%= message.status %> </span>
+                </div>
+
+                <div class="mb-6">
+                    <p class="text-gray-500 text-sm">Dikirim pada: <%= new Date(message.tanggal_kirim).toLocaleString() %></p>
+                    <div class="mt-4 p-4 bg-gray-50 rounded-lg"><%= message.pesan %></div>
+                </div>
+
+                <% if (message.status === 'dibalas') { %>
+                <div class="mb-6">
+                    <p class="text-gray-500 text-sm">Dibalas oleh: <%= message.dibalas_oleh || 'Admin' %> pada <%= new Date(message.tanggal_dibalas).toLocaleString() %></p>
+                    <div class="mt-4 p-4 bg-blue-50 rounded-lg"><%= message.balasan %></div>
+                </div>
+                <% } %>
+
+                <form method="POST" action="/admin/pesan/<%= message.id %>/balas">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 mb-2">Balasan</label>
+                        <textarea name="balasan" rows="4" class="w-full px-3 py-2 border rounded-lg" required placeholder="Tulis balasan Anda..."><%= message.balasan || '' %></textarea>
+                    </div>
+                    <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Kirim Balasan</button>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
