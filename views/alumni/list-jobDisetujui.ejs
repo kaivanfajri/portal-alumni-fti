@@ -7,6 +7,15 @@
     <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.2/dist/full.min.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://kit.fontawesome.com/4e5b6b6e8b.js" crossorigin="anonymous"></script>
+    <style>
+      /* Pastikan navbar solid di halaman ini */
+      .navbar, .navbar.bg-base-100, .navbar.bg-white, .navbar.bg-green-50 {
+        background-color: #f0fdf4 !important; /* Tailwind green-50 */
+        opacity: 1 !important;
+        backdrop-filter: none !important;
+        box-shadow: none !important;
+      }
+    </style>
 </head>
 <body class="bg-gradient-to-br from-green-50 to-green-100 min-h-screen">
     <%- include('../partials/navbar') %>

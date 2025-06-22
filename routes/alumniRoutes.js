@@ -7,7 +7,6 @@ const alumniController = require('../controllers/alumniController');
 const artikelController = require('../controllers/artikelController');
 const upload = require('../config/multerConfig');
 
-
 // Registration routes
 router.get('/alumni/register', alumniController.showRegisterForm);
 router.post('/alumni/register', alumniController.registerAlumni);
@@ -20,11 +19,16 @@ const requireAlumniAuth = (req, res, next) => {
     next();
 };
 
-// Login routes (pindahkan ke controller)
+// Login routes
 router.get('/alumni/login', alumniController.showLoginForm);
 router.post('/alumni/login', alumniController.loginAlumni);
 
-// Halaman dashboard alumni (hanya jika login)
+// Rute profil alumni
+router.get('/profilAlumni', requireAlumniAuth, alumniController.getProfilAlumni);
+router.get('/alumni/InputProfilAlumni', requireAlumniAuth, alumniController.showInputProfileForm);
+router.post('/alumni/profil', requireAlumniAuth, upload.single('foto_profil'), alumniController.saveProfile);
+
+// Halaman dashboard alumni
 router.get('/alumni/dashboard', requireAlumniAuth, alumniController.showDashboard);
 
 // Daftar postingan alumni yang disetujui
@@ -43,12 +47,11 @@ router.get('/alumni/list-job', requireAlumniAuth, jobController.listJob);
 router.get('/alumni/list-jobDisetujui', jobController.listJobDisetujui);
 router.get('/alumni/detail-job/:id', requireAlumniAuth, jobController.detailJob);
 
-
-//Upload Postingan
+// Upload Postingan
 router.get('/alumni/upload-postingan', requireAlumniAuth, alumniController.showUploadPostinganForm);
 router.post('/alumni/upload-postingan', requireAlumniAuth, upload.single('gambar'), artikelController.uploadPostingan);
 
-//detail artikel
+// Detail artikel
 router.get('/alumni/detail-artikel/:id', requireAlumniAuth, artikelController.detailArtikel);
 
 // Logout

@@ -14,16 +14,26 @@
             }
 
             .glass-container {
-                background: rgba(255, 255, 255, 0.25);
-                backdrop-filter: blur(10px);
-                -webkit-backdrop-filter: blur(10px);
-                border: 1px solid rgba(255, 255, 255, 0.18);
+                background: rgba(255, 255, 255, 0.95); /* Lebih solid agar form jelas */
+                backdrop-filter: none;
+                -webkit-backdrop-filter: none;
+                border: 1px solid #f3f3f3;
             }
 
+            .glass-input {
+                background: #fff !important;
+                color: #222 !important;
+                border-color: #ffd700 !important;
+            }
+            .glass-input::placeholder {
+                color: #aaa !important;
+                opacity: 1;
+            }
             .glass-input:focus {
-                background: rgba(255, 255, 255, 0.3);
+                background: #fff !important;
                 border-color: #ffd700;
                 box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+                color: #222 !important;
             }
 
             .glass-btn:hover {
