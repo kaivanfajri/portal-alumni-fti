@@ -322,17 +322,114 @@ const alumniController = {
         });
     },
 
+    // Hubungi Admin
+    showHubungiAdmin: (req, res) => {
+        res.render('alumni/hubungiAdmin', {
+            title: 'Hubungi Admin',
+            alumni: req.session.alumni,
+        });
+    },
+
+    sendMessageToAdmin: (req, res) => {
+        const { pesan } = req.body;
+        const alumniId = req.session.alumni.id;
+
+        db.query(
+            `INSERT INTO contact_messages 
+          (alumni_id, pesan, status, tanggal_kirim) 
+          VALUES (?, ?, 'belum_dibaca', NOW())`,
+            [alumniId, pesan],
+            (err, result) => {
+                if (err) {
+                    console.error('Error sending message:', err);
+                    req.flash('error', 'Gagal mengirim pesan. Silakan coba lagi.');
+                    return res.redirect('/alumni/hubungiAdmin');
+                }
+
+                req.flash('success', 'Pesan berhasil dikirim ke admin!');
+                res.redirect('/alumni/hubungiAdmin');
+            }
+        );
+    },
+
+    //Menampilkan riwayat pesan ke admin
+    showRiwayatHubungiAdmin: (req, res) => {
+        const alumniId = req.session.alumni.id;
+
+        const query = `
+            SELECT 
+                id,
+                pesan,
+                status,
+                tanggal_kirim,
+                tanggal_dibalas,
+                balasan,
+                dibalas_oleh
+            FROM contact_messages
+            WHERE alumni_id = ?
+            ORDER BY tanggal_kirim DESC
+        `;
+
+        db.query(query, [alumniId], (err, riwayatPesan) => {
+            if (err) {
+                console.error('Error fetching messages:', err);
+                req.flash('error', 'Gagal memuat riwayat pesan');
+                return res.redirect('/alumni/dashboard');
+            }
+
+            res.render('alumni/riwayatHubungiAdmin', {
+                title: 'Riwayat Pesan',
+                riwayatPesan,
+                alumni: req.session.alumni,
+                success: req.flash('success'),
+                error: req.flash('error'),
+            });
+        });
+    },
+
+    //Menampilkan detail pesan
+    showDetailRiwayat: (req, res) => {
+        const messageId = req.params.id;
+        const alumniId = req.session.alumni.id;
+
+        const query = `
+            SELECT *
+            FROM contact_messages
+            WHERE id = ? AND alumni_id = ?
+        `;
+
+        db.query(query, [messageId, alumniId], (err, results) => {
+            if (err) {
+                console.error('Error fetching message:', err);
+                req.flash('error', 'Terjadi kesalahan sistem');
+                return res.redirect('/alumni/riwayat-hubungi-admin');
+            }
+
+            if (results.length === 0) {
+                req.flash('error', 'Pesan tidak ditemukan');
+                return res.redirect('/alumni/riwayat-hubungi-admin');
+            }
+
+            res.render('alumni/detailRiwayatHubungiAdmin', {
+                title: 'Detail Pesan',
+                message: results[0],
+                alumni: req.session.alumni,
+                success: req.flash('success'),
+                error: req.flash('error'),
+            });
+        });
+    },
+
     // Upload Postingan
     showUploadPostinganForm: (req, res) => {
-        res.render('alumni/upload-postingan', { 
+        res.render('alumni/upload-postingan', {
             error: null,
-            alumni: req.session.alumni
+            alumni: req.session.alumni,
         });
     },
 
     submitUploadPostingan: (req, res) => {
-        // Proses simpan postingan di sini
-        // Untuk sementara redirect ke dashboard
+        // Proses simpan postingan di sini\
         res.redirect('/alumni/dashboard');
     },
 

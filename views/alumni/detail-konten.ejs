@@ -3,89 +3,41 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><%= artikel.judul %> - Portal Alumni FTI</title>
+  <title><%= konten.judul %> | Portal Alumni</title>
   <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-  </style>
 </head>
-<body class="min-h-screen bg-[#F0F8F0]">
+<body class="bg-[#F8F9FA] min-h-screen">
 
-  <!-- Include Navbar -->
   <%- include('alumni-partials/navbar') %>
 
-  <div class="container mx-auto px-6 py-8">
-    <div class="flex flex-col lg:flex-row gap-8" id="artikel-detail">
-      <!-- Left Content - Post Detail -->
-      <div class="flex-1">
-        <!-- Post Title -->
-        <h1 class="text-2xl font-bold text-green-800 mb-4"><%= artikel.judul %></h1>
-
-        <!-- Download Button -->
-        <div class="mb-6">
-          <button onclick="downloadPDF()" class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md text-sm">
-            Download Artikel PDF
-          </button>
+  <section class="container mx-auto py-10 px-4 max-w-4xl">
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+      <% if (konten.gambar) { %>
+        <img src="/uploads/<%= konten.gambar %>" alt="<%= konten.judul %>" class="w-full h-96 object-cover" />
+      <% } %>
+      
+      <div class="p-6">
+        <h1 class="text-3xl font-bold text-green-900 mb-4"><%= konten.judul %></h1>
+        
+        <div class="flex items-center text-sm text-gray-500 mb-6">
+          <span class="mr-4">
+            <i class="fas fa-user mr-1"></i> <%= konten.author %>
+          </span>
+          <span>
+            <i class="fas fa-calendar-alt mr-1"></i> <%= tanggal %>
+          </span>
         </div>
 
-        <!-- Post Image -->
-        <% if (artikel.gambar) { %>
-          <div class="mb-6">
-            <img src="/uploads/<%= artikel.gambar %>" alt="<%= artikel.judul %>" class="w-full max-w-2xl rounded-lg border border-gray-300" />
-          </div>
-        <% } %>
+       <div class="text-base text-gray-700 leading-relaxed">
+  <%- konten.isi.replace(/\n/g, '<br>') %>
+</div>
 
-        <!-- Post Date -->
-        <p class="text-sm text-gray-500 mb-2">
-          <i class="fas fa-calendar-alt mr-1"></i>
-          <%= new Date(artikel.tanggal_upload).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) %>
-        </p>
-
-        <!-- Post Description -->
-        <div class="prose prose-sm max-w-none text-gray-700">
-          <p><%= artikel.isi %></p>
-        </div>
-      </div>
-
-      <!-- Right Content - Comments Placeholder -->
-      <div class="w-full lg:w-80 mt-8 lg:mt-0">
-        <div class="bg-gray-200 rounded-lg p-4">
-          <div class="text-center font-semibold text-green-800 mb-4">Komentar</div>
-          <p class="text-sm text-gray-600">Belum tersedia fitur komentar dinamis.</p>
-        </div>
       </div>
     </div>
-  </div>
+  </section>
 
-  <!-- Footer -->
   <%- include('alumni-partials/footer') %>
-
-  <!-- Load html2pdf.js -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-
-  <script>
-    function downloadPDF() {
-      const element = document.getElementById('artikel-detail');
-      if (!element) {
-        alert('Elemen artikel-detail tidak ditemukan');
-        return;
-      }
-
-      const opt = {
-        margin:       0.5,
-        filename:     '<%= artikel.judul.replace(/[^\w\s]/gi, "_").replace(/\s+/g, "_") %>.pdf',
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2 },
-        jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
-      };
-
-      html2pdf().set(opt).from(element).save();
-    }
-  </script>
 
 </body>
 </html>

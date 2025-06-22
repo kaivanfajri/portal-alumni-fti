@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@3.8.0/dist/full.css" rel="stylesheet" />
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            greenSoft: '#F0F8F0',
+                            greenFTI: '#166534',
+                        },
+                    },
+                },
+                daisyui: {
+                    themes: ['light'],
+                },
+            };
+        </script>
+        <title>Hubungi Admin - Alumni</title>
+    </head>
+    <body class="bg-greenSoft min-h-screen">
+        <%- include('alumni-partials/navbar') %>
+
+        <section class="py-16 px-8 max-w-4xl mx-auto">
+            <div class="flex items-center mb-6">
+                <a href="/alumni/dashboard" class="btn btn-ghost mr-4">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <h2 class="text-3xl font-bold text-greenFTI">Hubungi Admin</h2>
+            </div>
+
+            <% if (success_msg && success_msg.length) { %>
+            <div class="alert alert-success mb-6">
+                <div class="flex-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span><%= success_msg %></span>
+                </div>
+            </div>
+            <% } %> <% if (error_msg && error_msg.length) { %>
+            <div class="alert alert-error mb-6">
+                <div class="flex-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    <span><%= error_msg %></span>
+                </div>
+            </div>
+            <% } %>
+
+            <form class="bg-white shadow-md rounded-md p-8 space-y-6" method="POST" action="/alumni/hubungiAdmin">
+                <!-- Input Hidden untuk Alumni ID -->
+                <input type="hidden" name="alumni_id" value="<%= alumni.id %>" />
+
+                <!-- Pesan -->
+                <div>
+                    <label class="font-semibold block mb-1 text-black">Pesan</label>
+                    <textarea name="pesan" rows="6" placeholder="Tulis pesan/kendala Anda di sini..." class="textarea textarea-bordered w-full bg-gray-100" required></textarea>
+                </div>
+
+                <!-- Tombol Submit -->
+                <div class="flex justify-end">
+                    <button type="submit" class="btn bg-greenFTI text-white hover:bg-green-800"><i class="fas fa-paper-plane mr-2"></i>Kirim Pesan</button>
+                </div>
+            </form>
+        </section>
+
+        <%- include('alumni-partials/footer') %>
+    </body>
+</html>

@@ -7,13 +7,33 @@
                 <i class="fas fa-bars text-xl text-[#2E7D32]"></i>
             </div>
             <ul tabindex="0" class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow rounded-box w-52 bg-white">
-                <li><a href="/alumni/dashboard" class="text-[#2E7D32]"><i class="fas fa-home mr-2"></i>Dashboard</a></li>
-                <li><a href="/alumni/InputProfilAlumni" class="text-[#2E7D32]"><i class="fas fa-user mr-2"></i>Profil</a></li>
-                <li><a href="/alumni/tracerStudy" class="text-[#2E7D32]"><i class="fas fa-chart-line mr-2"></i>Tracer Study</a></li>
+
+
+                <li>
+                    <a href="/alumni/dashboard" class="text-[#2E7D32]"><i class="fas fa-home mr-2"></i>Dashboard</a>
+                </li>
+                <li>
+                    <a href="/alumni/InputProfilAlumni" class="text-[#2E7D32]"><i class="fas fa-user mr-2"></i>Profil</a>
+                </li>
+                <li>
+                    <a href="/alumni/tracer-study" class="text-[#2E7D32]"><i class="fas fa-chart-line mr-2"></i>Tracer Study</a>
+                </li>
+                <li>
                 <li><a href="/alumni/list-job" class="text-[#2E7D32]"><i class="fas fa-calendar mr-2"></i>Lowongan Kerja</a></li>
+                    <li><a href="/alumni/events" class="text-[#2E7D32]"><i class="fas fa-calendar mr-2"></i>Event</a>
+                </li>
+                <li>
+                    <a href="/alumni/riwayatHubungiAdmin" class="text-[#2E7D32]"><i class="fas fa-history mr-2"></i>Riwayat Pesan</a>
+                </li>
+                <li>
+                    <hr class="my-2" />
+                </li>
                 <li><a href="/alumni/Upload-postingan" class="text-[#2E7D32]"><i class="fas fa-calendar mr-2"></i>Upload Postingan</a></li>
                 <li><hr class="my-2" /></li>
-                <li><a href="/alumni/logout" class="text-red-600"><i class="fas fa-sign-out-alt mr-2"></i>Logout</a></li>
+                <li>
+                    <a href="/alumni/logout" class="text-red-600"><i class="fas fa-sign-out-alt mr-2"></i>Logout</a>
+                </li>
+
             </ul>
         </div>
         <a href="/alumni/dashboard" class="btn btn-ghost text-xl font-bold text-[#2E7D32] flex items-center">
@@ -24,11 +44,23 @@
     <!-- Desktop menu -->
     <div class="navbar-center hidden lg:flex">
         <ul class="menu menu-horizontal px-1">
-            <li><a href="/alumni/dashboard" class="font-medium text-[#2E7D32]"><i class="fas fa-home mr-2"></i>Dashboard</a></li>
-            <li><a href="/alumni/InputProfilAlumni" class="font-medium text-[#2E7D32]"><i class="fas fa-user mr-2"></i>Profil</a></li>
-            <li><a href="/alumni/tracerStudy" class="font-medium text-[#2E7D32]"><i class="fas fa-chart-line mr-2"></i>Tracer Study</a></li>
-            <li><a href="/alumni/list-job" class="font-medium text-[#2E7D32]"><i class="fas fa-calendar mr-2"></i>Lowongan Kerja</a></li>
-            <li><a href="/alumni/Upload-postingan" class="font-medium text-[#2E7D32]"><i class="fas fa-calendar mr-2"></i>Upload Postingan</a></li>
+
+            <li>
+                <a href="/alumni/dashboard" class="font-medium text-[#2E7D32]"><i class="fas fa-home mr-2"></i>Dashboard</a>
+            </li>
+            <li>
+                <a href="/alumni/InputProfilAlumni" class="font-medium text-[#2E7D32]"><i class="fas fa-user mr-2"></i>Profil</a>
+            </li>
+            <li>
+                <a href="/alumni/tracerStudy" class="font-medium text-[#2E7D32]"><i class="fas fa-chart-line mr-2"></i>Tracer Study</a>
+            </li>
+            <li>
+                <a href="/alumni/list-job" class="font-medium text-[#2E7D32]"><i class="fas fa-calendar mr-2"></i>Lowongan Kerja</a>
+            </li>
+            <li>
+                <a href="/alumni/Upload-postingan" class="font-medium text-[#2E7D32]"><i class="fas fa-calendar mr-2"></i>Upload Postingan</a>
+            </li>
+
         </ul>
     </div>
     <div class="navbar-end">
@@ -39,8 +71,22 @@
                 </div>
             </div>
             <ul tabindex="0" class="dropdown-content z-[50] absolute mt-3 p-2 shadow menu menu-sm rounded-box w-52 bg-white">
-                <li><a href="/alumni/profilAlumni" class="text-[#2E7D32]"><i class="fas fa-user mr-2"></i>Profil Saya</a></li>
-                <li><a href="/alumni/logout" class="text-red-600"><i class="fas fa-sign-out-alt mr-2"></i>Logout</a></li>
+
+                <li class="px-3 py-1">
+                    <p class="text-sm font-semibold text-gray-700"><%= alumni.nim %></p>
+                    <p class="text-xs text-gray-500"><%= alumni.email %></p>
+                </li>
+                <hr class="my-1" />
+                <li>
+                    <a href="/alumni/profilAlumni" class="text-[#2E7D32]"><i class="fas fa-user mr-2"></i>Profil Saya</a>
+                </li>
+                <li>
+                    <a href="/alumni/riwayatHubungiAdmin" class="text-[#2E7D32]"><i class="fas fa-history mr-2"></i>Riwayat Hubungi Admin</a>
+                </li>
+                <li>
+                    <a href="/alumni/logout" class="text-red-600"><i class="fas fa-sign-out-alt mr-2"></i>Logout</a>
+                </li>
+
             </ul>
         </div>
     </div>

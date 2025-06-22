@@ -40,6 +40,14 @@ router.post('/alumni/tracerStudy', requireAlumniAuth, alumniController.submitTra
 router.get('/alumni/editTracerStudy', requireAlumniAuth, alumniController.showEditTracerStudy);
 router.put('/alumni/tracerStudy', requireAlumniAuth, alumniController.updateTracerStudy);
 
+// Hubungi Admin
+router.get('/alumni/hubungiAdmin', requireAlumniAuth, alumniController.showHubungiAdmin);
+router.post('/alumni/hubungiAdmin', requireAlumniAuth, alumniController.sendMessageToAdmin);
+
+//Riwayat Hubungi Admin
+router.get('/riwayatHubungiAdmin', requireAlumniAuth, alumniController.showRiwayatHubungiAdmin);
+router.get('/riwayatHubungiAdmin/:id', requireAlumniAuth, alumniController.showDetailRiwayat);
+
 // Job routes
 router.get('/alumni/upload-job', requireAlumniAuth, jobController.showUploadJobForm);
 router.post('/alumni/upload-job', requireAlumniAuth, jobController.submitUploadJob);
@@ -47,14 +55,17 @@ router.get('/alumni/list-job', requireAlumniAuth, jobController.listJob);
 router.get('/alumni/list-jobDisetujui', jobController.listJobDisetujui);
 router.get('/alumni/detail-job/:id', requireAlumniAuth, jobController.detailJob);
 
-// Upload Postingan
+
+//Upload Postingan
 router.get('/alumni/upload-postingan', requireAlumniAuth, alumniController.showUploadPostinganForm);
 router.post('/alumni/upload-postingan', requireAlumniAuth, upload.single('gambar'), artikelController.uploadPostingan);
 
-// Detail artikel
-router.get('/alumni/detail-artikel/:id', requireAlumniAuth, artikelController.detailArtikel);
+//detail artikel
+router.get('/detail-konten/:id', requireAlumniAuth, artikelController.detailKonten);
+
 
 // Logout
 router.get('/alumni/logout', alumniController.logoutAlumni);
+
 
 module.exports = router;

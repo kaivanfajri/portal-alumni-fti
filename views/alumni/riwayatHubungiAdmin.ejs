@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@3.8.0/dist/full.css" rel="stylesheet" />
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            greenSoft: '#F0F8F0',
+                            greenFTI: '#166534',
+                        },
+                    },
+                },
+                daisyui: {
+                    themes: ['light'],
+                },
+            };
+        </script>
+        <title>Riwayat Hubungi Admin - Alumni</title>
+        <style>
+            .pesan-card {
+                transition: all 0.2s ease;
+                border-left: 4px solid transparent;
+            }
+            .pesan-card:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            }
+            .dibalas {
+                border-left-color: #166534;
+                background-color: #f0f8f0;
+            }
+        </style>
+    </head>
+    <body class="bg-greenSoft min-h-screen">
+        <%- include('alumni-partials/navbar') %>
+
+        <section class="py-16 px-8 max-w-4xl mx-auto">
+            <div class="flex items-center mb-6">
+                <a href="/alumni/dashboard" class="btn btn-ghost mr-4">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <h2 class="text-3xl font-bold text-greenFTI">Riwayat Pesan ke Admin</h2>
+            </div>
+
+            <% if (success && success.length) { %>
+            <div class="alert alert-success mb-6">
+                <div class="flex-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                    <span><%= success %></span>
+                </div>
+            </div>
+            <% } %> <% if (error && error.length) { %>
+            <div class="alert alert-error mb-6">
+                <div class="flex-1">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                    <span><%= error %></span>
+                </div>
+            </div>
+            <% } %>
+
+            <div class="bg-white shadow-md rounded-md p-8 space-y-6">
+                <% if (riwayatPesan.length === 0) { %>
+                <div class="text-center py-8">
+                    <i class="fas fa-inbox text-4xl text-gray-300 mb-4"></i>
+                    <p class="text-gray-500">Belum ada riwayat pesan</p>
+                    <a href="/alumni/hubungi-admin" class="btn bg-greenFTI text-white mt-4"> <i class="fas fa-plus mr-2"></i> Buat Pesan Baru </a>
+                </div>
+                <% } else { %>
+                <div class="space-y-4">
+                    <% riwayatPesan.forEach(pesan => { %>
+                    <div class="pesan-card <%= pesan.status === 'dibalas' ? 'dibalas' : '' %> p-6 rounded-lg">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="font-semibold">
+                                    <% if (pesan.status === 'dibalas') { %>
+                                    <i class="fas fa-check-circle text-greenFTI mr-2"></i> Sudah Dibalas <% } else { %> <i class="fas fa-clock text-yellow-500 mr-2"></i> Menunggu <% } %>
+                                </p>
+                                <p class="text-sm text-gray-500 mt-1">
+                                    <i class="far fa-calendar-alt mr-1"></i>
+                                    <%= new Date(pesan.tanggal_kirim).toLocaleString() %>
+                                </p>
+                            </div>
+                            <a href="/alumni/riwayatHubungiAdmin/<%= pesan.id %>" class="btn btn-ghost btn-sm">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                        </div>
+
+                        <div class="mt-4">
+                            <p class="text-gray-700 font-medium">Pesan Anda:</p>
+                            <p class="whitespace-pre-line mt-2"><%= pesan.pesan %></p>
+                        </div>
+
+                        <% if (pesan.status === 'dibalas') { %>
+                        <div class="mt-4 pt-4 border-t border-gray-100">
+                            <p class="text-greenFTI font-medium">
+                                <i class="fas fa-reply mr-2"></i>
+                                Balasan dari <%= pesan.dibalas_oleh || 'Admin' %>
+                            </p>
+                            <p class="whitespace-pre-line mt-2"><%= pesan.balasan %></p>
+                            <p class="text-xs text-gray-500 mt-2">
+                                <i class="far fa-clock mr-1"></i>
+                                <%= new Date(pesan.tanggal_dibalas).toLocaleString() %>
+                            </p>
+                        </div>
+                        <% } %>
+                    </div>
+                    <% }) %>
+                </div>
+                <% } %>
+            </div>
+        </section>
+
+        <%- include('alumni-partials/footer') %>
+    </body>
+</html>

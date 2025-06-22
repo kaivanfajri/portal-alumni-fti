@@ -107,9 +107,174 @@ exports.showKelolaDataAlumni = (req, res) => {
     });
 };
 
+// Tampilkan semua pesan dari alumni
+exports.showInbox = function (req, res) {
+    const query = `
+        SELECT 
+            cm.id,
+            cm.pesan,
+            cm.status,
+            cm.tanggal_kirim,
+            cm.tanggal_dibalas,
+            cm.balasan,
+            cm.dibalas_oleh,
+            ap.nama_lengkap AS alumni_nama,
+            a.email AS alumni_email
+        FROM contact_messages cm
+        JOIN alumni a ON cm.alumni_id = a.id
+        JOIN alumni_profiles ap ON a.id = ap.alumni_id
+        ORDER BY cm.tanggal_kirim DESC
+    `;
+
+    db.query(query, (err, messages) => {
+        if (err) {
+            console.error('Error fetching messages:', err);
+            req.flash('error_msg', 'Gagal memuat pesan');
+            return res.redirect('/admin/dashboard');
+        }
+
+        res.render('admin/inbox', {
+            title: 'Kotak Masuk',
+            messages,
+            admin: req.session.admin,
+        });
+    });
+};
+
+// Tampilkan detail pesan dan form balas
+exports.showMessageDetail = function (req, res) {
+    const messageId = req.params.id;
+
+    const query = `
+        SELECT 
+            cm.*,
+            ap.nama_lengkap AS alumni_nama,
+            a.email AS alumni_email
+        FROM contact_messages cm
+        JOIN alumni a ON cm.alumni_id = a.id
+        JOIN alumni_profiles ap ON a.id = ap.alumni_id
+        WHERE cm.id = ?
+    `;
+
+    db.query(query, [messageId], (err, results) => {
+        if (err || results.length === 0) {
+            console.error('Error fetching message:', err);
+            req.flash('error_msg', 'Pesan tidak ditemukan');
+            return res.redirect('/admin/inbox');
+        }
+
+        res.render('admin/detailPesan', {
+            title: 'Detail Pesan',
+            message: results[0],
+            admin: req.session.admin,
+        });
+    });
+};
+
+// Proses balas pesan
+exports.replyMessage = function (req, res) {
+    const messageId = req.params.id;
+    const { balasan } = req.body;
+    const adminId = req.session.admin.id;
+
+    const updateQuery = `
+        UPDATE contact_messages 
+        SET 
+            balasan = ?,
+            dibalas_oleh = ?,
+            status = 'dibalas',
+            tanggal_dibalas = NOW()
+        WHERE id = ?
+    `;
+
+    db.query(updateQuery, [balasan, adminId, messageId], (err, result) => {
+        if (err) {
+            console.error('Error replying message:', err);
+            req.flash('error_msg', 'Gagal mengirim balasan');
+            return res.redirect(`/admin/pesan/${messageId}`);
+        }
+
+        req.flash('success_msg', 'Balasan berhasil dikirim!');
+        res.redirect(`/admin/pesan/${messageId}`);
+    });
+};
+
 // Logout
 exports.logout = (req, res) => {
     req.session.destroy(() => {
         res.redirect('/admin/login');
     });
 };
+
+// ==== Kelola Postingan ====
+exports.showKelolaPostingan = (req, res) => {
+  const query = 'SELECT * FROM artikel WHERE status = ? ORDER BY tanggal_upload DESC';
+  db.query(query, [STATUS.PENDING], (err, results) => {
+    if (err) {
+      console.error('Error fetching artikel:', err);
+      return res.status(500).render('error', { message: 'Gagal mengambil data artikel', error: err });
+    }
+    res.render('admin/kelola-postingan', { postingan: results });
+  });
+};
+
+exports.setujuiPostingan = (req, res) => {
+  const { id } = req.params;
+  const reviewer = req.session.admin?.id || null;
+
+  const STATUS = {
+  APPROVED: 'disetuji', // Perhatikan ini harus 'disetuji' bukan 'disetujui'
+  REJECTED: 'ditolak',
+  PENDING: 'pending'
+};
+
+db.query(
+  'UPDATE artikel SET status = ?, reviewed_by = ?, updated_at = NOW() WHERE id = ?',
+  [STATUS.APPROVED, reviewer, id],
+  (err) => {
+    if (err) {
+      console.error(err);
+      return res.redirect('/admin/kelola-postingan?error=true');
+    }
+    res.redirect('/admin/kelola-postingan?success=Postingan+berhasil+disetujui');
+  }
+);
+};
+
+exports.tolakPostingan = (req, res) => {
+  const { id } = req.params;
+  const reviewer = req.session.admin?.id || null;
+
+  db.query(
+    'UPDATE artikel SET status = ?, reviewed_by = ?, updated_at = NOW() WHERE id = ?',
+    [STATUS.DITOLAK, reviewer, id],
+    (err) => {
+      if (err) {
+        console.error(err);
+        return res.redirect('/admin/kelola-postingan?error=true');
+      }
+      res.redirect('/admin/kelola-postingan');
+    }
+  );
+};
+
+exports.hapusPostingan = (req, res) => {
+  const { id } = req.params;
+  db.query('DELETE FROM artikel WHERE id = ?', [id], (err) => {
+    if (err) {
+      console.error(err);
+    }
+    res.redirect('/admin/kelola-postingan');
+  });
+};
+
+// ==== Logout ====
+exports.logout = (req, res) => {
+  req.session.destroy(() => {
+    res.redirect('/admin/login');
+  });
+}
+
+exports.riwayatPengajuan = (req, res) => {
+  res.render('admin/riwayat-pengajuan');
+}
