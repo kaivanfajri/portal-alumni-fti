@@ -21,9 +21,6 @@ router.get('/logout', adminController.logout);
 // Middleware untuk memastikan admin sudah login
 router.use(adminController.ensureAdmin);
 
-// ======================
-// DASHBOARD & UTAMA
-// ======================
 
 // Halaman dashboard admin
 router.get('/dashboard', adminController.dashboard);
