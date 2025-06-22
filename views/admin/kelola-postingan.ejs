@@ -1,108 +1,99 @@
 <!DOCTYPE html>
 <html lang="id" data-theme="light">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Portal Alumni FTI - Kelola Postingan Alumni</title>
-  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" />
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-50">
-  <%- include('admin-partials/navbar') %>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Portal Alumni FTI - Kelola Postingan Alumni</title>
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    </head>
+    <body class="bg-gray-50">
+        <%- include('admin-partials/navbar') %>
 
-<div class="container mx-auto px-4 py-12">
-  <div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold text-green-800">Kelola Postingan Alumni</h1>
-    <a href="/admin/riwayat-postingan" class="btn btn-primary">
-      <i class="fas fa-history mr-2"></i> Lihat Riwayat Postingan
-    </a>
-  </div>
+        <div class="container mx-auto px-4 py-12">
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold text-green-800">Kelola Postingan Alumni</h1>
+                <a href="/admin/riwayat-postingan" class="btn btn-primary"> <i class="fas fa-history mr-2"></i> Lihat Riwayat Postingan </a>
+            </div>
 
-  <% if (postingan.length === 0) { %>
-      <div class="overflow-x-auto">
-        <table class="table table-zebra w-full bg-white rounded-lg shadow">
-          <thead class="bg-green-100 text-green-900">
-            <tr>
-              <th>Judul</th>
-              <th>Isi</th>
-              <th>Tanggal</th>
-              <th class="text-center">Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td colspan="4" class="text-center py-6">Tidak ada permohonan postingan.</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    <% } else { %>
-      <div class="overflow-x-auto">
-        <table class="table table-zebra w-full bg-white rounded-lg shadow">
-          <thead class="bg-green-100 text-green-900">
-            <tr>
-              <th>Judul</th>
-              <th>Isi</th>
-              <th>Tanggal</th>
-              <th class="text-center">Aksi</th>
-            </tr>
-          </thead>
-          <tbody>
-            <% postingan.forEach(post => { %>
-              <tr id="post-<%= post.id %>">
-                <td><%= post.judul %></td>
-                <td><%= post.isi.length > 100 ? post.isi.substring(0, 100) + '...' : post.isi %></td>
-                <td><%= post.tanggal_upload.toISOString().split('T')[0] %></td>
-                <td>
-                  <div class="flex flex-col md:flex-row gap-2 justify-center">
-                    <button class="btn btn-success btn-sm gap-2" data-id="<%= post.id %>" data-action="setujui">
-                      <i class="fas fa-check-circle"></i> Setujui
-                    </button>
-                    <button class="btn btn-warning btn-sm gap-2" data-id="<%= post.id %>" data-action="tolak">
-                      <i class="fas fa-times-circle"></i> Tolak
-                    </button>
-                    <button class="btn btn-error btn-sm gap-2" data-id="<%= post.id %>" data-action="hapus">
-                      <i class="fas fa-trash-alt"></i> Hapus
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            <% }) %>
-          </tbody>
-        </table>
-      </div>
-    <% } %>
-  </div>
+            <% if (postingan.length === 0) { %>
+            <div class="overflow-x-auto">
+                <table class="table table-zebra w-full bg-white rounded-lg shadow">
+                    <thead class="bg-green-100 text-green-900">
+                        <tr>
+                            <th>Judul</th>
+                            <th>Isi</th>
+                            <th>Tanggal</th>
+                            <th class="text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="4" class="text-center py-6">Tidak ada permohonan postingan.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <% } else { %>
+            <div class="overflow-x-auto">
+                <table class="table table-zebra w-full bg-white rounded-lg shadow">
+                    <thead class="bg-green-100 text-green-900">
+                        <tr>
+                            <th>Judul</th>
+                            <th>Isi</th>
+                            <th>Tanggal</th>
+                            <th class="text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% postingan.forEach(post => { %>
+                        <tr id="post-<%= post.id %>">
+                            <td><%= post.judul %></td>
+                            <td><%= post.isi.length > 100 ? post.isi.substring(0, 100) + '...' : post.isi %></td>
+                            <td><%= post.tanggal_upload.toISOString().split('T')[0] %></td>
+                            <td>
+                                <div class="flex flex-col md:flex-row gap-2 justify-center">
+                                    <button class="btn btn-success btn-sm gap-2" data-id="<%= post.id %>" data-action="setujui"><i class="fas fa-check-circle"></i> Setujui</button>
+                                    <button class="btn btn-warning btn-sm gap-2" data-id="<%= post.id %>" data-action="tolak"><i class="fas fa-times-circle"></i> Tolak</button>
+                                    <button class="btn btn-error btn-sm gap-2" data-id="<%= post.id %>" data-action="hapus"><i class="fas fa-trash-alt"></i> Hapus</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+            <% } %>
+        </div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
-      document.querySelectorAll('[data-action]').forEach(button => {
-        button.addEventListener('click', function (e) {
-          e.preventDefault();
-          const action = this.dataset.action;
-          const id = this.dataset.id;
-          const url = `/admin/kelola-postingan/${id}/${action}`;
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('[data-action]').forEach((button) => {
+                    button.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        const action = this.dataset.action;
+                        const id = this.dataset.id;
+                        const url = `/admin/kelola-postingan/${id}/${action}`;
 
-          if (action === 'hapus' && !confirm('Yakin ingin menghapus?')) return;
-          if (action === 'setujui' && !confirm('Setujui postingan ini?')) return;
-          if (action === 'tolak' && !confirm('Tolak postingan ini?')) return;
+                        if (action === 'hapus' && !confirm('Yakin ingin menghapus?')) return;
+                        if (action === 'setujui' && !confirm('Setujui postingan ini?')) return;
+                        if (action === 'tolak' && !confirm('Tolak postingan ini?')) return;
 
-          fetch(url, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' }
-          })
-          .then(res => res.json())
-          .then(data => {
-            if (data.success) {
-              const row = document.getElementById(`post-${id}`);
-              if (row) {
-                if (action === 'setujui' || action === 'tolak') {
-                  // Pindah ke tabel Riwayat
-                  const statusLabel = action === 'setujui'
-                    ? '<span class="badge badge-success">disetujui</span>'
-                    : '<span class="badge badge-warning">ditolak</span>';
+                        fetch(url, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                        })
+                            .then((res) => res.json())
+                            .then((data) => {
+                                if (data.success) {
+                                    const row = document.getElementById(`post-${id}`);
+                                    if (row) {
+                                        if (action === 'setujui' || action === 'tolak') {
+                                            // Pindah ke tabel Riwayat
+                                            const statusLabel = action === 'setujui' ? '<span class="badge badge-success">disetujui</span>' : '<span class="badge badge-warning">ditolak</span>';
 
-                  const newRow = `
+                                            const newRow = `
                     <tr>
                       <td>${row.children[0].innerText}</td>
                       <td>${row.children[1].innerText}</td>
@@ -110,36 +101,36 @@
                       <td>${statusLabel}</td>
                     </tr>
                   `;
-                  const tbodyRiwayat = document.querySelector('#riwayat-postingan tbody');
-                  tbodyRiwayat.insertAdjacentHTML('afterbegin', newRow);
-                }
+                                            const tbodyRiwayat = document.querySelector('#riwayat-postingan tbody');
+                                            tbodyRiwayat.insertAdjacentHTML('afterbegin', newRow);
+                                        }
 
-                // Hapus dari tabel atas
-                row.remove();
-              }
+                                        // Hapus dari tabel atas
+                                        row.remove();
+                                    }
 
-              showAlert('success', data.message); // ganti toast -> showAlert
-            } else {
-              showAlert('danger', data.message || 'Gagal memproses'); // ganti toast -> showAlert
-            }
-          });
+                                    showAlert('success', data.message); // ganti toast -> showAlert
+                                } else {
+                                    showAlert('danger', data.message || 'Gagal memproses'); // ganti toast -> showAlert
+                                }
+                            });
 
-          function showAlert(type, message) {
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type}`;
-            alertDiv.style.position = 'fixed';
-            alertDiv.style.top = '20px';
-            alertDiv.style.right = '20px';
-            alertDiv.style.zIndex = 1000;
-            alertDiv.innerText = message;
-            document.body.appendChild(alertDiv);
-            setTimeout(() => alertDiv.remove(), 3000);
-          }
-        });
-      });
-    });
-  </script>
+                        function showAlert(type, message) {
+                            const alertDiv = document.createElement('div');
+                            alertDiv.className = `alert alert-${type}`;
+                            alertDiv.style.position = 'fixed';
+                            alertDiv.style.top = '20px';
+                            alertDiv.style.right = '20px';
+                            alertDiv.style.zIndex = 1000;
+                            alertDiv.innerText = message;
+                            document.body.appendChild(alertDiv);
+                            setTimeout(() => alertDiv.remove(), 3000);
+                        }
+                    });
+                });
+            });
+        </script>
 
-  <%- include('admin-partials/footer') %>
-</body>
+        <%- include('admin-partials/footer') %>
+    </body>
 </html>

@@ -90,6 +90,11 @@ app.get('/', (req, res) => {
     res.render('index', { title: 'Portal Alumni' });
 });
 
+//Halaman Tentang Kami
+app.get('/tentangKami', (req, res) => {
+    res.render('tentangKami');
+});
+
 // 404 Handler - halaman tidak ditemukan
 app.use((req, res, next) => {
     const error = new Error(`Halaman ${req.originalUrl} tidak ditemukan`);

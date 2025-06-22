@@ -1,131 +1,117 @@
 <!DOCTYPE html>
 <html lang="id" data-theme="light">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title><%= title %> - Portal Alumni</title>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title><%= title %> - Portal Alumni</title>
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.2/dist/full.css" rel="stylesheet" />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+        <style>
+            /* memotong teks panjang dalam kolom Isi */
+            .truncate-text {
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            /* badge status */
+            .badge {
+                @apply px-3 py-1 rounded-full text-xs font-semibold;
+            }
+            .badge-success {
+                @apply bg-green-100 text-green-700;
+            }
+            .badge-error {
+                @apply bg-red-100   text-red-700;
+            }
+        </style>
+    </head>
 
-  <!-- DaisyUI + Tailwind -->
-  <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.2/dist/full.css" rel="stylesheet" />
-  <script src="https://cdn.tailwindcss.com"></script>
+    <body class="bg-gray-50">
+        <!-- NAVBAR (partial) -->
+        <%- include('admin-partials/navbar') %>
 
-  <!-- FontAwesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+        <div class="container mx-auto px-4 py-8">
+            <!-- Flash Messages -->
+            <% if (success) { %>
+            <div class="alert alert-success mb-4 shadow"><i class="fas fa-check-circle mr-2"></i><span><%= success %></span></div>
+            <% } %> <% if (error) { %>
+            <div class="alert alert-error mb-4 shadow"><i class="fas fa-exclamation-circle mr-2"></i><span><%= error %></span></div>
+            <% } %>
 
-  <style>
-    /* memotong teks panjang dalam kolom Isi */
-    .truncate-text {
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    /* badge status */
-    .badge { @apply px-3 py-1 rounded-full text-xs font-semibold; }
-    .badge-success { @apply bg-green-100 text-green-700; }
-    .badge-error   { @apply bg-red-100   text-red-700;  }
-  </style>
-</head>
+            <!-- HEADER & BUTTONS -->
+            <div class="flex justify-between items-center mb-6">
+                <h1 class="text-2xl font-bold text-gray-800"><i class="fas fa-history mr-2"></i> <%= title %></h1>
 
-<body class="bg-gray-50">
-  <!-- NAVBAR (partial) -->
-  <%- include('admin-partials/navbar') %>
+                <div class="flex gap-2">
+                    <!-- Export Excel -->
+                    <a href="/admin/riwayat-postingan/export" class="btn btn-success btn-sm"> <i class="fas fa-file-excel mr-2"></i> Export ke Excel </a>
+                    <!-- Back -->
+                    <a href="/admin/kelola-postingan" class="btn btn-outline btn-sm"> <i class="fas fa-arrow-left mr-1"></i> Kembali ke Kelola Postingan </a>
+                </div>
+            </div>
 
-  <div class="container mx-auto px-4 py-8">
-    <!-- Flash Messages -->
-    <% if (success) { %>
-      <div class="alert alert-success mb-4 shadow">
-        <i class="fas fa-check-circle mr-2"></i><span><%= success %></span>
-      </div>
-    <% } %>
-    <% if (error) { %>
-      <div class="alert alert-error mb-4 shadow">
-        <i class="fas fa-exclamation-circle mr-2"></i><span><%= error %></span>
-      </div>
-    <% } %>
+            <!-- CONTENT -->
+            <% if (riwayat && riwayat.length === 0) { %>
+            <div class="alert alert-info shadow"><i class="fas fa-info-circle mr-2"></i>Belum ada riwayat postingan</div>
 
-    <!-- HEADER & BUTTONS -->
-    <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold text-gray-800">
-        <i class="fas fa-history mr-2"></i> <%= title %>
-      </h1>
+            <% } else if (riwayat && riwayat.length > 0) { %>
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="table w-full">
+                        <thead class="bg-gray-100 text-gray-800">
+                            <tr>
+                                <th>Judul</th>
+                                <th>Isi</th>
+                                <th>Penulis</th>
+                                <th>Reviewer</th>
+                                <th>Status</th>
+                                <th>Tanggal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% riwayat.forEach(post => { %>
+                            <tr class="hover:bg-gray-50">
+                                <td class="font-medium"><%= post.judul %></td>
+                                <td><div class="truncate-text"><%= post.short_content %>...</div></td>
+                                <td><%= post.alumni_nama %></td>
+                                <td><%= post.reviewer_nama || 'System' %></td>
+                                <td>
+                                    <% if (post.status === 'disetujui') { %>
+                                    <span class="badge badge-success">Disetujui</span>
+                                    <% } else { %>
+                                    <span class="badge badge-error">Ditolak</span>
+                                    <% } %>
+                                </td>
+                                <td><%= post.formatted_date %></td>
+                            </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-      <div class="flex gap-2">
-        <!-- Export Excel -->
-        <a href="/admin/riwayat-postingan/export" class="btn btn-success btn-sm">
-          <i class="fas fa-file-excel mr-2"></i> Export ke Excel
-        </a>
-        <!-- Back -->
-        <a href="/admin/kelola-postingan" class="btn btn-outline btn-sm">
-          <i class="fas fa-arrow-left mr-1"></i> Kembali ke Kelola Postingan
-        </a>
-      </div>
-    </div>
-
-    <!-- CONTENT -->
-    <% if (riwayat && riwayat.length === 0) { %>
-      <div class="alert alert-info shadow">
-        <i class="fas fa-info-circle mr-2"></i>Belum ada riwayat postingan
-      </div>
-
-    <% } else if (riwayat && riwayat.length > 0) { %>
-      <div class="bg-white rounded-lg shadow overflow-hidden">
-        <div class="overflow-x-auto">
-          <table class="table w-full">
-            <thead class="bg-gray-100 text-gray-800">
-              <tr>
-                <th>Judul</th>
-                <th>Isi</th>
-                <th>Penulis</th>
-                <th>Reviewer</th>
-                <th>Status</th>
-                <th>Tanggal</th>
-              </tr>
-            </thead>
-            <tbody>
-              <% riwayat.forEach(post => { %>
-                <tr class="hover:bg-gray-50">
-                  <td class="font-medium"><%= post.judul %></td>
-                  <td><div class="truncate-text"><%= post.short_content %>...</div></td>
-                  <td><%= post.alumni_nama %></td>
-                  <td><%= post.reviewer_nama || 'System' %></td>
-                  <td>
-                    <% if (post.status === 'disetujui') { %>
-                      <span class="badge badge-success">Disetujui</span>
-                    <% } else { %>
-                      <span class="badge badge-error">Ditolak</span>
-                    <% } %>
-                  </td>
-                  <td><%= post.formatted_date %></td>
-                </tr>
-              <% }) %>
-            </tbody>
-          </table>
+            <% } else { %>
+            <div class="alert alert-warning shadow"><i class="fas fa-exclamation-triangle mr-2"></i>Gagal memuat data riwayat postingan</div>
+            <% } %>
         </div>
-      </div>
 
-    <% } else { %>
-      <div class="alert alert-warning shadow">
-        <i class="fas fa-exclamation-triangle mr-2"></i>Gagal memuat data riwayat postingan
-      </div>
-    <% } %>
-  </div>
+        <!-- FOOTER (partial) -->
+        <%- include('admin-partials/footer') %>
 
-  <!-- FOOTER (partial) -->
-  <%- include('admin-partials/footer') %>
-
-  <!-- Auto-dismiss flash -->
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      setTimeout(() => {
-        document.querySelectorAll('.alert').forEach(el => {
-          el.style.transition = 'opacity 1s ease-out';
-          el.style.opacity = '0';
-          setTimeout(() => el.remove(), 1000);
-        });
-      }, 5000);
-    });
-  </script>
-</body>
+        <!-- Auto-dismiss flash -->
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                setTimeout(() => {
+                    document.querySelectorAll('.alert').forEach((el) => {
+                        el.style.transition = 'opacity 1s ease-out';
+                        el.style.opacity = '0';
+                        setTimeout(() => el.remove(), 1000);
+                    });
+                }, 5000);
+            });
+        </script>
+    </body>
 </html>

@@ -1,60 +1,58 @@
 <!DOCTYPE html>
 <html lang="id" data-theme="light">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Portal Alumni FTI - Upload Postingan</title>
-  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" />
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="min-h-screen bg-[#F0F8F0]">
-  <%- include('alumni-partials/navbar') %>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Portal Alumni FTI - Upload Postingan</title>
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    </head>
+    <body class="min-h-screen bg-[#F0F8F0]">
+        <%- include('alumni-partials/navbar') %>
 
-  <section class="bg-green-50 py-8">
-    <h1 class="text-2xl font-bold text-center text-gray-800">Tambah Postingan</h1>
-  </section>
+        <section class="bg-green-50 py-8">
+            <h1 class="text-2xl font-bold text-center text-gray-800">Tambah Postingan</h1>
+        </section>
 
-  <main class="container mx-auto px-6 py-12">
-    <div class="max-w-2xl mx-auto card bg-white shadow-lg">
-      <div class="card-body">
-        <h2 class="card-title text-2xl mb-6">Upload Postingan</h2>
+        <main class="container mx-auto px-6 py-12">
+            <div class="max-w-2xl mx-auto card bg-white shadow-lg">
+                <div class="card-body">
+                    <h2 class="card-title text-2xl mb-6">Upload Postingan</h2>
 
-      <% if (error) { %>
-  <div class="alert alert-error mb-4"><%= error %></div>
-<% } %>
+                    <% if (error) { %>
+                    <div class="alert alert-error mb-4"><%= error %></div>
+                    <% } %>
 
-        <form action="/alumni/upload-postingan" method="POST" enctype="multipart/form-data" class="space-y-6">
+                    <form action="/alumni/upload-postingan" method="POST" enctype="multipart/form-data" class="space-y-6">
+                        <!-- Judul -->
+                        <div class="form-control">
+                            <label class="label"><span class="label-text font-semibold">Judul :</span></label>
+                            <input type="text" name="judul" class="input input-bordered w-full" required />
+                        </div>
 
-          <!-- Judul -->
-          <div class="form-control">
-            <label class="label"><span class="label-text font-semibold">Judul :</span></label>
-            <input type="text" name="judul" class="input input-bordered w-full" required>
-          </div>
+                        <!-- Isi -->
+                        <div class="form-control">
+                            <label class="label"><span class="label-text font-semibold">Isi Postingan :</span></label>
+                            <textarea name="isi" class="textarea textarea-bordered h-32 w-full" required></textarea>
+                        </div>
 
-          <!-- Isi -->
-          <div class="form-control">
-            <label class="label"><span class="label-text font-semibold">Isi Postingan :</span></label>
-            <textarea name="isi" class="textarea textarea-bordered h-32 w-full" required></textarea>
-          </div>
+                        <!-- Gambar -->
+                        <div class="form-control">
+                            <label class="label"><span class="label-text font-semibold">Gambar :</span></label>
+                            <input type="file" name="gambar" accept="image/*" class="file-input file-input-bordered w-full" />
+                        </div>
 
-          <!-- Gambar -->
-          <div class="form-control">
-            <label class="label"><span class="label-text font-semibold">Gambar :</span></label>
-            <input type="file" name="gambar" accept="image/*" class="file-input file-input-bordered w-full">
-          </div>
+                        <!-- Tombol -->
+                        <div class="flex gap-4 pt-4">
+                            <button type="submit" class="btn bg-yellow-400 hover:bg-yellow-500 border-yellow-400 text-black font-semibold px-8">Submit</button>
+                            <button type="reset" class="btn bg-red-500 hover:bg-red-600 border-red-500 text-white font-semibold px-8">Batal</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
 
-          <!-- Tombol -->
-          <div class="flex gap-4 pt-4">
-            <button type="submit" class="btn bg-yellow-400 hover:bg-yellow-500 border-yellow-400 text-black font-semibold px-8">Submit</button>
-            <button type="reset"  class="btn bg-red-500 hover:bg-red-600   border-red-500   text-white font-semibold px-8">Batal</button>
-          </div>
-
-        </form>
-      </div>
-    </div>
-  </main>
-
-  
-  <%- include('alumni-partials/footer') %>
-</body>
+        <%- include('alumni-partials/footer') %>
+    </body>
 </html>

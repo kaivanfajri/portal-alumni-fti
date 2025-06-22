@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Tentang Kami - Portal Alumni FTI</title>
+
+        <!-- Tailwind CSS + DaisyUI -->
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@4.4.24/dist/full.min.css" rel="stylesheet" type="text/css" />
+        <script src="https://cdn.tailwindcss.com"></script>
+
+        <!-- Font Awesome untuk icons -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+        <style>
+            /* Custom font family */
+            * {
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+
+            /* Custom color variables */
+            :root {
+                --color-light-gray: #e9e7e7;
+                --color-light-green: #f0f8f0;
+                --color-gold: #ffd700;
+                --color-dark-green: #2e7d32;
+            }
+
+            /* Custom gradient background */
+            .hero-gradient {
+                background: linear-gradient(135deg, var(--color-light-green) 0%, var(--color-light-gray) 50%, #ffffff 100%);
+            }
+
+            /* Team member card */
+            .team-card {
+                transition: all 0.3s ease;
+                background-color: white;
+                border: 2px solid var(--color-light-gray);
+            }
+
+            .team-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 20px 25px -5px rgba(46, 125, 50, 0.15), 0 10px 10px -5px rgba(46, 125, 50, 0.1);
+                border-color: var(--color-dark-green);
+            }
+
+            /* Navbar transparency effect */
+            .navbar-transparent {
+                backdrop-filter: blur(10px);
+                background-color: rgba(240, 248, 240, 0.95);
+                border-bottom: 1px solid var(--color-light-gray);
+            }
+
+            /* Custom button styles */
+            .btn-custom-primary {
+                background-color: var(--color-dark-green);
+                border-color: var(--color-dark-green);
+                color: white;
+            }
+
+            .btn-custom-primary:hover {
+                background-color: #1b5e20;
+                border-color: #1b5e20;
+            }
+
+            .btn-custom-secondary {
+                background-color: var(--color-gold);
+                border-color: var(--color-gold);
+                color: #000;
+                font-weight: 600;
+            }
+
+            .btn-custom-secondary:hover {
+                background-color: #ffc107;
+                border-color: #ffc107;
+            }
+        </style>
+
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            'custom-light-gray': '#E9E7E7',
+                            'custom-light-green': '#F0F8F0',
+                            'custom-gold': '#FFD700',
+                            'custom-dark-green': '#2E7D32',
+                        },
+                    },
+                },
+            };
+        </script>
+    </head>
+    <body class="min-h-screen" style="background-color: #f0f8f0">
+        <%- include('partials/navbar') %>
+
+        <!-- Team Section -->
+        <section class="py-16 lg:py-24" style="background-color: white">
+            <div class="container mx-auto px-4 max-w-7xl">
+                <div class="text-center mb-16">
+                    <h2 class="text-3xl lg:text-4xl font-bold mb-4" style="color: #2e7d32">Tim Pengembang</h2>
+                    <p class="text-lg max-w-2xl mx-auto" style="color: #666">Kami adalah tim mahasiswa SI Semester 4 yang membangun portal alumni FTI sebagai jembatan antara sesama alumni dan mahasiswa aktif.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                    <!-- Anggota Tim 1 -->
+                    <div class="card shadow-xl team-card">
+                        <figure class="px-10 pt-10 flex justify-center">
+                            <div class="profile-icon">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        </figure>
+                        <div class="card-body items-center text-center">
+                            <h3 class="card-title text-2xl font-bold" style="color: #2e7d32">Asyifa Rahmina Yudi</h3>
+                            <p class="text-sm font-semibold mb-2" style="color: #555">NIM: 2311521007</p>
+                            <p class="text-sm italic mb-4" style="color: #666">"Tak Ada yang Lebih Cukup Selain Bersyukur"</p>
+                            <div class="flex gap-4">
+                                <a href="https://github.com/asyifarahmina" target="_blank" class="btn btn-circle btn-sm" style="background-color: #f0f8f0; border: none">
+                                    <i class="fab fa-github" style="color: #2e7d32"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Anggota Tim 2 -->
+                    <div class="card shadow-xl team-card">
+                        <figure class="px-10 pt-10 flex justify-center">
+                            <div class="profile-icon">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        </figure>
+                        <div class="card-body items-center text-center">
+                            <h3 class="card-title text-2xl font-bold" style="color: #2e7d32">Muhammad Fajri</h3>
+                            <p class="text-sm font-semibold mb-2" style="color: #555">NIM: 2311522015</p>
+                            <p class="text-sm italic mb-4" style="color: #666">"Hari Hari Terus Berjalan Tanpa Return Value yang Disimpan"</p>
+                            <div class="flex gap-4">
+                                <a href="https://github.com/kaivanfajri" target="_blank" class="btn btn-circle btn-sm" style="background-color: #f0f8f0; border: none">
+                                    <i class="fab fa-github" style="color: #2e7d32"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Anggota Tim 3 -->
+                    <div class="card shadow-xl team-card">
+                        <figure class="px-10 pt-10 flex justify-center">
+                            <div class="profile-icon">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        </figure>
+                        <div class="card-body items-center text-center">
+                            <h3 class="card-title text-2xl font-bold" style="color: #2e7d32">Arrival Rince Putri</h3>
+                            <p class="text-sm font-semibold mb-2" style="color: #555">NIM: 2311523019</p>
+                            <p class="text-sm italic mb-4" style="color: #666">"Meskipun Belum Sempurna Tapi Sudah Berusaha dan Berdoa"</p>
+                            <div class="flex gap-4">
+                                <a href="https://github.com/ArrivalRince" target="_blank" class="btn btn-circle btn-sm" style="background-color: #f0f8f0; border: none">
+                                    <i class="fab fa-github" style="color: #2e7d32"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Anggota Tim 4 -->
+                    <div class="card shadow-xl team-card">
+                        <figure class="px-10 pt-10 flex justify-center">
+                            <div class="profile-icon">
+                                <i class="fas fa-user"></i>
+                            </div>
+                        </figure>
+                        <div class="card-body items-center text-center">
+                            <h3 class="card-title text-2xl font-bold" style="color: #2e7d32">Faiz Hamdi Isakha</h3>
+                            <p class="text-sm font-semibold mb-2" style="color: #555">NIM: 2311522041</p>
+                            <p class="text-sm italic mb-4" style="color: #666">"Selesaii.."</p>
+                            <div class="flex gap-4">
+                                <a href="https://github.com/Faizisakha" target="_blank" class="btn btn-circle btn-sm" style="background-color: #f0f8f0; border: none">
+                                    <i class="fab fa-github" style="color: #2e7d32"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Project Description Section -->
+        <section class="py-16" style="background-color: #e9e7e7">
+            <div class="container mx-auto px-4 max-w-6xl">
+                <div class="card bg-white shadow-2xl" style="border: 2px solid #f0f8f0">
+                    <div class="card-body p-12">
+                        <h2 class="text-3xl font-bold mb-6 text-center" style="color: #2e7d32">Tentang Portal Alumni FTI</h2>
+                        <div class="prose max-w-none" style="color: #555">
+                            <p class="mb-4">Portal Alumni FTI adalah platform yang dibangun untuk menjembatani hubungan antara alumni dengan almamater dan mahasiswa aktif di Fakultas Teknologi Informasi.</p>
+                            <p class="mb-4">Dengan portal ini, kami berharap dapat:</p>
+                            <ul class="list-disc pl-6 mb-6">
+                                <li class="mb-2">Memperkuat jaringan antar alumni FTI</li>
+                                <li class="mb-2">Menyediakan informasi lowongan pekerjaan dari alumni</li>
+                                <li class="mb-2">Memfasilitasi program mentoring dan pengetahuan</li>
+                                <li class="mb-2">Menjadi wadah berbagi pengalaman dan pengetahuan</li>
+                            </ul>
+                            <p>Portal ini dikembangkan sebagai proyek Tugas Besar mata kuliah PWEB mahasiswa Semester 4, Sistem Informasi - Universitas Andalas.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <%- include('partials/footer') %>
+    </body>
+</html>

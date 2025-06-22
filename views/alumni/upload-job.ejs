@@ -6,6 +6,7 @@
         <title>Pengajuan Postingan Lowongan</title>
         <link href="https://cdn.jsdelivr.net/npm/daisyui@4.10.2/dist/full.min.css" rel="stylesheet" type="text/css" />
         <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     </head>
     <body class="bg-gradient-to-br from-green-50 to-green-100 min-h-screen p--1">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
@@ -14,7 +15,7 @@
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             }
         </style>
-<%- include('alumni-partials/navbar') %>
+        <%- include('alumni-partials/navbar') %>
         <!-- Form Section -->
         <div class="max-w-xl mx-auto mt-7 mb-4">
             <div id="successMessage" class="alert alert-success hidden mb-4">
@@ -49,7 +50,7 @@
                             <option disabled selected value="">Kategori</option>
                             <!-- Tampilkan kategori dari database -->
                             <% categories.forEach(function(category) { %>
-                                <option value="<%= category.id %>"><%= category.nama_kategori %></option>
+                            <option value="<%= category.id %>"><%= category.nama_kategori %></option>
                             <% }); %>
                         </select>
                     </div>

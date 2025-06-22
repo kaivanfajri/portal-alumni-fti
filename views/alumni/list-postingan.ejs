@@ -1,51 +1,46 @@
 <!DOCTYPE html>
 <html lang="id" data-theme="light">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Daftar Postingan Alumni Disetujui</title>
-  <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" />
-  <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-[#F8F9FA] min-h-screen">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Daftar Postingan Alumni Disetujui</title>
+        <link href="https://cdn.jsdelivr.net/npm/daisyui@4.12.10/dist/full.min.css" rel="stylesheet" />
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    </head>
+    <body class="bg-[#F8F9FA] min-h-screen">
+        <%- include('alumni-partials/navbar') %>
 
-  <%- include('alumni-partials/navbar') %>
+        <section class="container mx-auto py-10 px-4 max-w-7xl">
+            <h2 class="text-3xl font-bold text-center text-green-800 mb-6">Postingan Alumni yang Disetujui</h2>
 
-  <section class="container mx-auto py-10 px-4 max-w-7xl">
-    <h2 class="text-3xl font-bold text-center text-green-800 mb-6">Postingan Alumni yang Disetujui</h2>
+            <% if (artikel && artikel.length > 0) { %>
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <% artikel.forEach(function(post) { %>
+                <div class="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition duration-200">
+                    <% if (post.gambar) { %>
+                    <img src="/uploads/<%= post.gambar %>" alt="<%= post.judul %>" class="w-full h-48 object-cover" />
+                    <% } else { %>
+                    <div class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-500">No Image</div>
+                    <% } %>
+                    <div class="p-5">
+                        <h3 class="text-lg font-semibold text-green-900 mb-2"><%= post.judul %></h3>
+                        <p class="text-sm text-gray-600 mb-3"><%= post.isi.length > 120 ? post.isi.substring(0, 120) + '…' : post.isi %></p>
+                        <div class="text-xs text-gray-500">
+                            <i class="fas fa-calendar-alt mr-1"></i>
+                            <%= new Date(post.tanggal_upload).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) %>
+                        </div>
 
-    <% if (artikel && artikel.length > 0) { %>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        <% artikel.forEach(function(post) { %>
-          <div class="bg-white shadow-md rounded-lg overflow-hidden hover:shadow-lg transition duration-200">
-            <% if (post.gambar) { %>
-              <img src="/uploads/<%= post.gambar %>" alt="<%= post.judul %>" class="w-full h-48 object-cover" />
-            <% } else { %>
-              <div class="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-500">No Image</div>
-            <% } %>
-            <div class="p-5">
-              <h3 class="text-lg font-semibold text-green-900 mb-2"><%= post.judul %></h3>
-              <p class="text-sm text-gray-600 mb-3">
-                <%= post.isi.length > 120 ? post.isi.substring(0, 120) + '…' : post.isi %>
-              </p>
-              <div class="text-xs text-gray-500">
-                <i class="fas fa-calendar-alt mr-1"></i>
-                <%= new Date(post.tanggal_upload).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }) %>
-              </div>
-
-          <a href="/detail-konten/<%= post.id %>" class="inline-block mt-3 text-sm text-white bg-green-600 hover:bg-green-700 px-4 py-2 rounded-md">
-  Lihat Detail
-</a>
-
+                        <a href="/detail-konten/<%= post.id %>" class="inline-block mt-3 text-sm text-white bg-green-600 hover:bg-green-700 px-4 py-2 rounded-md"> Lihat Detail </a>
+                    </div>
+                </div>
+                <% }) %>
             </div>
-          </div>
-        <% }) %>
-      </div>
-    <% } else { %>
-      <p class="text-center text-gray-500 mt-10">Belum ada postingan yang disetujui.</p>
-    <% } %>
-  </section>
+            <% } else { %>
+            <p class="text-center text-gray-500 mt-10">Belum ada postingan yang disetujui.</p>
+            <% } %>
+        </section>
 
-  <%- include('alumni-partials/footer') %>
-</body>
+        <%- include('alumni-partials/footer') %>
+    </body>
 </html>
