@@ -1,4 +1,5 @@
 const db = require('../config/db');
+const ExcelJS = require('exceljs');
 
 // Status constants
 const STATUS = {
@@ -191,3 +192,99 @@ exports.daftarArtikel = (req, res) => {
   );
 };
 
+// RIWAYAT POSTINGAN UNTUK ADMIN
+// Render halaman riwayat postingan (GET request untuk tampilan HTML)
+exports.riwayatPostingan = (req, res) => {
+  const query = `
+  SELECT a.id, a.judul, a.status
+  FROM artikel a
+  WHERE a.status IN ('disetujui', 'ditolak')
+
+  `;
+
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error('Error fetching posting history:', err.sqlMessage); // ← DEBUG
+      return res.status(500).render('admin/riwayat-postingan', {
+        riwayat: [],
+        error: 'Gagal mengambil data riwayat postingan',
+        title: 'Riwayat Postingan',
+        admin: req.session.admin
+      });
+    }
+
+    res.render('admin/riwayat-postingan', {
+      riwayat: results,
+      success: req.query.success || null,
+      error: null,
+      title: 'Riwayat Postingan',
+      admin: req.session.admin
+    });
+  });
+};
+
+
+exports.exportRiwayatExcel = async (req, res) => {
+const query = `
+    SELECT
+        a.id,
+        a.judul,
+        a.isi,
+        a.slug,
+        a.gambar,
+        COALESCE(adm.nama_lengkap, 'System')   AS reviewer,
+        a.status,
+        DATE_FORMAT(a.tanggal_upload, '%Y-%m-%d') AS tanggal_upload
+    FROM artikel a
+    JOIN alumni  al  ON a.alumni_id   = al.id
+    LEFT JOIN admins adm ON a.reviewed_by = adm.id
+    WHERE a.status IN ('disetujui', 'ditolak')
+    ORDER BY a.tanggal_upload DESC
+`;
+
+  db.query(query, async (err, results) => {
+    if (err) {
+      console.error('[❌ SQL ERROR exportRiwayatExcel]:', err.sqlMessage || err.message);
+      return res.redirect('/admin/riwayat-postingan?error=Gagal+export+Excel');
+    }
+
+    try {
+      const workbook = new ExcelJS.Workbook();
+      const worksheet = workbook.addWorksheet('Riwayat Postingan');
+
+      // Atur header kolom
+      worksheet.columns = [
+        { header: 'ID',        key: 'id',        width: 6 },
+        { header: 'Judul',     key: 'judul',     width: 40 },
+        { header: 'Isi',       key: 'isi',       width: 60 },
+        { header: 'Penulis',   key: 'penulis',   width: 25 },
+        { header: 'Reviewer',  key: 'reviewer',  width: 25 },
+        { header: 'Status',    key: 'status',    width: 12 },
+        { header: 'Tanggal',   key: 'tanggal',   width: 15 },
+      ];
+
+      // Tambahkan data
+      results.forEach(row => {
+        worksheet.addRow(row);
+      });
+
+      // Set header response
+      res.setHeader(
+        'Content-Type',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      );
+      res.setHeader(
+        'Content-Disposition',
+        'attachment; filename="riwayat_postingan.xlsx"'
+      );
+
+      // Kirim file Excel
+      await workbook.xlsx.write(res);
+      res.end();
+
+    } catch (error) {
+      console.error('[❌ EXCELJS ERROR]:', error.message);
+      return res.redirect('/admin/riwayat-postingan?error=Gagal+buat+Excel');
+    }
+  });
+};

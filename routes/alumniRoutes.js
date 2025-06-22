@@ -58,8 +58,6 @@ router.post('/alumni/upload-postingan', requireAlumniAuth, upload.single('gambar
 router.get('/detail-konten/:id', requireAlumniAuth, artikelController.detailKonten);
 
 
-
-
 // Logout
 router.get('/alumni/logout', alumniController.logoutAlumni);
 
